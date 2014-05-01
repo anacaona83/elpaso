@@ -1,6 +1,3 @@
-# -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-
 import os
 import feedparser
 import sqlite3
@@ -22,7 +19,7 @@ def extract(caracter):
     return t, l
 
 # Si la BD n'existe pas, je la crée
-if 'elpaso.sqlite' not in os.listdir('.'):
+if 'bd_jobs_georezo.db' not in os.listdir('.'):
 
     conn = sqlite3.connect('bd_jobs_georezo.db')
     c = conn.cursor()
@@ -31,7 +28,7 @@ if 'elpaso.sqlite' not in os.listdir('.'):
                   date timestamp, lieu text)''')
 # Sinon, je me connecte à la BD
 else:
-    conn = sqlite3.connect('elpaso.sqlite')
+    conn = sqlite3.connect('bd_jobs_georezo.db')
     c = conn.cursor()
 
 # Ce fichier contient l'id de la dernière annonce traitée
@@ -54,14 +51,33 @@ for entry in d.entries:
     # Si l'id de l'annonce est supérieur à l'id du fichier, cela signifie
     # que l'annonce est plus récente et n'a pas encore été traitée
     if job_id > last_id:
-        try:
-            #  J'insère les données dans la BD
-            c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id), entry.title, entry.summary, entry.published))
-            # Save (commit) the changes
-            conn.commit()
-            compteur += 1
-        except:
-            print(str(job_id))
+        compteur += 1
+        # Je ne garde que la catégorie, l'intitulé' et le lieu de l'annonce
+        # qui se trouvent tous les 3 dans le titre (entry.title)
+        # La catégorie est toujours (à vérifier) entre []
+        # L'intitulé (ici titre) n'est pas important
+        categorie = entry.title.split(']')[0].lstrip('[')
+        # J'initialise le lieu ainsi au cas où il ne soit pas mentionné
+        # dans l'annonce
+        lieu = 'NULL'
+        # A améliorer
+        # Le lieu est souvent indiqué après '-', '–' ou ','
+        if '–' in entry.title and '-' not in entry.title \
+           and ',' not in entry.title:
+            titre, lieu = extract('–')
+        elif '-' in entry.title and '–' not in entry.title \
+             and ',' not in entry.title:
+            titre, lieu = extract('-')
+        elif ',' in entry.title and '-' not in entry.title \
+             and '–' not in entry.title:
+            titre, lieu = extract(',')
+
+        # J'insère les données dans la BD
+        c.execute('INSERT INTO jobs VALUES (' + str(job_id) + ', "' +
+                  categorie + '", "' + titre + '", "' + entry.published +
+                  '", "' + lieu + '")')
+        # Save (commit) the changes
+        conn.commit()
 
 conn.close()
 # Affiche le nombre d'annonces insérées dans la BD
