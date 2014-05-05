@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 
-import os
+#import os
 import feedparser
 import sqlite3
 
@@ -22,20 +22,20 @@ def extract(caracter):
     return t, l
 
 # Si la BD n'existe pas, je la crée
-if 'elpaso.sqlite' not in os.listdir('.'):
+# if 'elpaso.sqlite' not in os.listdir('.'):
 
-    conn = sqlite3.connect('bd_jobs_georezo.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE jobs
-                 (id int, category text, title text,
-                  date timestamp, lieu text)''')
-# Sinon, je me connecte à la BD
-else:
-    conn = sqlite3.connect('elpaso.sqlite')
-    c = conn.cursor()
+#     conn = sqlite3.connect('bd_jobs_georezo.db')
+#     c = conn.cursor()
+#     c.execute('''CREATE TABLE jobs
+#                  (id int, category text, title text,
+#                   date timestamp, lieu text)''')
+# # Sinon, je me connecte à la BD
+# else:
+conn = sqlite3.connect('/home/pvernier/code/python/elpaso/elpaso.sqlite')
+c = conn.cursor()
 
 # Ce fichier contient l'id de la dernière annonce traitée
-fichier = open('last_id_georezo.txt', 'r')
+fichier = open('/home/pvernier/code/python/elpaso/last_id_georezo.txt', 'r')
 last_id = int(fichier.readline())
 fichier.close()
 
@@ -48,7 +48,7 @@ for entry in d.entries:
     # La première annonce traitée est la dernière publiée, donc celle
     # qui a l'id le plus grand. Je mets cet id dans le fichier texte.
     if d.entries.index(entry) == 0:
-        fichier = open('last_id_georezo.txt', 'w')
+        fichier = open('/home/pvernier/code/python/elpaso/last_id_georezo.txt', 'w')
         fichier.write(str(job_id))
         fichier.close()
     # Si l'id de l'annonce est supérieur à l'id du fichier, cela signifie
