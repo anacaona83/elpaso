@@ -21,6 +21,19 @@ crontab -e puis ajouter :
 - lieu_type (si inconnu : 99)
 
 
+### Structure table logiciels "contrats" :
++ id
++ cdi
++ cdd
++ stage
++ fpt
++ apprentissage
++ vi
++ these
++ post_doc
++ autres
+
+
 ### Structure table logiciels "logiciels" :
 * id
 * proprietaire => Esri, MapInfo, Arc*, GeoConcept, StarApic, 1Spatial, Business Geographic, FME, Intragéo, Intergraph
@@ -31,7 +44,7 @@ crontab -e puis ajouter :
 * cao/dao => autocad, Micro Station, Illustrator, Inkscape, PAO
 
 
-### Structure table metiers :
+### Structure table "metiers" :
 + id
 + sigiste
 + cartographe
@@ -42,12 +55,10 @@ crontab -e puis ajouter :
 + technicien
 + charge_mission
 + charge_etude
-+ post_doc
-+ these
 + responsable
 + chef
 
 
-### Structure table autres :
+### Structure table "autres" :
 + id
 + langue
