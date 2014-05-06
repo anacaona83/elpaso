@@ -14,9 +14,8 @@ crontab -e puis ajouter :
 
 
 ## ToDolist
-### Structure table globale "jobs" :
+### Structure table globale "lieux" :
 - id
-- type_contrat
 - lieu_lib (si inconnu : "lieu inconu")
 - lieu_type (si inconnu : 99)
 
@@ -62,3 +61,14 @@ crontab -e puis ajouter :
 ### Structure table "autres" :
 + id
 + langue
+
+
+
+#### Principe
+### Phase récupération
+1. jobs_georezo.py est croné 2 fois par jour
+2. il check s'il y a des nouvelles offres publiées depuis son dernier passage
+3. s'il y a des nouvelles offres :
+4. il récupère les id des nouvelles offres
+5. stocke les infos brutes dans la table georezo
+6. lance les différentes fonctions/process/parsers en donnant en paramètre la liste des id des nouvelles offres

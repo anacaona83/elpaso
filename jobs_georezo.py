@@ -66,3 +66,7 @@ for entry in d.entries:
 conn.close()
 # Affiche le nombre d'annonces insérées dans la BD
 print(str(compteur) + ' annonces on été ajoutées')
+
+if compteur > 0:
+    print('lancer process')
+    from modules import contrats
