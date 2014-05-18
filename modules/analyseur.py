@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-from __future__ import unicode_literals
 
 #-------------------------------------------------------------------------------
 # Name: Analyseur
@@ -20,6 +19,8 @@ from __future__ import unicode_literals
 
 # Standard library
 from os import path
+
+import re
 
 import sqlite3
 
@@ -46,11 +47,16 @@ class Analizer():
                                        args=(liste_identifiants_offre, self.c))
         tr_contrats.daemon = True
         tr_contrats.run()
-        #self.parse_contrats(liste_identifiants_offre, self.c)
+
+        # extraction des lieux des offres
+        tr_lieux = threading.Thread(target=self.parse_lieux,
+                                    args=(liste_identifiants_offre, self.c))
+        tr_lieux.daemon = True
+        tr_lieux.run()
 
 
     def manage_connection(self, action):
-        """ """
+        """ commit ou ferme la connexion à la demande """
         if action == 1:
             self.conn.commit()
         elif action == 2:
@@ -65,11 +71,9 @@ class Analizer():
     def parse_contrats(self, li_id, db_cursor):
         """ extraction des types de contrats """
         for offre in li_id:
-            print(offre)
             db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
             #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
             titre = db_cursor.fetchone()
-            print(titre[0])
             contrat = titre[0].split(']')[0].lstrip('[')
             # insertion
             if contrat[0:3].lower() == 'cdi':
@@ -100,7 +104,30 @@ class Analizer():
         return li_id
 
 
+    def parse_lieux(self, li_id, db_cursor):
+        """ extraction des lieux des offres """
+        for offre in li_id:
+            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+            #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
+            titre = db_cursor.fetchone()
+            contrat = re.findall(u'[0-9]{3}'
+            # insertion
+            if contrat[0:3].lower() == 'cdi':
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
+            elif contrat[0:3].lower() == 'cdd':
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
+            elif "fpt" in contrat.lower():
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
+            elif contrat.lower() == 'stage':
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
+            elif "appr" in contrat.lower():
 
+
+            # Save (commit) the changes
+            self.manage_connection(1)
+        # end of function
+        self.manage_connection(2)
+        return li_id
 
 
 
