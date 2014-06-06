@@ -26,6 +26,8 @@ import sqlite3
 
 import threading # multi threads handling
 
+from xml.etree import ElementTree as ET
+
 
 ################################################################################
 ########### Classes #############
@@ -34,13 +36,17 @@ import threading # multi threads handling
 class Analizer():
     """ analyse les dernière offres parues sur GeoRezo et enregistrées dans la table 
     georezo. """
-    def __init__(self, liste_identifiants_offre):
+    def __init__(self, liste_identifiants_offre, db_path=r"elpaso.sqlite"):
         """ crée le curseur de connexion à la BD et répartit les tâches.
         liste_identifiants_offre = liste des ID des nouvelles offres """
         # connexion à la BD
-        db = path.abspath(r"elpaso.sqlite")
+        db = path.abspath(db_path)
         self.conn = sqlite3.connect(db)
         self.c  = self.conn.cursor()
+
+        # variables
+        self.tup_prop = ("esri", "mapinfo", "arc", "geoconcept", "starapic", "1spatial", "business geographic", "fme", "intragéo", "intergraph")
+        self.tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig", "otb", "postgresql", "postgis")
 
         # extraction des types de contrats
         tr_contrats = threading.Thread(target=self.parse_contrats,
@@ -48,12 +54,17 @@ class Analizer():
         tr_contrats.daemon = True
         tr_contrats.run()
 
-        # extraction des lieux des offres
-        tr_lieux = threading.Thread(target=self.parse_lieux,
-                                    args=(liste_identifiants_offre, self.c))
-        tr_lieux.daemon = True
-        tr_lieux.run()
+        # # extraction des lieux des offres
+        # tr_lieux = threading.Thread(target=self.parse_lieux,
+        #                             args=(liste_identifiants_offre, self.c))
+        # tr_lieux.daemon = True
+        # tr_lieux.run()
 
+        # extraction des logiciels
+        tr_techno = threading.Thread(target=self.parse_technos,
+                                       args=(liste_identifiants_offre, self.c))
+        tr_techno.daemon = True
+        tr_techno.run()
 
     def manage_connection(self, action):
         """ commit ou ferme la connexion à la demande """
@@ -100,27 +111,56 @@ class Analizer():
             # Save (commit) the changes
             self.manage_connection(1)
         # end of function
-        self.manage_connection(2)
+        # self.manage_connection(2)
         return li_id
 
 
-    def parse_lieux(self, li_id, db_cursor):
-        """ extraction des lieux des offres """
+    # def parse_lieux(self, li_id, db_cursor):
+    #     """ extraction des lieux des offres """
+    #     for offre in li_id:
+    #         db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+    #         #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
+    #         titre = db_cursor.fetchone()
+    #         contrat = re.findall(u'[0-9]{3}'
+    #         # insertion
+    #         if contrat[0:3].lower() == 'cdi':
+    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
+    #         elif contrat[0:3].lower() == 'cdd':
+    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
+    #         elif "fpt" in contrat.lower():
+    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
+    #         elif contrat.lower() == 'stage':
+    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
+    #         elif "appr" in contrat.lower():
+    #             s
+
+
+    #         # Save (commit) the changes
+    #         self.manage_connection(1)
+    #     # end of function
+    #     self.manage_connection(2)
+    #     return li_id
+
+
+    def parse_technos(self, li_id, db_cursor):
+        """ extraction des logiciels cités dans l'offre """
         for offre in li_id:
-            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
-            #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
-            titre = db_cursor.fetchone()
-            contrat = re.findall(u'[0-9]{3}'
-            # insertion
-            if contrat[0:3].lower() == 'cdi':
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
-            elif contrat[0:3].lower() == 'cdd':
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
-            elif "fpt" in contrat.lower():
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
-            elif contrat.lower() == 'stage':
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
-            elif "appr" in contrat.lower():
+            db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
+            content = db_cursor.fetchone()
+            content = self.remove_tags(content[0])
+
+            if any(prop in content for prop in self.tup_prop):
+                # print("Ciel ! un logiciel propriétaire !")
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0))
+            elif any(prop in content for prop in self.tup_opso):
+                # print("Cool ! Un logiciel libre !")
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,1,0,0,0,0))
+
+
+            else:
+                pass
+
+
 
 
             # Save (commit) the changes
@@ -130,6 +170,15 @@ class Analizer():
         return li_id
 
 
+    def remove_tags(self, html_text):
+        """ nettoie les balises HTML du contenu des offres """
+        try:
+            text = ''.join(ET.fromstring(html_text).itertext())
+        except:
+            TAG_RE = re.compile(r'<[^>]+>')
+            return TAG_RE.sub('', html_text)
+        # end of function
+        return text.lower()
 
 ################################################################################
 ###### Stand alone program ########
@@ -152,7 +201,7 @@ if __name__ == '__main__':
     liste_input = [i[0] for i in c.fetchall()]
     #liste_input = c.fetchall()
     print(liste_input)
-    Analizer.parse_contrats(liste_input, c)
+    Analizer(liste_input, db).parse_technos(liste_input)
 
     # closing
     conn.close()
