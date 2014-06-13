@@ -47,6 +47,12 @@ class Analizer():
         # variables
         self.tup_prop = ("esri", "mapinfo", "arc", "geoconcept", "starapic", "1spatial", "business geographic", "fme", "intragéo", "intergraph")
         self.tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig", "otb", "postgresql", "postgis")
+        self.tup_sgbd = ("postgresql", "mysql", "oracle", "sql server", "postgis", "sde", "access", "mongodb")
+        self.tup_prog = ("python", "java", "C++", "r stats", "matlab", "spss", "html", "php", "ruby", "python", "java", "javascript", "js", "css")
+        self.tup_web = ("html", "php", "ruby", "python", "java", "webmapping", "mapnik", "javascript", "js", "css", "wordpress", "openlayers", "leaflet", "django", "drupal", "joomla", "symphony", "angularjs", "nodejs")
+        self.tup_cdao = ("autocad", "autodesk", "micro station", "illustrator", "inkscape", "pao", "cao", "photoshop")
+        self.tup_teldec = ("e-cognition", "erdas", "imagine", "envi", "otb", "monteverdi", "photointerprétation", "photoshop")
+        self.tup_metier = ("cartographe", "cartographie", "topographe", "topographie", "sigiste", "dessinateur", "administrateur", "développeur", "responsable", "chef de projet")
 
         # extraction des types de contrats
         tr_contrats = threading.Thread(target=self.parse_contrats,
@@ -66,6 +72,9 @@ class Analizer():
         tr_techno.daemon = True
         tr_techno.run()
 
+        # fermeture de la connexion à la BD
+        self.manage_connection(2)
+
     def manage_connection(self, action):
         """ commit ou ferme la connexion à la demande """
         if action == 1:
@@ -74,7 +83,6 @@ class Analizer():
             self.conn.close()
         else:
             pass
-
         # end of function
         return self.conn
 
@@ -107,7 +115,6 @@ class Analizer():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0, 1,""))
             else:
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0, contrat))
-
             # Save (commit) the changes
             self.manage_connection(1)
         # end of function
@@ -150,23 +157,30 @@ class Analizer():
             content = self.remove_tags(content[0])
 
             if any(prop in content for prop in self.tup_prop):
-                # print("Ciel ! un logiciel propriétaire !")
+                """ filtre les logiciels propriétaires """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0))
             elif any(prop in content for prop in self.tup_opso):
-                # print("Cool ! Un logiciel libre !")
+                """ filtre les logiciels libres """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,1,0,0,0,0))
-
-
+            elif any(prop in content for prop in self.tup_sgbd):
+                """ filtre les systèmes de gestion de bases de données """
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,1,0,0,0))
+            elif any(prop in content for prop in self.tup_prog):
+                """ filtre les langages de programmation """
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,1,0,0))
+            elif any(prop in content for prop in self.tup_web):
+                """ filtre le développement web """
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,1,0))
+            elif any(prop in content for prop in self.tup_cdao):
+                """ filtre ls logiciels de dessin assisté """
+                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,0,1))
             else:
                 pass
-
-
-
 
             # Save (commit) the changes
             self.manage_connection(1)
         # end of function
-        self.manage_connection(2)
+        # self.manage_connection(2)
         return li_id
 
 
