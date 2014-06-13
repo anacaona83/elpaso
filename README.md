@@ -72,3 +72,18 @@ crontab -e puis ajouter :
 4. il récupère les id des nouvelles offres
 5. stocke les infos brutes dans la table georezo
 6. lance les différentes fonctions/process/parsers en donnant en paramètre la liste des id des nouvelles offres
+
+
+# Recréer la BD
+
+CREATE TABLE "autres" ("id" INTEGER PRIMARY KEY  NOT NULL  UNIQUE , "langue" VARCHAR NOT NULL );
+
+CREATE TABLE "contrats" ("id" INTEGER PRIMARY KEY  NOT NULL ,"cdi" BOOL,"cdd" BOOL,"fpt" BOOL,"stage" BOOL,"apprentissage" BOOL,"vi" BOOL,"these" BOOL,"post_doc" BOOL,"mission" BOOL, "autres" VARCHAR);
+
+CREATE TABLE "georezo" ("id" INTEGER PRIMARY KEY  NOT NULL  UNIQUE , "title" VARCHAR NOT NULL , "content" TEXT NOT NULL , "date_pub" DATETIME);
+
+CREATE TABLE "lieux" ("id" INTEGER PRIMARY KEY  NOT NULL ,"lieu_lib" VARCHAR NOT NULL ,"lieu_type" INTEGER NOT NULL );
+
+CREATE TABLE "logiciels" ("id" INTEGER PRIMARY KEY  NOT NULL , "proprietaire" BOOL, "libre" BOOL, "sgbd" BOOL, "programmation" BOOL, "web" BOOL, "cao_dao" BOOL);
+
+CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOOL DEFAULT (null) ,"cartographe" BOOL,"charge_etude" BOOL,"charge_mission" BOOL,"chef" BOOL,"geometre" BOOL,"ingenieur" BOOL,"responsable" BOOL,"sigiste" BOOL,"technicien" BOOL,"topographe" BOOL);
