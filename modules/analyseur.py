@@ -28,6 +28,8 @@ import threading # multi threads handling
 
 from xml.etree import ElementTree as ET
 
+# custom
+from . import data
 
 ################################################################################
 ########### Classes #############
@@ -54,23 +56,23 @@ class Analizer():
         self.tup_teldec = ("e-cognition", "erdas", "imagine", "envi", "otb", "monteverdi", "photointerprétation", "photoshop")
         self.tup_metier = ("cartographe", "cartographie", "topographe", "topographie", "sigiste", "dessinateur", "administrateur", "développeur", "responsable", "chef de projet")
 
-        # extraction des types de contrats
-        tr_contrats = threading.Thread(target=self.parse_contrats,
-                                       args=(liste_identifiants_offre, self.c))
-        tr_contrats.daemon = True
-        tr_contrats.run()
+        # # extraction des types de contrats
+        # tr_contrats = threading.Thread(target=self.parse_contrats,
+        #                                args=(liste_identifiants_offre, self.c))
+        # tr_contrats.daemon = True
+        # tr_contrats.run()
 
         # # extraction des lieux des offres
-        # tr_lieux = threading.Thread(target=self.parse_lieux,
-        #                             args=(liste_identifiants_offre, self.c))
-        # tr_lieux.daemon = True
-        # tr_lieux.run()
+        tr_lieux = threading.Thread(target=self.parse_lieux,
+                                    args=(liste_identifiants_offre, self.c))
+        tr_lieux.daemon = True
+        tr_lieux.run()
 
-        # extraction des logiciels
-        tr_techno = threading.Thread(target=self.parse_technos,
-                                       args=(liste_identifiants_offre, self.c))
-        tr_techno.daemon = True
-        tr_techno.run()
+        # # extraction des logiciels
+        # tr_techno = threading.Thread(target=self.parse_technos,
+        #                                args=(liste_identifiants_offre, self.c))
+        # tr_techno.daemon = True
+        # tr_techno.run()
 
         # fermeture de la connexion à la BD
         self.manage_connection(2)
@@ -122,56 +124,67 @@ class Analizer():
         return li_id
 
 
-    # def parse_lieux(self, li_id, db_cursor):
-    #     """ extraction des lieux des offres """
-    #     for offre in li_id:
-    #         db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
-    #         #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
-    #         titre = db_cursor.fetchone()
-    #         contrat = re.findall(u'[0-9]{3}'
-    #         # insertion
-    #         if contrat[0:3].lower() == 'cdi':
-    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
-    #         elif contrat[0:3].lower() == 'cdd':
-    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
-    #         elif "fpt" in contrat.lower():
-    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
-    #         elif contrat.lower() == 'stage':
-    #             db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
-    #         elif "appr" in contrat.lower():
-    #             s
+    def parse_lieux(self, li_id, db_cursor):
+        """ extraction des lieux des offres 
+        liste des pays issues de : http://sql.sh/514-liste-pays-csv-xml"""
+        for offre in li_id:
+            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+            titre = db_cursor.fetchone()
+            # trying to get the French departement code
+            dpt_code = re.findall("(2[AB]|[0-9]+)", titre[0])
+            print(dpt_code)
+            if dpt_code:
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(dpt_code[0]), 3))
+            elif "idf" in titre[0].lower() or "Paris" in titre[0].lower() or "île de france" in titre[0].lower() or "île-de-france" in titre[0].lower():
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(75), 3))
+            elif any(pays.lower() in titre[0].lower() for pays in data.tup_pays):
+                for pays in data.tup_pays:
+                    if pays in titre[0]:
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), pays, 1))
+                        pass
+                    else:
+                        continue
+            elif any(ville.lower() in titre[0].lower() for ville in data.tup_villes_fr100):
+                for ville in data.tup_villes_fr100:
+                    if ville in titre[0]:
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), ville, 4))
+                        pass
+                    else:
+                        continue
+            else:
+                pass
 
 
-    #         # Save (commit) the changes
-    #         self.manage_connection(1)
-    #     # end of function
-    #     self.manage_connection(2)
-    #     return li_id
+            # Save (commit) the changes
+            self.manage_connection(1)
+        # end of function
+        # self.manage_connection(2)
+        return li_id
 
 
     def parse_technos(self, li_id, db_cursor):
         """ extraction des logiciels cités dans l'offre """
         for offre in li_id:
             db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
-            content = db_cursor.fetchone()
-            content = self.remove_tags(content[0])
+            contenu = db_cursor.fetchone()
+            contenu = self.remove_tags(contenu[0])
 
-            if any(prop in content for prop in self.tup_prop):
+            if any(prop in contenu for prop in self.tup_prop):
                 """ filtre les logiciels propriétaires """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0))
-            elif any(prop in content for prop in self.tup_opso):
+            elif any(prop in contenu for prop in self.tup_opso):
                 """ filtre les logiciels libres """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,1,0,0,0,0))
-            elif any(prop in content for prop in self.tup_sgbd):
+            elif any(prop in contenu for prop in self.tup_sgbd):
                 """ filtre les systèmes de gestion de bases de données """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,1,0,0,0))
-            elif any(prop in content for prop in self.tup_prog):
+            elif any(prop in contenu for prop in self.tup_prog):
                 """ filtre les langages de programmation """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,1,0,0))
-            elif any(prop in content for prop in self.tup_web):
+            elif any(prop in contenu for prop in self.tup_web):
                 """ filtre le développement web """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,1,0))
-            elif any(prop in content for prop in self.tup_cdao):
+            elif any(prop in contenu for prop in self.tup_cdao):
                 """ filtre ls logiciels de dessin assisté """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,0,1))
             else:

@@ -16,8 +16,13 @@ crontab -e puis ajouter :
 ## ToDolist
 ### Structure table globale "lieux" :
 - id
-- lieu_lib (si inconnu : "lieu inconu")
-- lieu_type (si inconnu : 99)
+- lieu_lib (si inconnu : "lieu inconnu")
+- lieu_type (si inconnu : 99) : 
+	+ 0 = continent
+	+ 1 =  pays
+	+ 2 = région
+	+ 3 = département
+	+ 4 = ville
 
 
 ### Structure table logiciels "contrats" :

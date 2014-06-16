@@ -30,9 +30,9 @@ tup_dpts = (1,2,3,4,5,6,7,8,9,10,\
 
 
 for titre in titres:
-    lieu_reg1 = re.findall("(([\d]{2} )|(2[abAB] ))",
-                      titre[0])
-    print("\n\n\t", titre[0], "\nreg1", lieu_reg1)
+    lieu_reg1 = re.findall("(([\d]{2} )|(2[abAB] ))", titre[0])
+    print("========", titre[0], "\nreg1", lieu_reg1)
     lieu_reg2 = re.findall("(\()([0-9]+)(\))", titre[0])
     print("reg2", lieu_reg2)
-    
+    lieu_reg3 = re.findall("(2[AB]|[0-9]+)", titre[0])
+    print("\nreg3", lieu_reg3, type(lieu_reg3))
