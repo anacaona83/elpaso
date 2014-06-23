@@ -2,14 +2,14 @@
 #!/usr/bin/env python
 
 #-------------------------------------------------------------------------------
-# Name: Analyseur
+# Name:         Analyseur
 # Purpose: 
 #
 # Author: @pvernier et @guts
 #
 # Python: 3.4.x
 # Created: 18/04/2014
-# Updated: 15/05/2014
+# Updated: 23/06/2014
 # Licence: GPL 3
 #-------------------------------------------------------------------------------
 
@@ -19,20 +19,25 @@
 
 # Standard library
 from os import path
-
 import re
-
 import sqlite3
-
 import threading # multi threads handling
-
 from xml.etree import ElementTree as ET
 
 # custom
 from . import data
+from . import LogGuy
+
 
 ################################################################################
-########### Classes #############
+############ Globals ##############
+###################################
+
+# logger object
+logger = LogGuy.Logyk()
+
+################################################################################
+############ Classes ##############
 ###################################
 
 class Analizer():
@@ -41,32 +46,36 @@ class Analizer():
     def __init__(self, liste_identifiants_offre, db_path=r"elpaso.sqlite"):
         """ crée le curseur de connexion à la BD et répartit les tâches.
         liste_identifiants_offre = liste des ID des nouvelles offres """
+        logger.append("Launching analyze")
         # connexion à la BD
         db = path.abspath(db_path)
         self.conn = sqlite3.connect(db)
         self.c  = self.conn.cursor()
 
-        # variables
-        self.tup_prop = ("esri", "mapinfo", "arc", "geoconcept", "starapic", "1spatial", "business geographic", "fme", "intragéo", "intergraph")
-        self.tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig", "otb", "postgresql", "postgis")
-        self.tup_sgbd = ("postgresql", "mysql", "oracle", "sql server", "postgis", "sde", "access", "mongodb")
-        self.tup_prog = ("python", "java", "C++", "r stats", "matlab", "spss", "html", "php", "ruby", "python", "java", "javascript", "js", "css")
-        self.tup_web = ("html", "php", "ruby", "python", "java", "webmapping", "mapnik", "javascript", "js", "css", "wordpress", "openlayers", "leaflet", "django", "drupal", "joomla", "symphony", "angularjs", "nodejs")
-        self.tup_cdao = ("autocad", "autodesk", "micro station", "illustrator", "inkscape", "pao", "cao", "photoshop")
-        self.tup_teldec = ("e-cognition", "erdas", "imagine", "envi", "otb", "monteverdi", "photointerprétation", "photoshop")
-        self.tup_metier = ("cartographe", "cartographie", "topographe", "topographie", "sigiste", "dessinateur", "administrateur", "développeur", "responsable", "chef de projet")
+        # extraction des types de contrats
+        logger.append("\tParsing contrats")
+        self.parse_contrats(liste_identifiants_offre, self.c)
 
-        # # extraction des types de contrats
+        # extraction des lieux des offres
+        logger.append("\tParsing lieux")
+        self.parse_lieux(liste_identifiants_offre, self.c)
+
+        # extraction des logiciels
+        logger.append("\tParsing logiciels")
+        self.parse_technos(liste_identifiants_offre, self.c)
+
+
+        #### Disabling multithreading because of official documentation warning: https://docs.python.org/3/library/sqlite3.html#multithreading
         # tr_contrats = threading.Thread(target=self.parse_contrats,
         #                                args=(liste_identifiants_offre, self.c))
         # tr_contrats.daemon = True
         # tr_contrats.run()
 
         # # extraction des lieux des offres
-        tr_lieux = threading.Thread(target=self.parse_lieux,
-                                    args=(liste_identifiants_offre, self.c))
-        tr_lieux.daemon = True
-        tr_lieux.run()
+        # tr_lieux = threading.Thread(target=self.parse_lieux,
+        #                             args=(liste_identifiants_offre, self.c))
+        # tr_lieux.daemon = True
+        # tr_lieux.run()
 
         # # extraction des logiciels
         # tr_techno = threading.Thread(target=self.parse_technos,
@@ -76,6 +85,7 @@ class Analizer():
 
         # fermeture de la connexion à la BD
         self.manage_connection(2)
+        logger.append("Connection closed")
 
     def manage_connection(self, action):
         """ commit ou ferme la connexion à la demande """
@@ -119,6 +129,7 @@ class Analizer():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0, contrat))
             # Save (commit) the changes
             self.manage_connection(1)
+            logger.append("Contrats parsed for " + str(offre))
         # end of function
         # self.manage_connection(2)
         return li_id
@@ -132,31 +143,39 @@ class Analizer():
             titre = db_cursor.fetchone()
             # trying to get the French departement code
             dpt_code = re.findall("(2[AB]|[0-9]+)", titre[0])
-            print(dpt_code)
             if dpt_code:
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(dpt_code[0]), 3))
+                self.manage_connection(1)
+                logger.append("Lieux parsed for {0} ({1})".format(str(offre), dpt_code))
+                continue
             elif "idf" in titre[0].lower() or "Paris" in titre[0].lower() or "île de france" in titre[0].lower() or "île-de-france" in titre[0].lower():
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(75), 3))
+                self.manage_connection(1)
+                logger.append("Lieux parsed for {0} ({1})".format(str(offre), "IDF"))
+                continue
             elif any(pays.lower() in titre[0].lower() for pays in data.tup_pays):
                 for pays in data.tup_pays:
                     if pays in titre[0]:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), pays, 1))
-                        pass
+                        self.manage_connection(1)
+                        logger.append("Lieux parsed for {0} ({1})".format(str(offre), pays))
+                        break
                     else:
                         continue
             elif any(ville.lower() in titre[0].lower() for ville in data.tup_villes_fr100):
                 for ville in data.tup_villes_fr100:
                     if ville in titre[0]:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), ville, 4))
-                        pass
+                        self.manage_connection(1)
+                        logger.append("Lieux parsed for {0} ({1})".format(str(offre), ville))
+                        break
                     else:
                         continue
             else:
                 pass
-
-
             # Save (commit) the changes
             self.manage_connection(1)
+            logger.append("Lieux parsed for {0} ({1})".format(str(offre), dpt_code))
         # end of function
         # self.manage_connection(2)
         return li_id
@@ -168,23 +187,22 @@ class Analizer():
             db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
             contenu = db_cursor.fetchone()
             contenu = self.remove_tags(contenu[0])
-
-            if any(prop in contenu for prop in self.tup_prop):
+            if any(prop in contenu.lower() for prop in data.tup_prop):
                 """ filtre les logiciels propriétaires """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0))
-            elif any(prop in contenu for prop in self.tup_opso):
+            elif any(prop in contenu.lower() for prop in data.tup_opso):
                 """ filtre les logiciels libres """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,1,0,0,0,0))
-            elif any(prop in contenu for prop in self.tup_sgbd):
+            elif any(prop in contenu.lower() for prop in data.tup_sgbd):
                 """ filtre les systèmes de gestion de bases de données """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,1,0,0,0))
-            elif any(prop in contenu for prop in self.tup_prog):
+            elif any(prop in contenu.lower() for prop in data.tup_prog):
                 """ filtre les langages de programmation """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,1,0,0))
-            elif any(prop in contenu for prop in self.tup_web):
+            elif any(prop in contenu.lower() for prop in data.tup_web):
                 """ filtre le développement web """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,1,0))
-            elif any(prop in contenu for prop in self.tup_cdao):
+            elif any(prop in contenu.lower() for prop in data.tup_cdao):
                 """ filtre ls logiciels de dessin assisté """
                 db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,0,1))
             else:
@@ -192,6 +210,7 @@ class Analizer():
 
             # Save (commit) the changes
             self.manage_connection(1)
+            logger.append("Logiciels parsed for {0}".format(str(offre)))
         # end of function
         # self.manage_connection(2)
         return li_id
@@ -215,8 +234,8 @@ if __name__ == '__main__':
     u""" standalone execution for tests. Paths are relative considering a test
     within the official repository (https://github.com/Guts/DicoShapes/)"""
     # libraries import
-    from os import path, getcwd
-    import sqlite3
+    # from os import path, getcwd
+    # import sqlite3
     #
     print('Stand-alone execution')
     # DB connection settings

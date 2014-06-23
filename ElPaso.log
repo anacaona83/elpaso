@@ -7,3 +7,612 @@
 2014-06-23 18:48:31,605 || INFO || youhou
 2014-06-23 18:48:36,434 || INFO || 	 ========= El Paso started =========
 2014-06-23 18:48:36,434 || INFO || qsdqsdj
+2014-06-23 20:27:35,365 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:27:35,365 || INFO || youhou
+2014-06-23 20:27:53,494 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:27:53,494 || INFO || Test depuis un module externe
+2014-06-23 20:29:05,656 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:29:05,657 || INFO || Test depuis un module externe
+2014-06-23 20:33:20,751 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:33:25,318 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:33:25,319 || INFO || Test depuis un module externe
+2014-06-23 20:33:49,785 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:33:49,785 || INFO || youhou
+2014-06-23 20:40:10,003 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:40:10,004 || INFO || Connected to the database
+2014-06-23 20:40:10,004 || INFO || Read ID of the last update
+2014-06-23 20:40:10,203 || INFO || Parser created
+2014-06-23 20:45:17,573 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:45:17,574 || INFO || Connected to the database
+2014-06-23 20:45:17,574 || INFO || Read ID of the last update
+2014-06-23 20:45:17,763 || INFO || Parser created
+2014-06-23 20:45:18,135 || INFO || Parsing contrats
+2014-06-23 20:45:53,376 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:45:53,376 || INFO || Connected to the database
+2014-06-23 20:45:53,376 || INFO || Read ID of the last update
+2014-06-23 20:45:53,568 || INFO || Parser created
+2014-06-23 20:45:54,494 || INFO || Parsing contrats
+2014-06-23 20:46:34,310 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:46:34,310 || INFO || Connected to the database
+2014-06-23 20:46:34,310 || INFO || Read ID of the last update
+2014-06-23 20:46:34,497 || INFO || Parser created
+2014-06-23 20:46:35,432 || INFO || Parsing contrats
+2014-06-23 20:49:13,612 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:49:13,613 || INFO || Connected to the database
+2014-06-23 20:49:13,613 || INFO || Read ID of the last update
+2014-06-23 20:49:13,780 || INFO || Parser created
+2014-06-23 20:49:14,573 || INFO || Parsing contrats
+2014-06-23 20:51:20,069 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:51:20,069 || INFO || Connected to the database
+2014-06-23 20:51:20,069 || INFO || Read ID of the last update
+2014-06-23 20:51:20,241 || INFO || Parser created
+2014-06-23 20:51:21,127 || INFO || Parsing contrats
+2014-06-23 20:56:52,931 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:56:52,931 || INFO || Connected to the database
+2014-06-23 20:56:52,931 || INFO || Read ID of the last update
+2014-06-23 20:56:53,136 || INFO || Parser created
+2014-06-23 20:56:53,421 || INFO || Parsing contrats
+2014-06-23 20:56:53,466 || INFO || Parsing lieux
+2014-06-23 20:56:53,543 || INFO || Parsing logiciels
+2014-06-23 20:58:41,820 || INFO || 	 ========= El Paso started =========
+2014-06-23 20:58:41,820 || INFO || Connected to the database
+2014-06-23 20:58:41,821 || INFO || Read ID of the last update
+2014-06-23 20:58:41,992 || INFO || Parser created
+2014-06-23 20:58:42,755 || INFO || Parsing contrats
+2014-06-23 20:58:42,834 || INFO || Parsing lieux
+2014-06-23 20:58:42,941 || INFO || Parsing logiciels
+2014-06-23 21:08:13,509 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:08:13,509 || INFO || Connected to the database
+2014-06-23 21:08:13,509 || INFO || Read ID of the last update
+2014-06-23 21:08:13,697 || INFO || Parser created
+2014-06-23 21:08:14,189 || INFO || 20 offers have been added !
+2014-06-23 21:08:14,190 || INFO || New offers IDs: [253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537, 253523, 253522]
+2014-06-23 21:08:14,565 || INFO || Parsing contrats
+2014-06-23 21:08:14,680 || INFO || Parsing lieux
+2014-06-23 21:08:14,798 || INFO || Parsing logiciels
+2014-06-23 21:12:48,239 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:12:48,239 || INFO || Connected to the database
+2014-06-23 21:12:48,240 || INFO || Read ID of the last update
+2014-06-23 21:12:48,555 || INFO || Parser created
+2014-06-23 21:12:49,014 || INFO || 20 offers have been added !
+2014-06-23 21:12:49,014 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:12:49,015 || INFO || Launching analyze
+2014-06-23 21:12:49,015 || INFO || Contrats parsed for 253799
+2014-06-23 21:12:49,020 || INFO || Contrats parsed for 253798
+2014-06-23 21:12:49,026 || INFO || Contrats parsed for 253791
+2014-06-23 21:12:49,061 || INFO || Contrats parsed for 253790
+2014-06-23 21:12:49,068 || INFO || Contrats parsed for 253747
+2014-06-23 21:12:49,107 || INFO || Contrats parsed for 253746
+2014-06-23 21:12:49,201 || INFO || Contrats parsed for 253740
+2014-06-23 21:12:49,211 || INFO || Contrats parsed for 253718
+2014-06-23 21:12:49,252 || INFO || Contrats parsed for 253717
+2014-06-23 21:12:49,283 || INFO || Contrats parsed for 253716
+2014-06-23 21:12:49,288 || INFO || Contrats parsed for 253674
+2014-06-23 21:12:49,292 || INFO || Contrats parsed for 253671
+2014-06-23 21:12:49,333 || INFO || Contrats parsed for 253659
+2014-06-23 21:12:49,422 || INFO || Contrats parsed for 253658
+2014-06-23 21:12:49,444 || INFO || Contrats parsed for 253657
+2014-06-23 21:12:49,450 || INFO || Contrats parsed for 253624
+2014-06-23 21:12:49,457 || INFO || Contrats parsed for 253623
+2014-06-23 21:12:49,478 || INFO || Contrats parsed for 253622
+2014-06-23 21:12:49,492 || INFO || Contrats parsed for 253561
+2014-06-23 21:12:49,497 || INFO || Contrats parsed for 253537
+2014-06-23 21:12:49,502 || INFO || Parsing contrats
+2014-06-23 21:12:49,584 || INFO || Parsing lieux
+2014-06-23 21:12:49,717 || INFO || Parsing logiciels
+2014-06-23 21:12:49,717 || INFO || Connection closed
+2014-06-23 21:15:44,010 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:15:44,011 || INFO || Connected to the database
+2014-06-23 21:15:44,011 || INFO || Read ID of the last update
+2014-06-23 21:15:44,189 || INFO || Parser created
+2014-06-23 21:15:44,560 || INFO || 20 offers have been added !
+2014-06-23 21:15:44,560 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:15:44,561 || INFO || Launching analyze
+2014-06-23 21:15:44,561 || INFO || Parsing contrats
+2014-06-23 21:15:44,593 || INFO || Contrats parsed for 253799
+2014-06-23 21:15:44,630 || INFO || Contrats parsed for 253798
+2014-06-23 21:15:44,660 || INFO || Contrats parsed for 253791
+2014-06-23 21:15:44,666 || INFO || Contrats parsed for 253790
+2014-06-23 21:15:44,673 || INFO || Contrats parsed for 253747
+2014-06-23 21:15:44,681 || INFO || Contrats parsed for 253746
+2014-06-23 21:15:44,688 || INFO || Contrats parsed for 253740
+2014-06-23 21:15:44,693 || INFO || Contrats parsed for 253718
+2014-06-23 21:15:44,739 || INFO || Contrats parsed for 253717
+2014-06-23 21:15:44,744 || INFO || Contrats parsed for 253716
+2014-06-23 21:15:44,750 || INFO || Contrats parsed for 253674
+2014-06-23 21:15:44,784 || INFO || Contrats parsed for 253671
+2014-06-23 21:15:44,790 || INFO || Contrats parsed for 253659
+2014-06-23 21:15:44,828 || INFO || Contrats parsed for 253658
+2014-06-23 21:15:44,834 || INFO || Contrats parsed for 253657
+2014-06-23 21:15:44,873 || INFO || Contrats parsed for 253624
+2014-06-23 21:15:44,877 || INFO || Contrats parsed for 253623
+2014-06-23 21:15:44,918 || INFO || Contrats parsed for 253622
+2014-06-23 21:15:44,929 || INFO || Contrats parsed for 253561
+2014-06-23 21:15:44,996 || INFO || Contrats parsed for 253537
+2014-06-23 21:15:44,997 || INFO || Parsing lieux
+2014-06-23 21:15:45,003 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:15:45,008 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:15:45,016 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:15:45,020 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:15:45,028 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:15:45,028 || INFO || Parsing logiciels
+2014-06-23 21:15:45,260 || INFO || Connection closed
+2014-06-23 21:20:42,432 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:20:42,432 || INFO || Connected to the database
+2014-06-23 21:20:42,433 || INFO || Read ID of the last update
+2014-06-23 21:20:42,627 || INFO || Parser created
+2014-06-23 21:20:42,937 || INFO || 20 offers have been added !
+2014-06-23 21:20:42,938 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:20:42,938 || INFO || Launching analyze
+2014-06-23 21:20:42,938 || INFO || Parsing contrats
+2014-06-23 21:20:42,943 || INFO || Contrats parsed for 253799
+2014-06-23 21:20:42,949 || INFO || Contrats parsed for 253798
+2014-06-23 21:20:42,959 || INFO || Contrats parsed for 253791
+2014-06-23 21:20:42,964 || INFO || Contrats parsed for 253790
+2014-06-23 21:20:42,973 || INFO || Contrats parsed for 253747
+2014-06-23 21:20:42,979 || INFO || Contrats parsed for 253746
+2014-06-23 21:20:42,984 || INFO || Contrats parsed for 253740
+2014-06-23 21:20:42,989 || INFO || Contrats parsed for 253718
+2014-06-23 21:20:42,994 || INFO || Contrats parsed for 253717
+2014-06-23 21:20:43,000 || INFO || Contrats parsed for 253716
+2014-06-23 21:20:43,017 || INFO || Contrats parsed for 253674
+2014-06-23 21:20:43,022 || INFO || Contrats parsed for 253671
+2014-06-23 21:20:43,027 || INFO || Contrats parsed for 253659
+2014-06-23 21:20:43,032 || INFO || Contrats parsed for 253658
+2014-06-23 21:20:43,036 || INFO || Contrats parsed for 253657
+2014-06-23 21:20:43,040 || INFO || Contrats parsed for 253624
+2014-06-23 21:20:43,045 || INFO || Contrats parsed for 253623
+2014-06-23 21:20:43,050 || INFO || Contrats parsed for 253622
+2014-06-23 21:20:43,056 || INFO || Contrats parsed for 253561
+2014-06-23 21:20:43,064 || INFO || Contrats parsed for 253537
+2014-06-23 21:20:43,064 || INFO || Parsing lieux
+2014-06-23 21:20:43,073 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:20:43,082 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:20:43,090 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:20:43,096 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:24:00,880 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:24:00,880 || INFO || Connected to the database
+2014-06-23 21:24:00,880 || INFO || Read ID of the last update
+2014-06-23 21:24:01,062 || INFO || Parser created
+2014-06-23 21:24:01,066 || INFO || 0 offers have been added !
+2014-06-23 21:25:55,025 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:25:55,026 || INFO || Connected to the database
+2014-06-23 21:25:55,026 || INFO || Read ID of the last update
+2014-06-23 21:25:55,208 || INFO || Parser created
+2014-06-23 21:25:55,888 || INFO || 20 offers have been added !
+2014-06-23 21:25:55,888 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:25:55,888 || INFO || Launching analyze
+2014-06-23 21:25:55,888 || INFO || Parsing contrats
+2014-06-23 21:25:55,894 || INFO || Contrats parsed for 253799
+2014-06-23 21:25:55,901 || INFO || Contrats parsed for 253798
+2014-06-23 21:25:55,920 || INFO || Contrats parsed for 253791
+2014-06-23 21:25:55,925 || INFO || Contrats parsed for 253790
+2014-06-23 21:25:55,932 || INFO || Contrats parsed for 253747
+2014-06-23 21:25:55,952 || INFO || Contrats parsed for 253746
+2014-06-23 21:25:55,956 || INFO || Contrats parsed for 253740
+2014-06-23 21:25:55,960 || INFO || Contrats parsed for 253718
+2014-06-23 21:25:55,985 || INFO || Contrats parsed for 253717
+2014-06-23 21:25:55,989 || INFO || Contrats parsed for 253716
+2014-06-23 21:25:56,021 || INFO || Contrats parsed for 253674
+2014-06-23 21:25:56,106 || INFO || Contrats parsed for 253671
+2014-06-23 21:25:56,114 || INFO || Contrats parsed for 253659
+2014-06-23 21:25:56,131 || INFO || Contrats parsed for 253658
+2014-06-23 21:25:56,152 || INFO || Contrats parsed for 253657
+2014-06-23 21:25:56,157 || INFO || Contrats parsed for 253624
+2014-06-23 21:25:56,179 || INFO || Contrats parsed for 253623
+2014-06-23 21:25:56,185 || INFO || Contrats parsed for 253622
+2014-06-23 21:25:56,192 || INFO || Contrats parsed for 253561
+2014-06-23 21:25:56,196 || INFO || Contrats parsed for 253537
+2014-06-23 21:25:56,196 || INFO || Parsing lieux
+2014-06-23 21:25:56,203 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:25:56,208 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:25:56,213 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:25:56,219 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:25:56,226 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:25:56,228 || INFO || Parsing logiciels
+2014-06-23 21:25:56,336 || INFO || Connection closed
+2014-06-23 21:28:15,706 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:28:15,707 || INFO || Connected to the database
+2014-06-23 21:28:15,707 || INFO || Read ID of the last update
+2014-06-23 21:28:15,893 || INFO || Parser created
+2014-06-23 21:28:16,615 || INFO || 20 offers have been added !
+2014-06-23 21:28:16,615 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:28:16,615 || INFO || Launching analyze
+2014-06-23 21:28:16,616 || INFO || Parsing contrats
+2014-06-23 21:28:16,620 || INFO || Contrats parsed for 253799
+2014-06-23 21:28:16,625 || INFO || Contrats parsed for 253798
+2014-06-23 21:28:16,652 || INFO || Contrats parsed for 253791
+2014-06-23 21:28:16,660 || INFO || Contrats parsed for 253790
+2014-06-23 21:28:16,685 || INFO || Contrats parsed for 253747
+2014-06-23 21:28:16,706 || INFO || Contrats parsed for 253746
+2014-06-23 21:28:16,712 || INFO || Contrats parsed for 253740
+2014-06-23 21:28:16,741 || INFO || Contrats parsed for 253718
+2014-06-23 21:28:16,762 || INFO || Contrats parsed for 253717
+2014-06-23 21:28:16,768 || INFO || Contrats parsed for 253716
+2014-06-23 21:28:16,797 || INFO || Contrats parsed for 253674
+2014-06-23 21:28:16,802 || INFO || Contrats parsed for 253671
+2014-06-23 21:28:16,810 || INFO || Contrats parsed for 253659
+2014-06-23 21:28:16,830 || INFO || Contrats parsed for 253658
+2014-06-23 21:28:16,851 || INFO || Contrats parsed for 253657
+2014-06-23 21:28:16,874 || INFO || Contrats parsed for 253624
+2014-06-23 21:28:16,896 || INFO || Contrats parsed for 253623
+2014-06-23 21:28:16,903 || INFO || Contrats parsed for 253622
+2014-06-23 21:28:16,929 || INFO || Contrats parsed for 253561
+2014-06-23 21:28:16,935 || INFO || Contrats parsed for 253537
+2014-06-23 21:28:16,935 || INFO || Parsing lieux
+2014-06-23 21:28:16,941 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:28:16,948 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:28:16,953 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:28:16,976 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:28:16,996 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:28:16,997 || INFO || Parsing logiciels
+2014-06-23 21:28:17,260 || INFO || Connection closed
+2014-06-23 21:28:17,260 || INFO || <<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>
+
+2014-06-23 21:37:19,590 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:37:19,591 || INFO || Connected to the database
+2014-06-23 21:37:19,591 || INFO || Read ID of the last update
+2014-06-23 21:37:20,020 || INFO || Parser created
+2014-06-23 21:37:20,389 || INFO || 20 offers have been added !
+2014-06-23 21:37:20,389 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:37:20,389 || INFO || Launching analyze
+2014-06-23 21:37:20,389 || INFO || Parsing contrats
+2014-06-23 21:37:20,396 || INFO || Contrats parsed for 253799
+2014-06-23 21:37:20,400 || INFO || Contrats parsed for 253798
+2014-06-23 21:37:20,427 || INFO || Contrats parsed for 253791
+2014-06-23 21:37:20,435 || INFO || Contrats parsed for 253790
+2014-06-23 21:37:20,464 || INFO || Contrats parsed for 253747
+2014-06-23 21:37:20,484 || INFO || Contrats parsed for 253746
+2014-06-23 21:37:20,505 || INFO || Contrats parsed for 253740
+2014-06-23 21:37:20,527 || INFO || Contrats parsed for 253718
+2014-06-23 21:37:20,549 || INFO || Contrats parsed for 253717
+2014-06-23 21:37:20,573 || INFO || Contrats parsed for 253716
+2014-06-23 21:37:20,579 || INFO || Contrats parsed for 253674
+2014-06-23 21:37:20,605 || INFO || Contrats parsed for 253671
+2014-06-23 21:37:20,646 || INFO || Contrats parsed for 253659
+2014-06-23 21:37:20,656 || INFO || Contrats parsed for 253658
+2014-06-23 21:37:20,673 || INFO || Contrats parsed for 253657
+2014-06-23 21:37:20,680 || INFO || Contrats parsed for 253624
+2014-06-23 21:37:20,706 || INFO || Contrats parsed for 253623
+2014-06-23 21:37:20,727 || INFO || Contrats parsed for 253622
+2014-06-23 21:37:20,750 || INFO || Contrats parsed for 253561
+2014-06-23 21:37:20,772 || INFO || Contrats parsed for 253537
+2014-06-23 21:37:20,772 || INFO || Parsing lieux
+2014-06-23 21:37:20,793 || INFO || Lieux parsed for 253799 (['6', '33'])
+2014-06-23 21:37:20,817 || INFO || Lieux parsed for 253798 (['69'])
+2014-06-23 21:37:20,837 || INFO || Lieux parsed for 253791 (['83'])
+2014-06-23 21:37:20,842 || INFO || Lieux parsed for 253790 (['18'])
+2014-06-23 21:37:20,847 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:37:20,847 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:37:20,852 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:37:20,852 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:37:20,857 || INFO || Lieux parsed for 253740 (['1'])
+2014-06-23 21:37:20,882 || INFO || Lieux parsed for 253718 (['2', '3', '28'])
+2014-06-23 21:37:20,889 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:37:20,889 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:37:20,917 || INFO || Lieux parsed for 253716 (['17'])
+2014-06-23 21:37:20,938 || INFO || Lieux parsed for 253674 ([])
+2014-06-23 21:37:20,945 || INFO || Lieux parsed for 253671 (['44'])
+2014-06-23 21:37:20,972 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:37:20,972 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:37:20,995 || INFO || Lieux parsed for 253658 (['92'])
+2014-06-23 21:37:21,015 || INFO || Lieux parsed for 253657 (['88'])
+2014-06-23 21:37:21,020 || INFO || Lieux parsed for 253624 (['67'])
+2014-06-23 21:37:21,025 || INFO || Lieux parsed for 253623 (['59'])
+2014-06-23 21:37:21,049 || INFO || Lieux parsed for 253622 (['03'])
+2014-06-23 21:37:21,070 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:37:21,071 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:37:21,076 || INFO || Lieux parsed for 253537 (['83'])
+2014-06-23 21:37:21,076 || INFO || Parsing logiciels
+2014-06-23 21:38:10,970 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:38:10,971 || INFO || Connected to the database
+2014-06-23 21:38:10,971 || INFO || Read ID of the last update
+2014-06-23 21:38:11,179 || INFO || Parser created
+2014-06-23 21:38:11,468 || INFO || 20 offers have been added !
+2014-06-23 21:38:11,468 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:38:11,469 || INFO || Launching analyze
+2014-06-23 21:38:11,469 || INFO || Parsing contrats
+2014-06-23 21:38:11,495 || INFO || Contrats parsed for 253799
+2014-06-23 21:38:11,516 || INFO || Contrats parsed for 253798
+2014-06-23 21:38:11,524 || INFO || Contrats parsed for 253791
+2014-06-23 21:38:11,548 || INFO || Contrats parsed for 253790
+2014-06-23 21:38:11,554 || INFO || Contrats parsed for 253747
+2014-06-23 21:38:11,582 || INFO || Contrats parsed for 253746
+2014-06-23 21:38:11,588 || INFO || Contrats parsed for 253740
+2014-06-23 21:38:11,593 || INFO || Contrats parsed for 253718
+2014-06-23 21:38:11,617 || INFO || Contrats parsed for 253717
+2014-06-23 21:38:11,664 || INFO || Contrats parsed for 253716
+2014-06-23 21:38:11,683 || INFO || Contrats parsed for 253674
+2014-06-23 21:38:11,705 || INFO || Contrats parsed for 253671
+2014-06-23 21:38:11,727 || INFO || Contrats parsed for 253659
+2014-06-23 21:38:11,733 || INFO || Contrats parsed for 253658
+2014-06-23 21:38:11,737 || INFO || Contrats parsed for 253657
+2014-06-23 21:38:11,742 || INFO || Contrats parsed for 253624
+2014-06-23 21:38:11,750 || INFO || Contrats parsed for 253623
+2014-06-23 21:38:11,755 || INFO || Contrats parsed for 253622
+2014-06-23 21:38:11,763 || INFO || Contrats parsed for 253561
+2014-06-23 21:38:11,768 || INFO || Contrats parsed for 253537
+2014-06-23 21:38:11,768 || INFO || Parsing lieux
+2014-06-23 21:38:11,773 || INFO || Lieux parsed for 253799 (['6', '33'])
+2014-06-23 21:38:11,778 || INFO || Lieux parsed for 253798 (['69'])
+2014-06-23 21:38:11,784 || INFO || Lieux parsed for 253791 (['83'])
+2014-06-23 21:38:11,788 || INFO || Lieux parsed for 253790 (['18'])
+2014-06-23 21:38:11,794 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:38:11,794 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:38:11,800 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:38:11,800 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:38:11,805 || INFO || Lieux parsed for 253740 (['1'])
+2014-06-23 21:38:11,812 || INFO || Lieux parsed for 253718 (['2', '3', '28'])
+2014-06-23 21:38:11,820 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:38:11,820 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:38:11,826 || INFO || Lieux parsed for 253716 (['17'])
+2014-06-23 21:38:11,835 || INFO || Lieux parsed for 253674 ([])
+2014-06-23 21:38:11,843 || INFO || Lieux parsed for 253671 (['44'])
+2014-06-23 21:38:11,848 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:38:11,848 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:38:11,852 || INFO || Lieux parsed for 253658 (['92'])
+2014-06-23 21:38:11,893 || INFO || Lieux parsed for 253657 (['88'])
+2014-06-23 21:38:11,898 || INFO || Lieux parsed for 253624 (['67'])
+2014-06-23 21:38:11,903 || INFO || Lieux parsed for 253623 (['59'])
+2014-06-23 21:38:11,908 || INFO || Lieux parsed for 253622 (['03'])
+2014-06-23 21:38:11,915 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:38:11,916 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:38:11,961 || INFO || Lieux parsed for 253537 (['83'])
+2014-06-23 21:38:11,961 || INFO || Parsing logiciels
+2014-06-23 21:38:11,962 || INFO || logiciels parsed for 253799
+2014-06-23 21:38:11,981 || INFO || logiciels parsed for 253798
+2014-06-23 21:38:12,003 || INFO || logiciels parsed for 253791
+2014-06-23 21:38:12,004 || INFO || logiciels parsed for 253790
+2014-06-23 21:38:12,004 || INFO || logiciels parsed for 253747
+2014-06-23 21:38:12,004 || INFO || logiciels parsed for 253746
+2014-06-23 21:38:12,009 || INFO || logiciels parsed for 253740
+2014-06-23 21:38:12,016 || INFO || logiciels parsed for 253718
+2014-06-23 21:38:12,039 || INFO || logiciels parsed for 253717
+2014-06-23 21:38:12,040 || INFO || logiciels parsed for 253716
+2014-06-23 21:38:12,107 || INFO || logiciels parsed for 253674
+2014-06-23 21:38:12,108 || INFO || logiciels parsed for 253671
+2014-06-23 21:38:12,108 || INFO || logiciels parsed for 253659
+2014-06-23 21:38:12,108 || INFO || logiciels parsed for 253658
+2014-06-23 21:38:12,115 || INFO || logiciels parsed for 253657
+2014-06-23 21:38:12,115 || INFO || logiciels parsed for 253624
+2014-06-23 21:38:12,120 || INFO || logiciels parsed for 253623
+2014-06-23 21:38:12,125 || INFO || logiciels parsed for 253622
+2014-06-23 21:38:12,130 || INFO || logiciels parsed for 253561
+2014-06-23 21:38:12,138 || INFO || logiciels parsed for 253537
+2014-06-23 21:38:12,138 || INFO || Connection closed
+2014-06-23 21:38:12,138 || INFO || <<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>
+
+2014-06-23 21:41:28,949 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:41:28,950 || INFO || Connected to the database
+2014-06-23 21:41:28,950 || INFO || Read ID of the last update
+2014-06-23 21:41:29,174 || INFO || Parser created
+2014-06-23 21:41:29,437 || INFO || 20 offers have been added !
+2014-06-23 21:41:29,438 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:41:29,438 || INFO || Launching analyze
+2014-06-23 21:41:29,438 || INFO || 	Parsing contrats
+2014-06-23 21:41:29,446 || INFO || Contrats parsed for 253799
+2014-06-23 21:41:29,470 || INFO || Contrats parsed for 253798
+2014-06-23 21:41:29,476 || INFO || Contrats parsed for 253791
+2014-06-23 21:41:29,483 || INFO || Contrats parsed for 253790
+2014-06-23 21:41:29,504 || INFO || Contrats parsed for 253747
+2014-06-23 21:41:29,508 || INFO || Contrats parsed for 253746
+2014-06-23 21:41:29,512 || INFO || Contrats parsed for 253740
+2014-06-23 21:41:29,537 || INFO || Contrats parsed for 253718
+2014-06-23 21:41:29,558 || INFO || Contrats parsed for 253717
+2014-06-23 21:41:29,563 || INFO || Contrats parsed for 253716
+2014-06-23 21:41:29,568 || INFO || Contrats parsed for 253674
+2014-06-23 21:41:29,575 || INFO || Contrats parsed for 253671
+2014-06-23 21:41:29,581 || INFO || Contrats parsed for 253659
+2014-06-23 21:41:29,605 || INFO || Contrats parsed for 253658
+2014-06-23 21:41:29,625 || INFO || Contrats parsed for 253657
+2014-06-23 21:41:29,637 || INFO || Contrats parsed for 253624
+2014-06-23 21:41:29,659 || INFO || Contrats parsed for 253623
+2014-06-23 21:41:29,664 || INFO || Contrats parsed for 253622
+2014-06-23 21:41:29,669 || INFO || Contrats parsed for 253561
+2014-06-23 21:41:29,674 || INFO || Contrats parsed for 253537
+2014-06-23 21:41:29,674 || INFO || 	Parsing lieux
+2014-06-23 21:41:29,680 || INFO || Lieux parsed for 253799 (['6', '33'])
+2014-06-23 21:41:29,686 || INFO || Lieux parsed for 253798 (['69'])
+2014-06-23 21:41:29,692 || INFO || Lieux parsed for 253791 (['83'])
+2014-06-23 21:41:29,700 || INFO || Lieux parsed for 253790 (['18'])
+2014-06-23 21:41:29,712 || INFO || Lieux parsed for 253747 (France)
+2014-06-23 21:41:29,712 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:41:29,718 || INFO || Lieux parsed for 253746 (France)
+2014-06-23 21:41:29,718 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:41:29,724 || INFO || Lieux parsed for 253740 (['1'])
+2014-06-23 21:41:29,728 || INFO || Lieux parsed for 253718 (['2', '3', '28'])
+2014-06-23 21:41:29,736 || INFO || Lieux parsed for 253717 (Maroc)
+2014-06-23 21:41:29,736 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:41:29,744 || INFO || Lieux parsed for 253716 (['17'])
+2014-06-23 21:41:29,750 || INFO || Lieux parsed for 253674 (IDF)
+2014-06-23 21:41:29,757 || INFO || Lieux parsed for 253671 (['44'])
+2014-06-23 21:41:29,762 || INFO || Lieux parsed for 253659 (Canada)
+2014-06-23 21:41:29,763 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:41:29,794 || INFO || Lieux parsed for 253658 (['92'])
+2014-06-23 21:41:29,817 || INFO || Lieux parsed for 253657 (['88'])
+2014-06-23 21:41:29,824 || INFO || Lieux parsed for 253624 (['67'])
+2014-06-23 21:41:29,828 || INFO || Lieux parsed for 253623 (['59'])
+2014-06-23 21:41:29,835 || INFO || Lieux parsed for 253622 (['03'])
+2014-06-23 21:41:29,840 || INFO || Lieux parsed for 253561 (France)
+2014-06-23 21:41:29,840 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:41:29,844 || INFO || Lieux parsed for 253537 (['83'])
+2014-06-23 21:41:29,845 || INFO || 	Parsing logiciels
+2014-06-23 21:41:29,845 || INFO || Logiciels parsed for 253799
+2014-06-23 21:41:29,851 || INFO || Logiciels parsed for 253798
+2014-06-23 21:41:29,856 || INFO || Logiciels parsed for 253791
+2014-06-23 21:41:29,856 || INFO || Logiciels parsed for 253790
+2014-06-23 21:41:29,857 || INFO || Logiciels parsed for 253747
+2014-06-23 21:41:29,857 || INFO || Logiciels parsed for 253746
+2014-06-23 21:41:29,880 || INFO || Logiciels parsed for 253740
+2014-06-23 21:41:29,887 || INFO || Logiciels parsed for 253718
+2014-06-23 21:41:29,892 || INFO || Logiciels parsed for 253717
+2014-06-23 21:41:29,892 || INFO || Logiciels parsed for 253716
+2014-06-23 21:41:29,903 || INFO || Logiciels parsed for 253674
+2014-06-23 21:41:29,926 || INFO || Logiciels parsed for 253671
+2014-06-23 21:41:29,935 || INFO || Logiciels parsed for 253659
+2014-06-23 21:41:29,936 || INFO || Logiciels parsed for 253658
+2014-06-23 21:41:29,943 || INFO || Logiciels parsed for 253657
+2014-06-23 21:41:29,944 || INFO || Logiciels parsed for 253624
+2014-06-23 21:41:29,949 || INFO || Logiciels parsed for 253623
+2014-06-23 21:41:29,955 || INFO || Logiciels parsed for 253622
+2014-06-23 21:41:29,960 || INFO || Logiciels parsed for 253561
+2014-06-23 21:41:29,966 || INFO || Logiciels parsed for 253537
+2014-06-23 21:41:29,966 || INFO || Connection closed
+2014-06-23 21:41:29,967 || INFO || <<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>
+
+2014-06-23 21:42:23,649 || INFO || 	 ========= El Paso started =========
+2014-06-23 21:42:23,650 || INFO || Connected to the database
+2014-06-23 21:42:23,650 || INFO || Read ID of the last update
+2014-06-23 21:42:23,873 || INFO || Parser created
+2014-06-23 21:42:24,313 || INFO || 20 offers have been added !
+2014-06-23 21:42:24,313 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 21:42:24,313 || INFO || Launching analyze
+2014-06-23 21:42:24,314 || INFO || 	Parsing contrats
+2014-06-23 21:42:24,321 || INFO || Contrats parsed for 253799
+2014-06-23 21:42:24,325 || INFO || Contrats parsed for 253798
+2014-06-23 21:42:24,330 || INFO || Contrats parsed for 253791
+2014-06-23 21:42:24,342 || INFO || Contrats parsed for 253790
+2014-06-23 21:42:24,394 || INFO || Contrats parsed for 253747
+2014-06-23 21:42:24,414 || INFO || Contrats parsed for 253746
+2014-06-23 21:42:24,419 || INFO || Contrats parsed for 253740
+2014-06-23 21:42:24,426 || INFO || Contrats parsed for 253718
+2014-06-23 21:42:24,456 || INFO || Contrats parsed for 253717
+2014-06-23 21:42:24,482 || INFO || Contrats parsed for 253716
+2014-06-23 21:42:24,515 || INFO || Contrats parsed for 253674
+2014-06-23 21:42:24,524 || INFO || Contrats parsed for 253671
+2014-06-23 21:42:24,538 || INFO || Contrats parsed for 253659
+2014-06-23 21:42:24,561 || INFO || Contrats parsed for 253658
+2014-06-23 21:42:24,597 || INFO || Contrats parsed for 253657
+2014-06-23 21:42:24,638 || INFO || Contrats parsed for 253624
+2014-06-23 21:42:24,647 || INFO || Contrats parsed for 253623
+2014-06-23 21:42:24,681 || INFO || Contrats parsed for 253622
+2014-06-23 21:42:24,693 || INFO || Contrats parsed for 253561
+2014-06-23 21:42:24,700 || INFO || Contrats parsed for 253537
+2014-06-23 21:42:24,700 || INFO || 	Parsing lieux
+2014-06-23 21:42:24,718 || INFO || Lieux parsed for 253799 (['6', '33'])
+2014-06-23 21:42:24,733 || INFO || Lieux parsed for 253798 (['69'])
+2014-06-23 21:42:24,748 || INFO || Lieux parsed for 253791 (['83'])
+2014-06-23 21:42:24,786 || INFO || Lieux parsed for 253790 (['18'])
+2014-06-23 21:42:24,844 || INFO || Lieux parsed for 253747 (France)
+2014-06-23 21:42:24,844 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 21:42:24,912 || INFO || Lieux parsed for 253746 (France)
+2014-06-23 21:42:24,912 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 21:42:24,934 || INFO || Lieux parsed for 253740 (['1'])
+2014-06-23 21:42:24,940 || INFO || Lieux parsed for 253718 (['2', '3', '28'])
+2014-06-23 21:42:24,946 || INFO || Lieux parsed for 253717 (Maroc)
+2014-06-23 21:42:24,946 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 21:42:24,980 || INFO || Lieux parsed for 253716 (['17'])
+2014-06-23 21:42:24,984 || INFO || Lieux parsed for 253674 (IDF)
+2014-06-23 21:42:25,016 || INFO || Lieux parsed for 253671 (['44'])
+2014-06-23 21:42:25,038 || INFO || Lieux parsed for 253659 (Canada)
+2014-06-23 21:42:25,038 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 21:42:25,059 || INFO || Lieux parsed for 253658 (['92'])
+2014-06-23 21:42:25,081 || INFO || Lieux parsed for 253657 (['88'])
+2014-06-23 21:42:25,087 || INFO || Lieux parsed for 253624 (['67'])
+2014-06-23 21:42:25,115 || INFO || Lieux parsed for 253623 (['59'])
+2014-06-23 21:42:25,124 || INFO || Lieux parsed for 253622 (['03'])
+2014-06-23 21:42:25,129 || INFO || Lieux parsed for 253561 (France)
+2014-06-23 21:42:25,129 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 21:42:25,135 || INFO || Lieux parsed for 253537 (['83'])
+2014-06-23 21:42:25,135 || INFO || 	Parsing logiciels
+2014-06-23 21:42:25,143 || INFO || Logiciels parsed for 253799
+2014-06-23 21:42:25,149 || INFO || Logiciels parsed for 253798
+2014-06-23 21:42:25,158 || INFO || Logiciels parsed for 253791
+2014-06-23 21:42:25,159 || INFO || Logiciels parsed for 253790
+2014-06-23 21:42:25,159 || INFO || Logiciels parsed for 253747
+2014-06-23 21:42:25,169 || INFO || Logiciels parsed for 253746
+2014-06-23 21:42:25,177 || INFO || Logiciels parsed for 253740
+2014-06-23 21:42:25,206 || INFO || Logiciels parsed for 253718
+2014-06-23 21:42:25,212 || INFO || Logiciels parsed for 253717
+2014-06-23 21:42:25,213 || INFO || Logiciels parsed for 253716
+2014-06-23 21:42:25,270 || INFO || Logiciels parsed for 253674
+2014-06-23 21:42:25,277 || INFO || Logiciels parsed for 253671
+2014-06-23 21:42:25,311 || INFO || Logiciels parsed for 253659
+2014-06-23 21:42:25,325 || INFO || Logiciels parsed for 253658
+2014-06-23 21:42:25,332 || INFO || Logiciels parsed for 253657
+2014-06-23 21:42:25,333 || INFO || Logiciels parsed for 253624
+2014-06-23 21:42:25,357 || INFO || Logiciels parsed for 253623
+2014-06-23 21:42:25,381 || INFO || Logiciels parsed for 253622
+2014-06-23 21:42:25,403 || INFO || Logiciels parsed for 253561
+2014-06-23 21:42:25,409 || INFO || Logiciels parsed for 253537
+2014-06-23 21:42:25,410 || INFO || Connection closed
+2014-06-23 21:42:25,410 || INFO || <<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>
+
+2014-06-23 22:03:57,859 || INFO || 	 ========= El Paso started =========
+2014-06-23 22:03:57,859 || INFO || Connected to the database
+2014-06-23 22:03:57,860 || INFO || Read ID of the last update
+2014-06-23 22:03:58,282 || INFO || Parser created
+2014-06-23 22:03:58,706 || INFO || 20 offers have been added !
+2014-06-23 22:03:58,706 || INFO || New offers IDs: [253799, 253798, 253791, 253790, 253747, 253746, 253740, 253718, 253717, 253716, 253674, 253671, 253659, 253658, 253657, 253624, 253623, 253622, 253561, 253537]
+2014-06-23 22:03:58,706 || INFO || Launching analyze
+2014-06-23 22:03:58,706 || INFO || 	Parsing contrats
+2014-06-23 22:03:58,713 || INFO || Contrats parsed for 253799
+2014-06-23 22:03:58,737 || INFO || Contrats parsed for 253798
+2014-06-23 22:03:58,743 || INFO || Contrats parsed for 253791
+2014-06-23 22:03:58,749 || INFO || Contrats parsed for 253790
+2014-06-23 22:03:58,760 || INFO || Contrats parsed for 253747
+2014-06-23 22:03:58,766 || INFO || Contrats parsed for 253746
+2014-06-23 22:03:58,802 || INFO || Contrats parsed for 253740
+2014-06-23 22:03:58,830 || INFO || Contrats parsed for 253718
+2014-06-23 22:03:58,836 || INFO || Contrats parsed for 253717
+2014-06-23 22:03:58,841 || INFO || Contrats parsed for 253716
+2014-06-23 22:03:58,846 || INFO || Contrats parsed for 253674
+2014-06-23 22:03:58,852 || INFO || Contrats parsed for 253671
+2014-06-23 22:03:58,857 || INFO || Contrats parsed for 253659
+2014-06-23 22:03:58,867 || INFO || Contrats parsed for 253658
+2014-06-23 22:03:58,873 || INFO || Contrats parsed for 253657
+2014-06-23 22:03:58,877 || INFO || Contrats parsed for 253624
+2014-06-23 22:03:58,884 || INFO || Contrats parsed for 253623
+2014-06-23 22:03:58,890 || INFO || Contrats parsed for 253622
+2014-06-23 22:03:58,898 || INFO || Contrats parsed for 253561
+2014-06-23 22:03:58,904 || INFO || Contrats parsed for 253537
+2014-06-23 22:03:58,904 || INFO || 	Parsing lieux
+2014-06-23 22:03:58,909 || INFO || Lieux parsed for 253799 (['6', '33'])
+2014-06-23 22:03:58,916 || INFO || Lieux parsed for 253798 (['69'])
+2014-06-23 22:03:58,937 || INFO || Lieux parsed for 253791 (['83'])
+2014-06-23 22:03:58,941 || INFO || Lieux parsed for 253790 (['18'])
+2014-06-23 22:03:58,945 || INFO || Lieux parsed for 253747 (France)
+2014-06-23 22:03:58,945 || INFO || Lieux parsed for 253747 ([])
+2014-06-23 22:03:58,950 || INFO || Lieux parsed for 253746 (France)
+2014-06-23 22:03:58,950 || INFO || Lieux parsed for 253746 ([])
+2014-06-23 22:03:58,956 || INFO || Lieux parsed for 253740 (['1'])
+2014-06-23 22:03:58,964 || INFO || Lieux parsed for 253718 (['2', '3', '28'])
+2014-06-23 22:03:58,971 || INFO || Lieux parsed for 253717 (Maroc)
+2014-06-23 22:03:58,972 || INFO || Lieux parsed for 253717 ([])
+2014-06-23 22:03:58,977 || INFO || Lieux parsed for 253716 (['17'])
+2014-06-23 22:03:58,984 || INFO || Lieux parsed for 253674 (IDF)
+2014-06-23 22:03:58,993 || INFO || Lieux parsed for 253671 (['44'])
+2014-06-23 22:03:59,000 || INFO || Lieux parsed for 253659 (Québec)
+2014-06-23 22:03:59,001 || INFO || Lieux parsed for 253659 ([])
+2014-06-23 22:03:59,025 || INFO || Lieux parsed for 253658 (['92'])
+2014-06-23 22:03:59,078 || INFO || Lieux parsed for 253657 (['88'])
+2014-06-23 22:03:59,086 || INFO || Lieux parsed for 253624 (['67'])
+2014-06-23 22:03:59,113 || INFO || Lieux parsed for 253623 (['59'])
+2014-06-23 22:03:59,121 || INFO || Lieux parsed for 253622 (['03'])
+2014-06-23 22:03:59,127 || INFO || Lieux parsed for 253561 (France)
+2014-06-23 22:03:59,127 || INFO || Lieux parsed for 253561 ([])
+2014-06-23 22:03:59,133 || INFO || Lieux parsed for 253537 (['83'])
+2014-06-23 22:03:59,133 || INFO || 	Parsing logiciels
+2014-06-23 22:03:59,141 || INFO || Logiciels parsed for 253799
+2014-06-23 22:03:59,150 || INFO || Logiciels parsed for 253798
+2014-06-23 22:03:59,155 || INFO || Logiciels parsed for 253791
+2014-06-23 22:03:59,156 || INFO || Logiciels parsed for 253790
+2014-06-23 22:03:59,164 || INFO || Logiciels parsed for 253747
+2014-06-23 22:03:59,171 || INFO || Logiciels parsed for 253746
+2014-06-23 22:03:59,185 || INFO || Logiciels parsed for 253740
+2014-06-23 22:03:59,191 || INFO || Logiciels parsed for 253718
+2014-06-23 22:03:59,225 || INFO || Logiciels parsed for 253717
+2014-06-23 22:03:59,226 || INFO || Logiciels parsed for 253716
+2014-06-23 22:03:59,251 || INFO || Logiciels parsed for 253674
+2014-06-23 22:03:59,257 || INFO || Logiciels parsed for 253671
+2014-06-23 22:03:59,264 || INFO || Logiciels parsed for 253659
+2014-06-23 22:03:59,291 || INFO || Logiciels parsed for 253658
+2014-06-23 22:03:59,317 || INFO || Logiciels parsed for 253657
+2014-06-23 22:03:59,319 || INFO || Logiciels parsed for 253624
+2014-06-23 22:03:59,340 || INFO || Logiciels parsed for 253623
+2014-06-23 22:03:59,362 || INFO || Logiciels parsed for 253622
+2014-06-23 22:03:59,384 || INFO || Logiciels parsed for 253561
+2014-06-23 22:03:59,393 || INFO || Logiciels parsed for 253537
+2014-06-23 22:03:59,394 || INFO || Connection closed
+2014-06-23 22:03:59,394 || INFO || <<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>
+

@@ -8,7 +8,7 @@
 # Author:       Julien Moura (https://github.com/Guts/)
 #
 # Created:      27/05/2013
-# Updated:
+# Updated:      23/06/2014
 # Licence:      GPL 3
 #-------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ from logging.handlers import RotatingFileHandler
 ############# Classes #############
 ###################################
 
-class LogGuy():
+class Logyk():
     """ Main class """
     def __init__(self):
         """ initial constructor """
@@ -35,7 +35,7 @@ class LogGuy():
         see: http://sametmax.com/ecrire-des-logs-en-python/ """
         self.logger.setLevel(logging.DEBUG)  # all errors will be get
         log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
-        logfile = RotatingFileHandler(r'../ElPaso.log', 'a', 5000000, 1)
+        logfile = RotatingFileHandler(r'ElPaso.log', 'a', 5000000, 1)
         logfile.setLevel(logging.DEBUG)
         logfile.setFormatter(log_form)
         self.logger.addHandler(logfile)
@@ -56,7 +56,7 @@ class LogGuy():
 ###################################
 
 if __name__ == '__main__':
-    logger = LogGuy()
+    logger = Logyk()
     logger.config()
     logger.append('youhou')
 

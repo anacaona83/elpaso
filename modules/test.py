@@ -4,5 +4,5 @@
 from LogGuy import *
 
 
-LogGuy().config()
-LogGuy().append("Test depuis un module externe")
+Logyk().config()
+Logyk().append("Test depuis un module externe")
