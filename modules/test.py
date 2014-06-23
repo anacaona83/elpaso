@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 
-from data import tup_pays
+from LogGuy import *
 
-print(tup_pays)
+
+LogGuy().config()
+LogGuy().append("Test depuis un module externe")
