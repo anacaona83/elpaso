@@ -64,6 +64,9 @@ class Analizer():
         logger.append("\tParsing logiciels")
         self.parse_technos(liste_identifiants_offre, self.c)
 
+        # extraction des métiers
+        logger.append("\tParsing métiers")
+        self.parse_metiers(liste_identifiants_offre, self.c)
 
         #### Disabling multithreading because of official documentation warning: https://docs.python.org/3/library/sqlite3.html#multithreading
         # tr_contrats = threading.Thread(target=self.parse_contrats,
@@ -129,7 +132,7 @@ class Analizer():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0, contrat))
             # Save (commit) the changes
             self.manage_connection(1)
-            logger.append("Contrats parsed for " + str(offre))
+            logger.append("{0} => Contrats parsed".format(str(offre)))
         # end of function
         # self.manage_connection(2)
         return li_id
@@ -146,19 +149,19 @@ class Analizer():
             if dpt_code:
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(dpt_code[0]), 3))
                 self.manage_connection(1)
-                logger.append("Lieux parsed for {0} ({1})".format(str(offre), dpt_code))
+                logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
                 continue
             elif "idf" in titre[0].lower() or "Paris" in titre[0].lower() or "île de france" in titre[0].lower() or "île-de-france" in titre[0].lower():
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(75), 3))
                 self.manage_connection(1)
-                logger.append("Lieux parsed for {0} ({1})".format(str(offre), "IDF"))
+                logger.append("{0} ({1}) => Lieux parsed".format(str(offre), "IDF"))
                 continue
             elif any(pays.lower() in titre[0].lower() for pays in data.tup_pays):
                 for pays in data.tup_pays:
                     if pays in titre[0]:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), pays, 1))
                         self.manage_connection(1)
-                        logger.append("Lieux parsed for {0} ({1})".format(str(offre), pays))
+                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre), pays))
                         break
                     else:
                         continue
@@ -167,7 +170,7 @@ class Analizer():
                     if ville in titre[0]:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), ville, 4))
                         self.manage_connection(1)
-                        logger.append("Lieux parsed for {0} ({1})".format(str(offre), ville))
+                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre), ville))
                         break
                     else:
                         continue
@@ -175,7 +178,7 @@ class Analizer():
                 pass
             # Save (commit) the changes
             self.manage_connection(1)
-            logger.append("Lieux parsed for {0} ({1})".format(str(offre), dpt_code))
+            logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
         # end of function
         # self.manage_connection(2)
         return li_id
@@ -184,37 +187,162 @@ class Analizer():
     def parse_technos(self, li_id, db_cursor):
         """ extraction des logiciels cités dans l'offre """
         for offre in li_id:
+            li_values = [str(offre)]
             db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
             contenu = db_cursor.fetchone()
             contenu = self.remove_tags(contenu[0])
-            if any(prop in contenu.lower() for prop in data.tup_prop):
+            # testing softwares recognition
+            if any(software in contenu.lower() for software in data.tup_prop):
                 """ filtre les logiciels propriétaires """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0))
-            elif any(prop in contenu.lower() for prop in data.tup_opso):
-                """ filtre les logiciels libres """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,1,0,0,0,0))
-            elif any(prop in contenu.lower() for prop in data.tup_sgbd):
-                """ filtre les systèmes de gestion de bases de données """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,1,0,0,0))
-            elif any(prop in contenu.lower() for prop in data.tup_prog):
-                """ filtre les langages de programmation """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,1,0,0))
-            elif any(prop in contenu.lower() for prop in data.tup_web):
-                """ filtre le développement web """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,1,0))
-            elif any(prop in contenu.lower() for prop in data.tup_cdao):
-                """ filtre ls logiciels de dessin assisté """
-                db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?)", (str(offre), 0,0,0,0,0,1))
+                li_values.append(1)
             else:
-                pass
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_opso):
+                """ filtre les logiciels libres """
+                li_values.append(1)
+            else:
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_sgbd):
+                """ filtre les systèmes de gestion de bases de données """
+                li_values.append(1)
+            else:
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_prog):
+                """ filtre les langages de programmation """
+                li_values.append(1)
+            else:
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_web):
+                """ filtre le développement web """
+                li_values.append(1)
+            else:
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_cdao):
+                """ filtre les logiciels de dessin assisté """
+                li_values.append(1)
+            else:
+                li_values.append(0)
+            if any(software in contenu.lower() for software in data.tup_teldec):
+                """ filtre les logiciels de télédétection """
+                li_values.append(1)
+            else:
+                li_values.append(0)
 
+            # adding the data into the database
+            db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?,?)", tuple(li_values))
             # Save (commit) the changes
             self.manage_connection(1)
-            logger.append("Logiciels parsed for {0}".format(str(offre)))
+            logger.append("{0} => Logiciels parsed. ".format(str(offre)))
+
         # end of function
         # self.manage_connection(2)
         return li_id
 
+    def parse_metiers(self, li_id, db_cursor):
+        """ extraction des métiers cités dans l'offre """
+        for offre in li_id:
+            li_values = [str(offre)]
+            # getting the content
+            db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
+            contenu = db_cursor.fetchone()
+            contenu = self.remove_tags(contenu[0])
+
+            # getting the title
+            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+            titre = db_cursor.fetchone()
+
+            if any(metier in titre[0].lower() for metier in ("administrateur", "administration")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("administrateur", "administration")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("cartographe", "cartographie")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("cartographe", "cartographie")):
+                li_values.append(1)
+            else:
+                li_values.append(0)               
+
+            if any(metier in titre[0].lower() for metier in ("chargé d'étude", "chargé d'études")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("chargé d'étude", "chargé d'études")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("chargé de mission", "chargé de missions")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("chargé de mission", "chargé de missions")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("chef de projet",)):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("chef de projet",)):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("géomètre expert", "géomètre", "dessinateur")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("géomètre expert", "géomètre", "dessinateur")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("ingénieur", "ingénieur d'étude")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("ingénieur", "ingénieur d'étude")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("responsable", "en charge de", "en charge du")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("responsable", "en charge de", "en charge du")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("sigiste", "SIG")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("sigiste", "SIG")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("technicien",)):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("technicien",)):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("topograph",)):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("topograph",)):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            if any(metier in titre[0].lower() for metier in ("géomatique", "géomaticien", "développeur")):
+                li_values.append(2)
+            elif any(metier in contenu.lower() for metier in ("géomatique", "géomaticien", "développeur")):
+                li_values.append(1)
+            else:
+                li_values.append(0)
+
+            # adding the data into the database
+            db_cursor.execute("INSERT INTO metiers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", tuple(li_values))
+            # Save (commit) the changes
+            self.manage_connection(1)
+            logger.append("{0} => Métiers parsed".format(str(offre)))
+        # end of function
+        # self.manage_connection(2)
+        return li_id
 
     def remove_tags(self, html_text):
         """ nettoie les balises HTML du contenu des offres """

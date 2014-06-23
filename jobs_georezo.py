@@ -46,13 +46,13 @@ for entry in d.entries:
     # que l'annonce est plus récente et n'a pas encore été traitée
     if job_id > last_id:
         try:
-            #  J'insère les données dans la BD
-            c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id), entry.title, entry.summary, entry.published))
-            # Save (commit) the changes
-            conn.commit()
-            compteur += 1
-            li_id.append(job_id)
-        except:
+            with conn:
+                #  J'insère les données dans la BD
+                c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id), entry.title, entry.summary, entry.published))
+                # Save (commit) the changes
+                compteur += 1
+                li_id.append(job_id)
+        except sqlite3.IntegrityError:
             logger.append("Offer already exists: " + str(job_id))
 
 conn.close()
@@ -63,6 +63,9 @@ logger.append(str(compteur) + ' offers have been added !')
 if compteur > 0:
     logger.append("New offers IDs: " + str(li_id))
     analyseur.Analizer(li_id)
+
+# mettre à jour les index
+## CREATE UNIQUE INDEX "main"."idx_id" ON "logiciels" ("id" ASC)
 
 # closing process
 logger.append('<<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>\n')

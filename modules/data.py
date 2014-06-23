@@ -2,42 +2,57 @@
 #!/usr/bin/env python
 
 # logiciels et langages propriétaires
-tup_prop = ("esri", "mapinfo", "arc", "geoconcept", "starapic", "1spatial", "business geographic", "fme", \
-	"intragéo", "intergraph", "apic", "aigle", "autocad", "autodesk", "google maps", "google earth", "dynmap")
+tup_prop = ("esri", "mapinfo", "arc", "geoconcept", "starapic", "1spatial", \
+	"business geographic", "fme", "intragéo", "intergraph", "apic", "aigle", \
+	"autocad", "autodesk", "google maps", "google earth", "dynmap", "arcopole", \
+	"microstation")
 
 # logiciels et langages open-source
-tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig", "otb", "postgresql", \
-	"postgis", "monteverdi", "saga")
+tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig", "otb",\
+	"postgresql", "postgis", "monteverdi", "saga")
 
-# logiciels et langages propriétaires
-tup_sgbd = ("postgresql", "mysql", "oracle", "sql server", "postgis", "sde", "access", "mongodb")
+# logiciels et langages dédiés à la gestion de bases de données
+tup_sgbd = ("postgresql", "mysql", "oracle", "sql server", "postgis", "sde", "access", \
+	"mongodb")
 
-# logiciels et langages propriétaires
-tup_prog = ("python", "java", "C++", "r stats", "matlab", "spss", "html", "php", "ruby", "python", "java", \
-	"javascript", "js", "css", "j2ee", "hibernate")
+# logiciels et langages de programmation
+tup_prog = ("python", "java", "C++", "r stats", "matlab", "spss", "html", "php", "ruby", \
+	"python", "java", "javascript", "js", "css", "j2ee", "hibernate", "programmation")
 
-# logiciels et langages propriétaires
-tup_web = ("html", "ajax", "php", "ruby", "python", "java", "webmapping", "mapnik", "javascript", "js", "css", \
-	"wordpress", "openlayers", "leaflet", "django", "drupal", "joomla", "symphony", "angularjs", "nodejs", "web",\
-	"geoserver", "mapserver", "server", "google maps", "dynmap")
+# logiciels et langages dédiés au Web
+tup_web = ("html", "ajax", "php", "ruby", "python", "java", "webmapping", "mapnik", \
+	"javascript", "js", "css", "wordpress", "openlayers", "leaflet", "django", \
+	"drupal", "joomla", "symphony", "angularjs", "nodejs", "web", "websig", "geoserver", \
+	"mapserver", "server", "google maps", "dynmap", "wms", "wfs", "wmc", "wmts")
 
-# logiciels et langages propriétaires
-tup_cdao = ("autocad", "autodesk", "micro station", "illustrator", "inkscape", "pao", "cao", "photoshop")
+# logiciels et langages de dessin assisté par ordinateur
+tup_cdao = ("autocad", "autodesk", "micro station", "illustrator", "inkscape", "pao", \
+	"cao", "photoshop")
 
-# logiciels et langages propriétaires
-tup_teldec = ("e-cognition", "erdas", "imagine", "envi", "otb", "monteverdi", "photointerprétation", "photoshop")
+# logiciels et langages dédiés à l'imagerie, la photogrammétrie et plus largement la télédétection
+tup_teldec = ("e-cognition", "erdas", "imagine", "envi", "otb", "monteverdi", \
+	"photointerprétation", "photo interprétation", "photo-interprétation", "photoshop", "photogrammétrie", \
+	"photo-grammétrie")
 
-# logiciels et langages propriétaires
-tup_metier = ("cartographe", "cartographie", "topographe", "topographie", "sigiste", "dessinateur", \
-	"administrateur", "développeur", "responsable", "chef de projet")
+# métiers
+tup_metier = ("cartographe", "cartographie", "topographe", "topographie", "sigiste", \
+	"dessinateur", "administrateur", "développeur", "responsable", "chef de projet", \
+	"technicien", "géomètre")
 
-# logiciels et langages propriétaires
-tup_pays = ('Afghanistan', 'Afrique du Sud', 'Albanie', 'Algérie', 'Allemagne', 'Andorre', 'Angola', 'Anguilla', 'Antarctique', \
-	'Antigua-et-Barbuda', 'Antilles Néerlandaises', 'Arabie Saoudite', 'Argentine', 'Arménie', 'Aruba', 'Australie', 'Autriche', \
-	'Azerbaïdjan', 'Bahamas', 'Bahreïn', 'Bangladesh', 'Barbade', 'Belgique', 'Belize', 'Bermudes', 'Bhoutan', 'Bolivie', \
-	'Bosnie-Herzégovine', 'Botswana', 'Brunéi Darussalam', 'Brésil', 'Bulgarie', 'Burkina Faso', 'Burundi', 'Bélarus', 'Bénin',\
-	'Cambodge', 'Cameroun', 'Québec', 'Canada', 'Cap-vert', 'Chili', 'Chine', 'Chypre', 'Colombie', 'Comores', 'Costa Rica', 'Croatie', 'Cuba', \
-	"Côte d'Ivoire", 'Danemark', 'Djibouti', 'Dominique', 'El Salvador', 'Espagne', 'Estonie', 'Fidji', 'Finlande', 'France', \
+# langues
+tup_lang = ("anglais", "espagnol", "français", "allemand", "italien", "chinois", "portugais")
+
+# pays
+tup_pays = ('Afghanistan', 'Afrique du Sud', 'Albanie', 'Algérie', 'Allemagne', \
+	'Andorre', 'Angola', 'Anguilla', 'Antarctique', 'Antigua-et-Barbuda', \
+	'Antilles Néerlandaises', 'Arabie Saoudite', 'Argentine', 'Arménie', 'Aruba', \
+	'Australie', 'Autriche', 'Azerbaïdjan', 'Bahamas', 'Bahreïn', 'Bangladesh', \
+	'Barbade', 'Belgique', 'Belize', 'Bermudes', 'Bhoutan', 'Bolivie', \
+	'Bosnie-Herzégovine', 'Botswana', 'Brunéi Darussalam', 'Brésil', 'Bulgarie', \
+	'Burkina Faso', 'Burundi', 'Bélarus', 'Bénin', 'Cambodge', 'Cameroun', 'Québec', \
+	'Canada', 'Cap-vert', 'Chili', 'Chine', 'Chypre', 'Colombie', 'Comores', \
+	'Costa Rica', 'Croatie', 'Cuba', "Côte d'Ivoire", 'Danemark', 'Djibouti', \
+	'Dominique', 'El Salvador', 'Espagne', 'Estonie', 'Fidji', 'Finlande', 'France', \
 	'Fédération de Russie', 'Russie', 'Gabon', 'Gambie', 'Ghana', 'Gibraltar', 'Grenade', 'Groenland', 'Grèce', 'Guadeloupe', \
 	'Guam', 'Guatemala', 'Guinée', 'Guinée Équatoriale', 'Guinée-Bissau', 'Guyana', 'Guyane Française', 'Géorgie', \
 	'Géorgie du Sud et les Îles Sandwich du Sud', 'Haïti', 'Honduras', 'Hong-Kong', 'Hongrie', 'Inde', 'Indonésie', 'Iraq', \
@@ -65,11 +80,12 @@ tup_pays = ('Afghanistan', 'Afrique du Sud', 'Albanie', 'Algérie', 'Allemagne',
 	'Îles Marshall', 'Îles Mineures Éloignées des États-Unis', 'Îles Salomon', 'Îles Turks et Caïques', \
 	'Îles Vierges Britanniques', 'Îles Vierges des États-Unis', 'Îles Åland')
 
-# logiciels et langages propriétaires
-tup_pays_pertinent = ('Belgique', 'Québec', 'Canada', 'Guadeloupe', 'Guyane', 'Martinique', 'Nouvelle-Calédonie', \
-					  'Polynésie Française',  'Réunion', 'La Réunion', 'Saint-Pierre-et-Miquelon','Suisse')
+# pays pertinents au regard de la France
+tup_pays_pertinent = ('Belgique', 'Québec', 'Canada', 'Guadeloupe', 'Guyane', \
+	'Martinique', 'Nouvelle-Calédonie', 'Polynésie Française',  'Réunion', 'La Réunion', \
+	'Saint-Pierre-et-Miquelon','Suisse')
 
-# logiciels et langages propriétaires
+# 100 ères villes de France en termes de population (recensement 2010)
 tup_villes_fr100 = ("Paris", "Marseille", "Lyon", "Toulouse",  "Nice", "Nantes", "Strasbourg", "Montpellier", \
 	"Bordeaux", "Lille", "Rennes", "Reims", "Le Havre", "Saint-Étienne", "Toulon", "Grenoble", "Dijon", "Angers", \
 	"Le Mans", "Aix-en-Provence", "Brest", "Villeurbanne", "Nîmes", "Limoges", "Clermont-Ferrand", "Tours", "Amiens", \
