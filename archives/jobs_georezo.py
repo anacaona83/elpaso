@@ -8,7 +8,6 @@ import sqlite3
 
 # Custom modules
 from modules import analyseur
-from modules import models
 from modules import LogGuy
 
 logger = LogGuy.Logyk()
@@ -17,12 +16,12 @@ logger = LogGuy.Logyk()
 logger.config()
 
 # connexion à BD
-conn = sqlite3.connect(path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite'))
+conn = sqlite3.connect(path.abspath('elpaso.sqlite'))
 c = conn.cursor()
 logger.append("Connected to the database")
 
 # Ce fichier contient l'id de la dernière annonce traitée
-fichier = open(path.abspath('/home/pvernier/code/python/elpaso/last_id_georezo.txt'), 'r')
+fichier = open(path.abspath('last_id_georezo.txt'), 'r')
 last_id = int(fichier.readline())
 fichier.close()
 logger.append("Read ID of the last update")
@@ -40,7 +39,7 @@ for entry in d.entries:
     # La première annonce traitée est la dernière publiée, donc celle
     # qui a l'id le plus grand. Je mets cet id dans le fichier texte.
     if d.entries.index(entry) == 0:
-        fichier = open(path.abspath('/home/pvernier/code/python/elpaso/last_id_georezo.txt'), 'w')
+        fichier = open(path.abspath('last_id_georezo.txt'), 'w')
         fichier.write(str(job_id))
         fichier.close()
     # Si l'id de l'annonce est supérieur à l'id du fichier, cela signifie
@@ -64,7 +63,6 @@ logger.append(str(compteur) + ' offers have been added !')
 if compteur > 0:
     logger.append("New offers IDs: " + str(li_id))
     analyseur.Analizer(li_id)
-    models.Fillin(li_id)
 
 # mettre à jour les index
 ## CREATE UNIQUE INDEX "main"."idx_id" ON "logiciels" ("id" ASC)

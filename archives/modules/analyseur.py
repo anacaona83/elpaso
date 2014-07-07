@@ -43,7 +43,7 @@ logger = LogGuy.Logyk()
 class Analizer():
     """ analyse les dernière offres parues sur GeoRezo et enregistrées dans la table 
     georezo. """
-    def __init__(self, liste_identifiants_offre, db_path=r"/home/pvernier/code/python/elpaso/elpaso.sqlite"):
+    def __init__(self, liste_identifiants_offre, db_path=r"elpaso.sqlite"):
         """ crée le curseur de connexion à la BD et répartit les tâches.
         liste_identifiants_offre = liste des ID des nouvelles offres """
         logger.append("Launching analyze")

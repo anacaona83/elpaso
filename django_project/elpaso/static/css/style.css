@@ -1,0 +1,49 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+p.weekday {
+  font-size: 20;
+  font-family: 'Pacifico', cursive;
+}
+
+
+div {
+    padding-bottom: 0.5%;
+}
+
+div#weekday rect {
+    fill: #FF0080;
+}
+
+div#cdi rect {
+    fill: #1589FF;
+}
+
+div#cdd rect {
+    fill: #E56717;
+}
+
+div#stage rect {
+    fill: #54C571;
+}
+
+div#fpt rect {
+    fill: #FFD801;
+}
+
+div#mission rect {
+    fill: #8904B1;
+}
+
+div#apprentissage rect {
+    fill: #E55B3C;
+}
+
+div#autre rect {
+    fill: #7E3817;
+}

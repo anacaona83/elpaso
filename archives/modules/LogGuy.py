@@ -35,7 +35,7 @@ class Logyk():
         see: http://sametmax.com/ecrire-des-logs-en-python/ """
         self.logger.setLevel(logging.DEBUG)  # all errors will be get
         log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
-        logfile = RotatingFileHandler(r'/home/pvernier/code/python/elpaso/ElPaso.log', 'a', 5000000, 1)
+        logfile = RotatingFileHandler(r'ElPaso.log', 'a', 5000000, 1)
         logfile.setLevel(logging.DEBUG)
         logfile.setFormatter(log_form)
         self.logger.addHandler(logfile)
