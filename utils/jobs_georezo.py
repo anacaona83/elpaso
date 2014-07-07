@@ -22,7 +22,7 @@ c = conn.cursor()
 logger.append("Connected to the database")
 
 # Ce fichier contient l'id de la dernière annonce traitée
-fichier = open(path.abspath('/home/pvernier/code/python/elpaso/last_id_georezo.txt'), 'r')
+fichier = open(path.abspath('/home/pvernier/code/python/elpaso/utils/last_id_georezo.txt'), 'r')
 last_id = int(fichier.readline())
 fichier.close()
 logger.append("Read ID of the last update")
@@ -40,7 +40,7 @@ for entry in d.entries:
     # La première annonce traitée est la dernière publiée, donc celle
     # qui a l'id le plus grand. Je mets cet id dans le fichier texte.
     if d.entries.index(entry) == 0:
-        fichier = open(path.abspath('/home/pvernier/code/python/elpaso/last_id_georezo.txt'), 'w')
+        fichier = open(path.abspath('/home/pvernier/code/python/elpaso/utils/last_id_georezo.txt'), 'w')
         fichier.write(str(job_id))
         fichier.close()
     # Si l'id de l'annonce est supérieur à l'id du fichier, cela signifie

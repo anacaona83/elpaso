@@ -22,7 +22,7 @@ class Fillin():
         self.c = self.conn.cursor()
 
         # connexion à la BD Django
-        db_django = path.abspath('/home/pvernier/code/python/elpaso/django_project/elpaso/db.sqlite3')
+        db_django = path.abspath('/home/pvernier/code/python/elpaso/db.sqlite3')
         self.conn_django = sqlite3.connect(db_django)
         self.c_django = self.conn_django.cursor()
 
@@ -117,7 +117,7 @@ class Fillin():
 
             data = {'days': ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi',
                              'samedi', 'dimanche'], 'numbers': days}
-            with open('/home/pvernier/code/python/django_projects/elpaso/static/json/contrats_days_of_week.json', 'w') as f:
+            with open('/home/pvernier/code/python/elpaso/static/json/contrats_days_of_week.json', 'w') as f:
                 f.write(json.dumps(data))
 
         else:
@@ -218,7 +218,7 @@ class Fillin():
 
                         data = {'max': max, 'types': types, 'legend' : agreg}
 
-                        with open('/home/pvernier/code/python/elpaso/django_project/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
+                        with open('/home/pvernier/code/python/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
                             f.write(json.dumps(data))
 
             # Pour agréger par semaine
@@ -310,7 +310,7 @@ class Fillin():
 
                         data = {'max': max, 'types': types, 'legend': agreg}
 
-                        with open('/home/pvernier/code/python/elpaso/django_project/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
+                        with open('/home/pvernier/code/python/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
                             f.write(json.dumps(data))
 
 if __name__ == '__main__':
