@@ -4,7 +4,7 @@ El Paso
 Statistiques dynamiques sur les offres d'emploi en géomatique publiées sur le forum francophone de géomatique [GeoRezo](http://georezo.net/forum/viewforum.php?id=10).
 Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exploit/)
 
-## ToDolist
+## ToDoList
 
 - [ ] camembert par mois et par type de contrat
 - [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
@@ -15,6 +15,7 @@ Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exp
 - [ ] ajout des libraires JS en local (d3 et jquery)
 - [ ] union des tables dans une seule BD (django et crawler)
 - [ ] migration vers PostgreSQL
+- [X] finaliser le script de récupération et d'insertion dans la BD
 
 ### Principe
 
