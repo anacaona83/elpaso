@@ -1,19 +1,46 @@
 El Paso
 ======
 
-Statistiques dynamiques sur les offres d'emploi en géomatique publiées sur GeoRezo.
-
-
-
-## Régler la tâche planifiée (cron)
-
-crontab -e puis ajouter :
-# 2 fois par jour, à 1h et 13h.
-0 1,13 * /elpaso/envs/env1/bin/python /elpaso/jobs_georezo.py
-
-
+Statistiques dynamiques sur les offres d'emploi en géomatique publiées sur le forum francophone de géomatique [GeoRezo](http://georezo.net/forum/viewforum.php?id=10).
+Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exploit/)
 
 ## ToDolist
+
+- [ ] camembert par mois et par type de contrat
+- [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
+- [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
+- [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
+- [ ] configuration serveur web (nginx)
+- [ ] optimisation du cache pour les fichiers JSON
+- [ ] ajout des libraires JS en local (d3 et jquery)
+- [ ] union des tables dans une seule BD (django et crawler)
+- [ ] migration vers PostgreSQL
+
+### Principe
+
+### Phase récupération
+
+1. jobs_georezo.py est croné 2 fois par jour
+2. il check s'il y a des nouvelles offres publiées depuis son dernier passage
+3. s'il y a des nouvelles offres :
+4. il récupère les id des nouvelles offres
+5. stocke les infos brutes dans la table georezo
+6. lance les différentes fonctions/process/parsers en donnant en paramètre la liste des id des nouvelles offres
+
+### Régler la tâche planifiée (cron)
+
+=> 2 fois par jour, à 1h et 13h.
+crontab -e puis ajouter :
+
+```bash
+0 1,13 * ~/elpaso/envs/env1/bin/python /elpaso/utils/jobs_georezo.py
+```
+
+
+# Base de données
+
+## Structuration des tables
+
 ### Structure table globale "lieux" :
 - id
 - lieu_lib (si inconnu : "lieu inconnu")
@@ -67,20 +94,9 @@ crontab -e puis ajouter :
 + id
 + langue
 
+## Recréer la base de données
 
-
-#### Principe
-### Phase récupération
-1. jobs_georezo.py est croné 2 fois par jour
-2. il check s'il y a des nouvelles offres publiées depuis son dernier passage
-3. s'il y a des nouvelles offres :
-4. il récupère les id des nouvelles offres
-5. stocke les infos brutes dans la table georezo
-6. lance les différentes fonctions/process/parsers en donnant en paramètre la liste des id des nouvelles offres
-
-
-# Recréer la BD
-
+```sql
 CREATE TABLE "autres" ("id" INTEGER PRIMARY KEY  NOT NULL  UNIQUE , "langue" VARCHAR NOT NULL );
 
 CREATE TABLE "contrats" ("id" INTEGER PRIMARY KEY  NOT NULL ,"cdi" BOOL,"cdd" BOOL,"fpt" BOOL,"stage" BOOL,"apprentissage" BOOL,"vi" BOOL,"these" BOOL,"post_doc" BOOL,"mission" BOOL, "autres" VARCHAR);
@@ -92,3 +108,4 @@ CREATE TABLE "lieux" ("id" INTEGER PRIMARY KEY  NOT NULL ,"lieu_lib" VARCHAR NOT
 CREATE TABLE "logiciels" ("id" INTEGER PRIMARY KEY  NOT NULL , "proprietaire" BOOL, "libre" BOOL, "sgbd" BOOL, "programmation" BOOL, "web" BOOL, "cao_dao" BOOL);
 
 CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOOL DEFAULT (null) ,"cartographe" BOOL,"charge_etude" BOOL,"charge_mission" BOOL,"chef" BOOL,"geometre" BOOL,"ingenieur" BOOL,"responsable" BOOL,"sigiste" BOOL,"technicien" BOOL,"topographe" BOOL);
+```
