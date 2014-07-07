@@ -6,15 +6,17 @@ Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exp
 
 ## ToDoList
 
-- [ ] camembert par mois et par type de contrat
+- [ ] camembert par mois et par type de contrat (@Guts)
 - [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
 - [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
 - [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
+- [ ] optimiser le html avec intégration de bootstrap (@pvernier)
 - [ ] configuration serveur web (nginx)
 - [ ] optimisation du cache pour les fichiers JSON
-- [ ] ajout des libraires JS en local (d3 et jquery)
+- [ ] ajout des libraires JS en local (d3, bootstrap et jquery)
+- [ ] mise en page globale (menu bandeau type BS)
 - [ ] union des tables dans une seule BD (django et crawler)
-- [ ] migration vers PostgreSQL
+- [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
 - [X] finaliser le script de récupération et d'insertion dans la BD
 
 ### Principe
