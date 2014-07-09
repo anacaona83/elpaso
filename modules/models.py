@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 from . import LogGuy
 
-sys.path.append('/home/pvernier/code/python/elpaso')
+sys.path.append('/home/pvernier/code/python/elpaso/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 
@@ -103,7 +103,7 @@ class Fillin():
                 # Save (commit) the changes
                 #self.manage_connection(1)
 
-    def create_json(self, periode):
+    def create_json(periode):
         '''Fonction qui créé les différentes aggrégation (par jour de la semaine, semaine de l'année, mois et année et les sauvegarde dans un fichier json'''
         mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
             'août', 'septembre', 'octobre', 'novembre', 'décembre']
