@@ -129,7 +129,7 @@ class Fillin():
                 
                 if periode == 'month':
                     for e in jours_contrats:
-                        agreg.append(mois[e.month] + ' ' + str(e.year))
+                        agreg.append(mois[e.month -1] + ' ' + str(e.year))
                 elif periode == 'year':
                     for e in jours_contrats:
                         agreg.append(e.year)

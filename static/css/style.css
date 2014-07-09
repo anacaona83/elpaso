@@ -1,18 +1,18 @@
 body {
   padding-top: 50px;
 }
-.starter-template {
+#main {
   padding: 40px 15px;
   text-align: center;
 }
 
 p.weekday {
+  margin-top: 20px;
   font-size: 20;
-  font-family: 'Pacifico', cursive;
 }
 
 
-div {
+div.contrats {
     padding-bottom: 0.5%;
 }
 
