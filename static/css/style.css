@@ -11,11 +11,29 @@ p.weekday {
   font-size: 20;
 }
 
-
 div.contrats {
     padding-bottom: 0.5%;
 }
 
+div.contrats span {
+    background-color: #fff;
+    /*border: 1px solid #e1e1e8;
+    border-radius: 0 4px;*/
+    color: #777;
+    /*cursor: pointer;*/
+    font-size: 12px;
+    padding: 5px 8px;
+    float:left;
+    width:100px;
+    position:relative;
+    top:50px;
+    left:200px;
+}
+
+/*div#cdi {
+    border: 1px solid black;
+}
+*/
 div#weekday rect {
     fill: #FF0080;
 }
