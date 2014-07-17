@@ -47,3 +47,7 @@ div#apprentissage rect {
 div#autre rect {
     fill: #7E3817;
 }
+
+div#map {
+   display: none;
+}

@@ -1,1 +1,1 @@
-{"legend": ["semaine 25 de 2014", "semaine 26 de 2014", "semaine 27 de 2014"], "types": {"cdi": [7, 5, 6], "stage": [0, 3, 0], "fpt": [1, 3, 2], "apprentissage": [0, 3, 0], "autre": [1, 0, 1], "mission": [0, 1, 1], "cdd": [2, 11, 9]}, "max": 11}
+{"legend": ["semaine 25 de 2014", "semaine 26 de 2014", "semaine 27 de 2014", "semaine 28 de 2014", "semaine 29 de 2014"], "types": {"autre": [1, 0, 1, 3, 0], "mission": [0, 1, 1, 1, 0], "apprentissage": [0, 3, 0, 0, 1], "stage": [0, 3, 0, 1, 0], "cdi": [7, 5, 6, 6, 5], "cdd": [2, 11, 9, 7, 1], "fpt": [1, 3, 2, 0, 0]}, "max": 11}
