@@ -32,3 +32,7 @@ pip-log.txt
 
 # custom
 *.log
+static/d3
+static/bootstrap
+static/jquery
+static/css/nv.d3.css
