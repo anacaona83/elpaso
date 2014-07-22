@@ -1,0 +1,71 @@
+body {
+  padding-top: 50px;
+}
+#main {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+p.weekday {
+  margin-top: 20px;
+  font-size: 20;
+}
+
+div.contrats {
+    padding-bottom: 0.5%;
+}
+
+div.contrats span {
+    background-color: #fff;
+    /*border: 1px solid #e1e1e8;
+    border-radius: 0 4px;*/
+    color: #777;
+    /*cursor: pointer;*/
+    font-size: 12px;
+    padding: 5px 8px;
+    float:left;
+    width:100px;
+    position:relative;
+    top:50px;
+    left:200px;
+}
+
+/*div#cdi {
+    border: 1px solid black;
+}
+*/
+div#weekday rect {
+    fill: #FF0080;
+}
+
+div#cdi rect {
+    fill: #1589FF;
+}
+
+div#cdd rect {
+    fill: #E56717;
+}
+
+div#stage rect {
+    fill: #54C571;
+}
+
+div#fpt rect {
+    fill: #FFD801;
+}
+
+div#mission rect {
+    fill: #8904B1;
+}
+
+div#apprentissage rect {
+    fill: #E55B3C;
+}
+
+div#autre rect {
+    fill: #7E3817;
+}
+
+div#map {
+   display: none;
+}
