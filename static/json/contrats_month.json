@@ -1,1 +1,1 @@
-{"legend": ["juin 2014", "juillet 2014"], "types": {"stage": [3, 3], "cdd": [14, 24], "apprentissage": [3, 1], "cdi": [12, 25], "fpt": [4, 2], "autre": [1, 4], "mission": [1, 6]}, "max": 25}
+{"max": 25, "legend": ["juin 2014", "juillet 2014"], "types": {"mission": [1, 7], "these": [0, 1], "fpt": [4, 2], "apprentissage": [3, 1], "cdd": [14, 24], "autre": [1, 4], "stage": [3, 3], "cdi": [12, 25]}}
