@@ -62,6 +62,10 @@ div#apprentissage rect {
     fill: #E55B3C;
 }
 
+div#these rect {
+    fill: #58FA58;
+}
+
 div#autre rect {
     fill: #7E3817;
 }
