@@ -11,7 +11,7 @@ Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exp
 - [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
 - [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
 - [X] optimiser le html avec intégration de bootstrap (@pvernier)
-- [ ] configuration serveur web (nginx)
+- [X] configuration serveur web (nginx)
 - [ ] optimisation du cache pour les fichiers JSON
 - [X] ajout des libraires JS en local (d3, bootstrap et jquery)
 - [ ] mise en page globale (menu bandeau type BS)
@@ -112,3 +112,245 @@ CREATE TABLE "logiciels" ("id" INTEGER PRIMARY KEY  NOT NULL , "proprietaire" BO
 
 CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOOL DEFAULT (null) ,"cartographe" BOOL,"charge_etude" BOOL,"charge_mission" BOOL,"chef" BOOL,"geometre" BOOL,"ingenieur" BOOL,"responsable" BOOL,"sigiste" BOOL,"technicien" BOOL,"topographe" BOOL);
 ```
+
+
+## Installer Python 3.4 sur Debian
+
+Pour installer Python 3.4 sur Ubuntu server 12.04 + utilisation pyvenv et pip
+
+$ sudo apt-get install build-essential
+$ sudo apt-get install libsqlite3-dev
+$ sudo apt-get install sqlite3 # for the command-line client
+$ sudo apt-get install bzip2 libbz2-dev
+$ sudo apt-get install libssl-dev openssl # Pour pip
+
+$ wget https://www.python.org/ftp/python/3.4.0/Python-3.4.0.tar.xz
+
+$ tar xJf Python-3.4.0.tar.xz
+
+$ cd Python-3.4.0/
+
+$ ./configure --prefix=/opt/python3.4
+
+ $ make && sudo make install
+
+Dans .bashrc, rajouter : 
+$ cd
+$ sudo nano -c .bashrc
+alias python3="/opt/python3.4/bin/python3.4"
+alias pyvenv="/opt/python3.4/bin/pyvenv-3.4"
+alias pip3="/opt/python3.4/bin/pip3.4"
+
+$ source .bashrc
+
+Je crée un virtual env :
+$ pyvenv envs/env1
+
+Quand le virtual env est activé pip représente pip3.4 et python, python3.4. 
+$ source ./envs/env1/bin/activate
+
+J’installe les modules :
+(env1) $ pip install django
+(env1) $ pip install feedparser
+
+(env1) pvernier@sd-45564:~$ python
+Python 3.4.0 (default, Apr 28 2014, 12:53:21)
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+(env1)$ python --version
+Python 3.4.0
+
+Pour désactiver :
+$ deactivate
+
+Pour activer le virtual env :
+$ source envs/env1/bin/activate
+
+
+
+Sources :
+http://askubuntu.com/questions/244544/how-do-i-install-python-3-3#244550
+https://stackoverflow.com/questions/22592686/compiling-python-3-4-is-not-copying-pip
+http://www.reddit.com/r/Python/comments/20xims/is_there_an_easy_way_to_install_python_34_on/
+
+
+
+
+
+
+
+## Recréer l'environnement virtuel et les dépendances
+ virtualenv
+ bootstrap etc
+
+## Configurer le serveur
+
+ningx
+gunicorn
+supervisor
+
+Sources :
+http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
+http://sametmax.com/nginx-en-reverse-proxy-gunicorn-pour-vos-apps-django/
+https://library.linode.com/web-servers/nginx/configuration/basic
+http://sametmax.com/comment-servir-les-fichiers-statiques-avec-django-en-dev-et-en-prod/
+
+A Améliorer :
+Nombre de workers de gunicorn
+Différents logs
+
+Active l'environnement virtuel
+pvernier@sd-45564:~/code/python$ source envs/env1/bin/activate
+(env1) pvernier@sd-45564:~/code/python$ cd elpaso/
+
+1. Gunicorn
+
+Installe gunicorn
+(env1) pvernier@sd-45564:~/code/python/elpaso$ pip install gunicorn
+
+Teste si gunicorn serve bien l'app django
+(env1) pvernier@sd-45564:~/code/python/elpaso$ gunicorn elpaso.wsgi:application --bind 62.210.239.81:8443
+
+Dans le dossier elpaso, je créé un dossier bin dans lequel je créé un fichier 
+nano gunicorn_start
+Voici le contenu de ce fichier
+#!/bin/bash
+
+NAME="elpaso_app"
+DJANGODIR=/home/pvernier/code/python/elpaso
+#SOCKFILE=/home/pvernier/code/python/elpaso/run/gunicorn.sock
+USER=pvernier
+NUM_WORKERS=3
+DJANGO_SETTINGS_MODULE=elpaso.settings
+DJANGO_WSGI_MODULE=elpaso.wsgi
+
+echo "Starting $NAME"
+
+# Activate the virtual env
+source /home/pvernier/code/python/envs/env1/bin/activate
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+# Create the run directory if it doesn't exist
+#RUNDIR=$(dirname $SOCKFILE)
+#test -d $RUNDIR || mkdir -p $RUNDIR
+
+# Start your Django Unicorn
+exec gunicorn ${DJANGO_WSGI_MODULE}:application \
+  --name $NAME \
+  --workers $NUM_WORKERS \
+  --user=$USER \
+  --log-level=debug \
+  --bind=62.210.239.81:8443
+
+------------------FIN DU FICHIER------------------------------
+
+Je rends le fichier executable
+sudo chmod u+x gunicorn_start
+
+Teste si ça marche
+./gunicorn_start
+
+Puis dans le navigateur :
+http://62.210.239.81:8443
+
+Marche mais n'affiche rien dans le terminal
+
+2. Supervisor
+
+Installe supervisor
+sudo apt-get install supervisor
+
+Dans le dossier /etc/supervisor/conf.d je créé un fichier elpaso.conf
+Voici le contenu du fichier
+[program:elpaso]
+command = ./home/pvernier/code/python/elpaso/bin/gunicorn_start ; Command to start app
+user = pvernier ; User to run as
+stdout_logfile = /home/pvernier/code/python/elpaso/logs/gunicorn_supervisor.log ; Where to write log messages
+redirect_stderr = true ; Save stderr in the same log
+environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8 ; Set UTF-8 as default encoding
+autostart=true
+autorestart=true
+
+------------------FIN-----------------------------
+
+Je créé le ficier de log
+$cd code/python/elpaso/
+$ mkdir -p logs
+$ touch logs/gunicorn_supervisor.log
+
+Je demande à supervisor de relire le fichier de conf et d'actualiser
+$ sudo supervisorctl reread
+elpaso: available
+$ sudo supervisorctl update
+elpaso: added process group
+
+Je vérifie le statut de l'app
+pvernier@sd-45564:~/code/python/elpaso/bin$ sudo supervisorctl status elpaso    elpaso                           RUNNING    pid 13473, uptime 0:00:04
+
+! IMPORTANT
+Si je modifie le code django, je dois redémarrer supervisor pour voir les changements
+$sudo supervisorctl restart elpaso
+elpaso: stopped
+elpaso: started
+
+3. NGINX
+
+Dans /etc/nginx/ je créé un dossier sites-available et un dossier sites-enabled
+$ sudo mkdir /etc/nginx/sites-available
+$ sudo mkdir /etc/nginx/sites-enabled
+
+Dans le dossier sites-available, je créé un fichier de conf 'elpaso' qui contient :
+
+server {
+        listen       80;
+        server_name 62.210.239.81;
+ 
+        location /static/ {
+            root  /home/pvernier/code/python/elpaso;
+            gzip  on;
+        }
+ 
+        location / {
+            proxy_pass http://62.210.239.81:8443; # Pass to Gunicorn
+            proxy_set_header X-Real-IP $remote_addr; # get real Client IP
+        }
+}
+
+------------------FIN DU FICHIER-----------------------------
+
+Je créé un lien symbolique
+sudo ln -s /etc/nginx/sites-available/elpaso /etc/nginx/sites-enabled/elpaso
+
+Dans /etc/nginx/nginx.conf, je mets commente la ligne :
+include /etc/nginx/conf.d/*.conf;
+et je rajoute :
+include /etc/nginx/sites-enabled/*;
+
+Je redémarre le service
+$ sudo service nginx restart
+
+4. Django
+
+Dans mon settings.py je dois modifie ce qui concerne les fichiers static :
+
+# STATIC_ROOT n'est utile que pour la prod
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static_elpaso"),
+    os.path.join(BASE_DIR, "../../js_libs"),
+)
+
+Ensuite je fais :
+(env1) $ python manage.py collectstatic
+
+Cela va prendre tous les fichiers statiques de tous les dossiers “static” des apps et ceux listés dans STATICFILES_DIRS et va les copier dans STATIC_ROOT.
+
+
+
+# Bibliographie
+
+http://makina-corpus.com/blog/metier/2014/reduire-le-poids-dun-geojson
