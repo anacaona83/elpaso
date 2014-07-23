@@ -104,7 +104,7 @@ class Fillin():
                 #self.manage_connection(1)
 
     def create_json(self, periode):
-        '''Fonction qui créé les différentes aggrégation (par jour de la semaine, semaine de l'année, mois et année et les sauvegarde dans un fichier json'''
+        '''Fonction qui créé les différentes agrégations (par jour de la semaine, semaine de l'année, mois et année) et les sauvegarde dans un fichier json'''
         mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
             'août', 'septembre', 'octobre', 'novembre', 'décembre']
 
