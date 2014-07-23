@@ -1,10 +1,10 @@
 El Paso
-======
+==========
 
 Statistiques dynamiques sur les offres d'emploi en géomatique publiées sur le forum francophone de géomatique [GeoRezo](http://georezo.net/forum/viewforum.php?id=10).
-Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exploit/)
+Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/)
 
-## ToDoList
+# ToDoList
 
 - [ ] camembert par mois et par type de contrat (@Guts)
 - [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
@@ -19,7 +19,7 @@ Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exp
 - [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
 - [X] finaliser le script de récupération et d'insertion dans la BD
 
-### Principe
+# Principe
 
 ### Phase récupération
 
@@ -30,32 +30,34 @@ Pour tester : [serveur de démonstration](http://62.210.239.81:8443/contrats_exp
 5. stocke les infos brutes dans la table georezo
 6. lance les différentes fonctions/process/parsers en donnant en paramètre la liste des id des nouvelles offres
 
-### Régler la tâche planifiée (cron)
 
-=> 2 fois par jour, à 1h et 13h.
-crontab -e puis ajouter :
-
-```bash
-0 1,13 * ~/elpaso/envs/env1/bin/python /elpaso/utils/jobs_georezo.py
-```
+### Phase consultation
 
 
-# Base de données
 
-## Structuration des tables
 
-### Structure table globale "lieux" :
+# Installation et déploiement
+
+Sur distribution Ubuntu Server 12.04 (Debian) avec git d'installé
+
+## Base de données
+
+### Structuration des tables
+
+#### Table globale "lieux"
+
 - id
 - lieu_lib (si inconnu : "lieu inconnu")
 - lieu_type (si inconnu : 99) : 
-	+ 0 = continent
-	+ 1 =  pays
-	+ 2 = région
-	+ 3 = département
-	+ 4 = ville
+  + 0 = continent
+  + 1 =  pays
+  + 2 = région
+  + 3 = département
+  + 4 = ville
 
 
-### Structure table logiciels "contrats" :
+#### Table logiciels "contrats"
+
 + id
 + cdi
 + cdd
@@ -68,7 +70,8 @@ crontab -e puis ajouter :
 + autres
 
 
-### Structure table logiciels "logiciels" :
+#### Structure table logiciels "logiciels"
+
 * id
 * proprietaire => Esri, MapInfo, Arc*, GeoConcept, StarApic, 1Spatial, Business Geographic, FME, Intragéo, Intergraph
 * libre => QGIS, gvSIG, GRASS, Talend, GeoKettle, uDIG
@@ -78,7 +81,8 @@ crontab -e puis ajouter :
 * cao/dao => autocad, Micro Station, Illustrator, Inkscape, PAO
 
 
-### Structure table "metiers" :
+#### Structure table "metiers"
+
 + id
 + sigiste
 + cartographe
@@ -93,11 +97,12 @@ crontab -e puis ajouter :
 + chef
 
 
-### Structure table "autres" :
+#### Structure table "autres"
+
 + id
 + langue
 
-## Recréer la base de données
+### Commandes SQL initiales
 
 ```sql
 CREATE TABLE "autres" ("id" INTEGER PRIMARY KEY  NOT NULL  UNIQUE , "langue" VARCHAR NOT NULL );
@@ -114,65 +119,101 @@ CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOO
 ```
 
 
-## Installer Python 3.4 sur Debian
+## Installer Python 3.4
 
-Pour installer Python 3.4 sur Ubuntu server 12.04 + utilisation pyvenv et pip
+### Téléchargement / installation
 
-$ sudo apt-get install build-essential
-$ sudo apt-get install libsqlite3-dev
-$ sudo apt-get install sqlite3 # for the command-line client
-$ sudo apt-get install bzip2 libbz2-dev
-$ sudo apt-get install libssl-dev openssl # Pour pip
+Dans un terminal :
 
-$ wget https://www.python.org/ftp/python/3.4.0/Python-3.4.0.tar.xz
+```bash
+# dépendances
+sudo apt-get install build-essential      # requis pour compiler
+sudo apt-get install libsqlite3-dev       # librairie sqlite3
+sudo apt-get install sqlite3              # client sqlite3 en ligne de commande
+sudo apt-get install bzip2 libbz2-dev     # compression
+sudo apt-get install libssl-dev openssl   # reqius par pip pour sécuriser les communications
 
-$ tar xJf Python-3.4.0.tar.xz
+# téléchargement des sources de Python 3.4.x
+wget https://www.python.org/ftp/python/3.4.1/Python-3.4.1.tgz
 
-$ cd Python-3.4.0/
+# décompression de l'archive
+tar xJf Python-3.4.0.tar.xz
 
-$ ./configure --prefix=/opt/python3.4
+# aller dans le dossier
+cd Python-3.4.0/
 
- $ make && sudo make install
+# faire en sorte que Python 3.4.x s'installe à part de la version système
+./configure --prefix=/opt/python3.4
 
-Dans .bashrc, rajouter : 
-$ cd
-$ sudo nano -c .bashrc
+# compilation/installation
+make && sudo make install
+```
+
+### Configuration de .bashrc
+
+```bash
+# revenir à la racine système et ouvrir le fichier .bashrc
+cd
+sudo nano -c .bashrc
+
+# dans l'éditeur du fichier rajouter :
 alias python3="/opt/python3.4/bin/python3.4"
 alias pyvenv="/opt/python3.4/bin/pyvenv-3.4"
 alias pip3="/opt/python3.4/bin/pip3.4"
 
-$ source .bashrc
+# sauvegarder (Ctrl + X) puis recharger 
+source .bashrc
+```
 
-Je crée un virtual env :
-$ pyvenv envs/env1
+### Récupérer le projet et ses dépendances
 
-Quand le virtual env est activé pip représente pip3.4 et python, python3.4. 
-$ source ./envs/env1/bin/activate
+```bash
+# aller dans son dossier de travail
+cd /home/$USER/python/
+git clone https://github.com/pvernier/elpaso.git
+```
 
-J’installe les modules :
-(env1) $ pip install django
-(env1) $ pip install feedparser
+### Environnement virtuel
 
-(env1) pvernier@sd-45564:~$ python
-Python 3.4.0 (default, Apr 28 2014, 12:53:21)
-[GCC 4.6.3] on linux
-Type "help", "copyright", "credits" or "license" for more information.
+Dans un terminal :
 
-(env1)$ python --version
+```bash
+# aller dans son dossier de travail
+cd /home/$USER/python/
+
+# créer un nouvel environnement virtuel
+pyvenv envs/env_elpaso
+
+# Activer l'environnement virtuel
+source ./envs/env_elpaso/bin/activate
+
+# installer les modules
+(env_elpaso) $ pip install pip install -r ../elpaso/requirements.txt
+```
+
+Quand le virtual env est activé pip représente pip3.4 et python, python3.4.x :
+
+```bash
+(env_elpaso) pvernier@sd-45564:~$ python
+> Python 3.4.0 (default, Apr 28 2014, 12:53:21)
+> [GCC 4.6.3] on linux
+> Type "help", "copyright", "credits" or "license" for more information.
+```
+
+
+```python
+(env_elpaso)$ python --version
 Python 3.4.0
+```
 
 Pour désactiver :
-$ deactivate
+`deactivate`
 
-Pour activer le virtual env :
-$ source envs/env1/bin/activate
+Bibliographie :
 
-
-
-Sources :
-http://askubuntu.com/questions/244544/how-do-i-install-python-3-3#244550
-https://stackoverflow.com/questions/22592686/compiling-python-3-4-is-not-copying-pip
-http://www.reddit.com/r/Python/comments/20xims/is_there_an_easy_way_to_install_python_34_on/
+* http://askubuntu.com/questions/244544/how-do-i-install-python-3-3#244550
+* https://stackoverflow.com/questions/22592686/compiling-python-3-4-is-not-copying-pip
+* http://www.reddit.com/r/Python/comments/20xims/is_there_an_easy_way_to_install_python_34_on/
 
 
 
@@ -183,6 +224,21 @@ http://www.reddit.com/r/Python/comments/20xims/is_there_an_easy_way_to_install_p
 ## Recréer l'environnement virtuel et les dépendances
  virtualenv
  bootstrap etc
+
+
+### Régler la tâche planifiée (cron)
+
+=> 2 fois par jour, à 1h et 13h.
+crontab -e puis ajouter :
+
+```bash
+0 1,13 * ~/elpaso/envs/env_elpaso/bin/python /elpaso/utils/jobs_georezo.py
+```
+
+
+
+
+
 
 ## Configurer le serveur
 
@@ -201,16 +257,16 @@ Nombre de workers de gunicorn
 Différents logs
 
 Active l'environnement virtuel
-pvernier@sd-45564:~/code/python$ source envs/env1/bin/activate
-(env1) pvernier@sd-45564:~/code/python$ cd elpaso/
+pvernier@sd-45564:~/code/python$ source envs/env_elpaso/bin/activate
+(env_elpaso) pvernier@sd-45564:~/code/python$ cd elpaso/
 
 1. Gunicorn
 
 Installe gunicorn
-(env1) pvernier@sd-45564:~/code/python/elpaso$ pip install gunicorn
+(env_elpaso) pvernier@sd-45564:~/code/python/elpaso$ pip install gunicorn
 
 Teste si gunicorn serve bien l'app django
-(env1) pvernier@sd-45564:~/code/python/elpaso$ gunicorn elpaso.wsgi:application --bind 62.210.239.81:8443
+(env_elpaso) pvernier@sd-45564:~/code/python/elpaso$ gunicorn elpaso.wsgi:application --bind 62.210.239.81:8443
 
 Dans le dossier elpaso, je créé un dossier bin dans lequel je créé un fichier 
 nano gunicorn_start
@@ -228,7 +284,7 @@ DJANGO_WSGI_MODULE=elpaso.wsgi
 echo "Starting $NAME"
 
 # Activate the virtual env
-source /home/pvernier/code/python/envs/env1/bin/activate
+source /home/pvernier/code/python/envs/env_elpaso/bin/activate
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
@@ -345,7 +401,7 @@ STATICFILES_DIRS = (
 )
 
 Ensuite je fais :
-(env1) $ python manage.py collectstatic
+(env_elpaso) $ python manage.py collectstatic
 
 Cela va prendre tous les fichiers statiques de tous les dossiers “static” des apps et ceux listés dans STATICFILES_DIRS et va les copier dans STATIC_ROOT.
 
