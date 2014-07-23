@@ -18,6 +18,8 @@ Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/
 - [ ] union des tables dans une seule BD (django et crawler)
 - [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
 - [X] finaliser le script de récupération et d'insertion dans la BD
+- [ ] Nombre de workers de gunicorn
+- [ ] Différents logs serveur
 
 # Principe
 
@@ -165,7 +167,7 @@ alias pip3="/opt/python3.4/bin/pip3.4"
 source .bashrc
 ```
 
-### Récupérer le projet et ses dépendances
+## Récupérer le projet et ses dépendances
 
 ```bash
 # aller dans son dossier de travail
@@ -173,7 +175,7 @@ cd /home/$USER/python/
 git clone https://github.com/pvernier/elpaso.git
 ```
 
-### Environnement virtuel
+## Environnement virtuel
 
 Dans un terminal :
 
@@ -200,7 +202,6 @@ Quand le virtual env est activé pip représente pip3.4 et python, python3.4.x :
 > Type "help", "copyright", "credits" or "license" for more information.
 ```
 
-
 ```python
 (env_elpaso)$ python --version
 Python 3.4.0
@@ -216,142 +217,93 @@ Bibliographie :
 * http://www.reddit.com/r/Python/comments/20xims/is_there_an_easy_way_to_install_python_34_on/
 
 
+## Dépendances
 
+bootstrap etc
 
+## Planifier la tâche planifiée (cron)
 
-
-
-## Recréer l'environnement virtuel et les dépendances
- virtualenv
- bootstrap etc
-
-
-### Régler la tâche planifiée (cron)
-
-=> 2 fois par jour, à 1h et 13h.
-crontab -e puis ajouter :
+2 fois par jour, à 1h et 13h.
 
 ```bash
-0 1,13 * ~/elpaso/envs/env_elpaso/bin/python /elpaso/utils/jobs_georezo.py
+crontab -e 
+# ajouter :
+0 1,13 * * * /home/$USER/python/envs/env_elpaso/bin/python /home/$USER/python/elpaso/utils/jobs_georezo.py
 ```
-
-
-
-
 
 
 ## Configurer le serveur
 
-ningx
-gunicorn
-supervisor
+Activer l'environnement virtuel et aller dans le dossier du projet
+```
+source envs/env_elpaso/bin/activate
+cd elpaso/
+```
 
-Sources :
-http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
-http://sametmax.com/nginx-en-reverse-proxy-gunicorn-pour-vos-apps-django/
-https://library.linode.com/web-servers/nginx/configuration/basic
-http://sametmax.com/comment-servir-les-fichiers-statiques-avec-django-en-dev-et-en-prod/
+### Gunicorn
 
-A Améliorer :
-Nombre de workers de gunicorn
-Différents logs
+```
+# Installer gunicorn
+pip install gunicorn
 
-Active l'environnement virtuel
-pvernier@sd-45564:~/code/python$ source envs/env_elpaso/bin/activate
-(env_elpaso) pvernier@sd-45564:~/code/python$ cd elpaso/
+# Tester si gunicorn sert bien l'app django
+gunicorn elpaso.wsgi:application --bind 62.210.239.81:8443
 
-1. Gunicorn
+# Créer un dossier bin
+mkdir bin
 
-Installe gunicorn
-(env_elpaso) pvernier@sd-45564:~/code/python/elpaso$ pip install gunicorn
+# copier le fichier chargé de démarrer gunicorn
+cp doc/tpl_gunicorn_start bin/gunicorn_start
 
-Teste si gunicorn serve bien l'app django
-(env_elpaso) pvernier@sd-45564:~/code/python/elpaso$ gunicorn elpaso.wsgi:application --bind 62.210.239.81:8443
+# personnaliser au besoin
+nano -c doc/gunicorn_start
 
-Dans le dossier elpaso, je créé un dossier bin dans lequel je créé un fichier 
-nano gunicorn_start
-Voici le contenu de ce fichier
-#!/bin/bash
-
-NAME="elpaso_app"
-DJANGODIR=/home/pvernier/code/python/elpaso
-#SOCKFILE=/home/pvernier/code/python/elpaso/run/gunicorn.sock
-USER=pvernier
-NUM_WORKERS=3
-DJANGO_SETTINGS_MODULE=elpaso.settings
-DJANGO_WSGI_MODULE=elpaso.wsgi
-
-echo "Starting $NAME"
-
-# Activate the virtual env
-source /home/pvernier/code/python/envs/env_elpaso/bin/activate
-export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-export PYTHONPATH=$DJANGODIR:$PYTHONPATH
-
-# Create the run directory if it doesn't exist
-#RUNDIR=$(dirname $SOCKFILE)
-#test -d $RUNDIR || mkdir -p $RUNDIR
-
-# Start your Django Unicorn
-exec gunicorn ${DJANGO_WSGI_MODULE}:application \
-  --name $NAME \
-  --workers $NUM_WORKERS \
-  --user=$USER \
-  --log-level=debug \
-  --bind=62.210.239.81:8443
-
-------------------FIN DU FICHIER------------------------------
-
-Je rends le fichier executable
+# rendre le fichier exécutable
 sudo chmod u+x gunicorn_start
 
-Teste si ça marche
-./gunicorn_start
-
-Puis dans le navigateur :
+# tester (n'affiche parfois rien)
+sudo su ./gunicorn_start
 http://62.210.239.81:8443
 
-Marche mais n'affiche rien dans le terminal
+```
 
-2. Supervisor
+### Supervisor
 
-Installe supervisor
+```bash
+# installer supervisor
 sudo apt-get install supervisor
 
-Dans le dossier /etc/supervisor/conf.d je créé un fichier elpaso.conf
-Voici le contenu du fichier
-[program:elpaso]
-command = ./home/pvernier/code/python/elpaso/bin/gunicorn_start ; Command to start app
-user = pvernier ; User to run as
-stdout_logfile = /home/pvernier/code/python/elpaso/logs/gunicorn_supervisor.log ; Where to write log messages
-redirect_stderr = true ; Save stderr in the same log
-environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8 ; Set UTF-8 as default encoding
-autostart=true
-autorestart=true
+# copier le fichier de configuration à partir du modèle
+cp doc/tpl_elpaso.conf bin/elpaso.conf
 
-------------------FIN-----------------------------
+# personnaliser au besoin
+nano -c doc/elpaso.conf
 
-Je créé le ficier de log
-$cd code/python/elpaso/
-$ mkdir -p logs
-$ touch logs/gunicorn_supervisor.log
+# Créer le ficier de log
+mkdir -p logs
+touch logs/gunicorn_supervisor.log
 
-Je demande à supervisor de relire le fichier de conf et d'actualiser
-$ sudo supervisorctl reread
-elpaso: available
-$ sudo supervisorctl update
-elpaso: added process group
+# Demander à supervisor de relire le fichier de conf et d'actualiser
+sudo supervisorctl reread
+> elpaso: available
 
-Je vérifie le statut de l'app
-pvernier@sd-45564:~/code/python/elpaso/bin$ sudo supervisorctl status elpaso    elpaso                           RUNNING    pid 13473, uptime 0:00:04
+sudo supervisorctl update
+> elpaso: added process group
 
-! IMPORTANT
-Si je modifie le code django, je dois redémarrer supervisor pour voir les changements
-$sudo supervisorctl restart elpaso
-elpaso: stopped
-elpaso: started
+# Vérifier le statut de l'app
+sudo supervisorctl status elpaso
+> elpaso                           RUNNING    pid 13473, uptime 0:00:04
+```
 
-3. NGINX
+#### IMPORTANT
+Si le code django est modifié, il faut redémarrer supervisor pour voir les changements
+```bash
+sudo supervisorctl restart elpaso
+> elpaso: stopped
+> elpaso: started
+```
+
+### NGINX
 
 Dans /etc/nginx/ je créé un dossier sites-available et un dossier sites-enabled
 $ sudo mkdir /etc/nginx/sites-available
@@ -405,7 +357,12 @@ Ensuite je fais :
 
 Cela va prendre tous les fichiers statiques de tous les dossiers “static” des apps et ceux listés dans STATICFILES_DIRS et va les copier dans STATIC_ROOT.
 
+Bibliographie :
 
+* http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
+* http://sametmax.com/nginx-en-reverse-proxy-gunicorn-pour-vos-apps-django/
+* https://library.linode.com/web-servers/nginx/configuration/basic
+* http://sametmax.com/comment-servir-les-fichiers-statiques-avec-django-en-dev-et-en-prod/
 
 # Bibliographie
 
