@@ -20,6 +20,7 @@ Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/
 - [X] finaliser le script de récupération et d'insertion dans la BD
 - [ ] Nombre de workers de gunicorn
 - [ ] Différents logs serveur
+- [ ] installer et configurer NVD3 @novus/nvd3
 
 # Principe
 
@@ -296,7 +297,9 @@ sudo supervisorctl status elpaso
 ```
 
 #### IMPORTANT
+
 Si le code django est modifié, il faut redémarrer supervisor pour voir les changements
+
 ```bash
 sudo supervisorctl restart elpaso
 > elpaso: stopped
@@ -305,44 +308,49 @@ sudo supervisorctl restart elpaso
 
 ### NGINX
 
-Dans /etc/nginx/ je créé un dossier sites-available et un dossier sites-enabled
-$ sudo mkdir /etc/nginx/sites-available
-$ sudo mkdir /etc/nginx/sites-enabled
+```bash
+# aller dans le dossier d'installation de nginx
+cd /etc/ningx
 
-Dans le dossier sites-available, je créé un fichier de conf 'elpaso' qui contient :
+# Créé un dossier sites-available et un dossier sites-enabled
+sudo mkdir /etc/nginx/sites-available
+sudo mkdir /etc/nginx/sites-enabled
 
-server {
-        listen       80;
-        server_name 62.210.239.81;
- 
-        location /static/ {
-            root  /home/pvernier/code/python/elpaso;
-            gzip  on;
-        }
- 
-        location / {
-            proxy_pass http://62.210.239.81:8443; # Pass to Gunicorn
-            proxy_set_header X-Real-IP $remote_addr; # get real Client IP
-        }
-}
+# copier le fichier de configuration à partir du modèle
+cp doc/tpl_nginx_elpaso.conf sites-available/elpaso.conf
 
-------------------FIN DU FICHIER-----------------------------
+# personnaliser au besoin
+nano -c sites-available/elpaso.conf
 
-Je créé un lien symbolique
+
+# Créer un lien symbolique
 sudo ln -s /etc/nginx/sites-available/elpaso /etc/nginx/sites-enabled/elpaso
 
-Dans /etc/nginx/nginx.conf, je mets commente la ligne :
+# éditer la configuration ningx
+sudo nano -c /etc/nginx/nginx.conf
+
+# commenter :
 include /etc/nginx/conf.d/*.conf;
-et je rajoute :
+
+# et ajouter :
 include /etc/nginx/sites-enabled/*;
 
-Je redémarre le service
-$ sudo service nginx restart
+# Redémarrer le service
+sudo service nginx restart
+```
 
-4. Django
+### Django
 
-Dans mon settings.py je dois modifie ce qui concerne les fichiers static :
+Faire en sorte que nginx serve les fichiers statiques de tous les dossiers **static** des apps et ceux listés dans _STATICFILES_DIRS_, pour les copier dans _STATIC_ROOT_.
 
+```bash
+cd /home/%USER/python/
+source ./envs/env_elpaso/bin/activate
+```
+
+Dans settings.py je dois modifier ce qui concerne les fichiers static :
+
+```python
 # STATIC_ROOT n'est utile que pour la prod
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
@@ -351,19 +359,16 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static_elpaso"),
     os.path.join(BASE_DIR, "../../js_libs"),
 )
+```
 
-Ensuite je fais :
-(env_elpaso) $ python manage.py collectstatic
+Lancer
+`python manage.py collectstatic`
 
-Cela va prendre tous les fichiers statiques de tous les dossiers “static” des apps et ceux listés dans STATICFILES_DIRS et va les copier dans STATIC_ROOT.
 
-Bibliographie :
+## Bibliographie
 
 * http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
 * http://sametmax.com/nginx-en-reverse-proxy-gunicorn-pour-vos-apps-django/
 * https://library.linode.com/web-servers/nginx/configuration/basic
 * http://sametmax.com/comment-servir-les-fichiers-statiques-avec-django-en-dev-et-en-prod/
-
-# Bibliographie
-
-http://makina-corpus.com/blog/metier/2014/reduire-le-poids-dun-geojson
+* http://makina-corpus.com/blog/metier/2014/reduire-le-poids-dun-geojson
