@@ -1,1 +1,1 @@
-{"legend": ["juin 2014", "juillet 2014"], "types": {"fpt": [0, 0], "CDD": [0, 2], "CDI": [0, 4], "autre": [0, 0], "mission": [0, 0], "stage": [0, 0], "cdi": [0, 0], "apprentissage": [0, 0], "FPT": [0, 1], "cdd": [0, 0], "these": [0, 0]}, "max": 4}
+{"types": {"fpt": [4, 3], "these": [0, 1], "apprentissage": [3, 1], "autre": [1, 4], "cdd": [14, 26], "cdi": [12, 29], "mission": [1, 7], "stage": [3, 3]}, "max": 29, "legend": ["juin 2014", "juillet 2014"]}

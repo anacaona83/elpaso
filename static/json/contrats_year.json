@@ -1,1 +1,1 @@
-{"legend": [2014], "types": {"fpt": [0], "CDD": [2], "CDI": [4], "autre": [0], "mission": [0], "stage": [0], "cdi": [0], "apprentissage": [0], "FPT": [1], "cdd": [0], "these": [0]}, "max": 4}
+{"types": {"fpt": [7], "these": [1], "apprentissage": [4], "autre": [5], "cdd": [40], "cdi": [41], "mission": [8], "stage": [6]}, "max": 41, "legend": [2014]}

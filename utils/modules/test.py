@@ -1,15 +1,19 @@
 from os import environ
 import sys
 import json
-sys.path.append('/home/pvernier/code/python/django_projects/elpaso')
+sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 
 
 def create_json(periode):
+    '''Méthode qui créé les différentes agrégations (par jour de la
+    semaine, semaine de l'année, mois et année) et les sauvegarde dans un
+    fichier json'''
 
-    mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-            'août', 'septembre', 'octobre', 'novembre', 'décembre']
+    mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+            'juillet', 'août', 'septembre', 'octobre', 'novembre',
+            'décembre']
 
     if periode == 'day':
         # Les jours de la semaine
@@ -20,19 +24,20 @@ def create_json(periode):
 
         data = {'days': ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi',
                          'samedi', 'dimanche'], 'numbers': days}
-        with open('/home/pvernier/code/python/django_projects/elpaso/static/json/contrats_days_of_week.json', 'w') as f:
+        with open('/home/pvernier/code/python/elpaso/static/json/contrats_days_of_week.json', 'w') as f:
             f.write(json.dumps(data))
 
     else:
         agreg = []
         if periode != 'week':
-            # Pour avoir toutes les combinaisons existantes pour mois et année
-            jours_contrats = Contrat.objects.values('date_pub').datetimes('date_pub', periode)
+            # Pour avoir toutes les combinaisons existantes pour mois
+            # et année
+            jours_contrats = Contrat.objects.values('date_pub')\
+                                            .datetimes('date_pub', periode)
 
-            
             if periode == 'month':
                 for e in jours_contrats:
-                    agreg.append(mois[e.month] + ' ' + str(e.year))
+                    agreg.append(mois[e.month - 1] + ' ' + str(e.year))
             elif periode == 'year':
                 for e in jours_contrats:
                     agreg.append(e.year)
@@ -48,15 +53,21 @@ def create_json(periode):
                     types[t['type']] = [0 for i in jours_contrats]
                 except:
                     pass
-            # Variable qui me sert à récupérer le max d'annonces pour un type
-            # de contrats. Utilisé par d3 pour l'échelle en ordonnée
+            # Variable qui me sert à récupérer le max d'annonces pour
+            # un type de contrats. Utilisé par d3 pour l'échelle
+            # en ordonnée
             max = 0
 
             for jour in jours_contrats:
                 if periode == 'month':
-                    annonces = Contrat.objects.filter(date_pub__year = jour.year, date_pub__month = jour.month).values_list()
+                    annonces = Contrat.objects\
+                                      .filter(date_pub__year=jour.year,
+                                              date_pub__month=jour.month)\
+                                      .values_list()
                 elif periode == 'year':
-                    annonces = Contrat.objects.filter(date_pub__year = jour.year).values_list()
+                    annonces = Contrat.objects\
+                                      .filter(date_pub__year=jour.year)\
+                                      .values_list()
 
                 for annonce in annonces:
                     if annonce[1] == 'cdi':
@@ -119,22 +130,23 @@ def create_json(periode):
                         if types['autre'][list(jours_contrats).index(jour)] > max:
                             max = types['autre'][list(jours_contrats).index(jour)]
 
-                    data = {'max': max, 'types': types, 'legend' : agreg}
+                    data = {'max': max, 'types': types, 'legend': agreg}
 
-                    with open('/home/pvernier/code/python/django_projects/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
+                    with open('/home/pvernier/code/python/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
                         f.write(json.dumps(data))
 
         # Pour agréger par semaine
         elif periode == 'week':
-            # Comme DISTINCT n'est pa faisable sur SQLITE je fais comme ci-dessous
+            # Comme DISTINCT n'est pa faisable sur SQLITE je fais comme
+            # ci-dessous
             weeks = []
-            sel =Contrat.objects.values('date_pub', 'week_number')
+            sel = Contrat.objects.values('date_pub', 'week_number')
             for s in sel:
                 t = (s['date_pub'].year, s['week_number'])
                 if t not in weeks:
                     weeks.append(t)
-                    agreg.append('semaine ' + str(t[1]) + ' de ' + str(t[0]))
-            
+                    agreg.append('semaine ' + str(t[1]) + ' de ' +
+                                 str(t[0]))
 
             types = {}
             # DISTINCT ne marche pas sur SQLITE
@@ -148,7 +160,10 @@ def create_json(periode):
             max = 0
 
             for week in weeks:
-                annonces = Contrat.objects.filter(date_pub__year = week[0], week_number = week[1]).values_list()
+                annonces = Contrat.objects\
+                                  .filter(date_pub__year=week[0],
+                                          week_number=week[1])\
+                                  .values_list()
 
                 for annonce in annonces:
                     if annonce[1] == 'cdi':
@@ -178,8 +193,10 @@ def create_json(periode):
                     elif annonce[1] == 'apprentissage':
                         types['apprentissage'][list(weeks).index(week)] = types['apprentissage'][list(weeks).index(week)] + 1
 
-                        if types['apprentissage'][list(weeks).index(week)] > max:
-                            max = types['apprentissage'][list(weeks).index(week)]
+                        if types['apprentissage'][list(weeks).index(week)]\
+                           > max:
+                            max = types['apprentissage'][list(weeks)
+                                                         .index(week)]
 
                     elif annonce[1] == 'vi':
                         types['vi'][list(weeks).index(week)] = types['vi'][list(weeks).index(week)] + 1
@@ -196,34 +213,29 @@ def create_json(periode):
                     elif annonce[1] == 'post doc':
                         types['post doc'][list(weeks).index(week)] = types['post doc'][list(weeks).index(week)] + 1
 
-                        if types['post doc'][list(weeks).index(week)] > max:
-                            max = types['post doc'][list(weeks).index(week)]
+                        if types['post doc'][list(weeks).index(week)]\
+                           > max:
+                            max = types['post doc'][list(weeks)
+                                                    .index(week)]
 
                     elif annonce[1] == 'mission':
-                        types['mission'][list(weeks).index(week)] = types['mission'][list(weeks).index(week)] + 1
+                        types['mission'][list(weeks).index(week)] = \
+                        types['mission'][list(weeks).index(week)] + 1
 
                         if types['mission'][list(weeks).index(week)] > max:
                             max = types['mission'][list(weeks).index(week)]
 
                     elif annonce[1] == 'autre':
-                        types['autre'][list(weeks).index(week)] = types['autre'][list(weeks).index(week)] + 1
+                        types['autre'][list(weeks).index(week)] =\
+                        types['autre'][list(weeks).index(week)] + 1
 
                         if types['autre'][list(weeks).index(week)] > max:
                             max = types['autre'][list(weeks).index(week)]
 
                     data = {'max': max, 'types': types, 'legend': agreg}
 
-                    with open('/home/pvernier/code/python/django_projects/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
+                    with open('/home/pvernier/code/python/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
                         f.write(json.dumps(data))
-
-
-
-
-
-
-
-
-        
 
 
 create_json('year') 
