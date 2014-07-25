@@ -60,48 +60,48 @@ class Fillin():
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
-                    type_contrat = 'CDI'
+                    type_contrat = 'cdi'
 
                 elif contrat[0][2] == 1:
-                    type_contrat = 'CDD'
+                    type_contrat = 'cdd'
 
                 elif contrat[0][3] == 1:
                     print(str(offre))
-                    type_contrat = 'FPT'
+                    type_contrat = 'fpt'
 
                 elif contrat[0][4] == 1:
                     print(str(offre))
-                    type_contrat = 'Stage'
+                    type_contrat = 'stage'
 
                 elif contrat[0][5] == 1:
                     print(str(offre))
-                    type_contrat = 'Apprentissage'
+                    type_contrat = 'apprentissage'
 
                 elif contrat[0][6] == 1:
                     print(str(offre))
-                    type_contrat = 'VI'
+                    type_contrat = 'vi'
 
                 elif contrat[0][7] == 1:
                     print(str(offre))
-                    type_contrat = 'Thèse'
+                    type_contrat = 'these'
 
                 elif contrat[0][8] == 1:
                     print(str(offre))
-                    type_contrat = 'Post doc'
+                    type_contrat = 'post doc'
 
                 elif contrat[0][9] == 1:
                     print(str(offre))
-                    type_contrat = 'Mission'
+                    type_contrat = 'mission'
 
                 elif contrat[0][10]:
-                    type_contrat = 'Autre'
+                    type_contrat = 'autre'
 
                 # etc ...
                 self.c_django.execute('INSERT INTO jobs_contrat VALUES \
-                                      (?,?,?,?,?)', (str(offre),
+                                      (?,?,?,?,?,?,?)', (str(offre),
                                       type_contrat, date_object,
                                       date_object.isocalendar()[1],
-                                      date_object.isocalendar()[2]))
+                                      date_object.isocalendar()[2]), '', '')
 
                 self.conn_django.commit()
 
@@ -169,65 +169,65 @@ class Fillin():
                                           .values_list()
 
                     for annonce in annonces:
-                        if annonce[1] == 'CDI':
-                            types['CDI'][list(jours_contrats).index(jour)] = types['CDI'][list(jours_contrats).index(jour)] + 1
+                        if annonce[1] == 'cdi':
+                            types['cdi'][list(jours_contrats).index(jour)] = types['cdi'][list(jours_contrats).index(jour)] + 1
 
-                            if types['CDI'][list(jours_contrats).index(jour)] > max:
-                                max = types['CDI'][list(jours_contrats).index(jour)]
+                            if types['cdi'][list(jours_contrats).index(jour)] > max:
+                                max = types['cdi'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'CDD':
-                            types['CDD'][list(jours_contrats).index(jour)] = types['CDD'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'cdd':
+                            types['cdd'][list(jours_contrats).index(jour)] = types['cdd'][list(jours_contrats).index(jour)] + 1
 
-                            if types['CDD'][list(jours_contrats).index(jour)] > max:
-                                max = types['CDD'][list(jours_contrats).index(jour)]
+                            if types['cdd'][list(jours_contrats).index(jour)] > max:
+                                max = types['cdd'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'FPT':
-                            types['FPT'][list(jours_contrats).index(jour)] = types['FPT'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'fpt':
+                            types['fpt'][list(jours_contrats).index(jour)] = types['fpt'][list(jours_contrats).index(jour)] + 1
 
-                            if types['FPT'][list(jours_contrats).index(jour)] > max:
-                                max = types['FPT'][list(jours_contrats).index(jour)]
+                            if types['fpt'][list(jours_contrats).index(jour)] > max:
+                                max = types['fpt'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Stage':
-                            types['Stage'][list(jours_contrats).index(jour)] = types['Stage'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'stage':
+                            types['stage'][list(jours_contrats).index(jour)] = types['stage'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Stage'][list(jours_contrats).index(jour)] > max:
-                                max = types['Stage'][list(jours_contrats).index(jour)]
+                            if types['stage'][list(jours_contrats).index(jour)] > max:
+                                max = types['stage'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Apprentissage':
-                            types['Apprentissage'][list(jours_contrats).index(jour)] = types['Apprentissage'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'apprentissage':
+                            types['apprentissage'][list(jours_contrats).index(jour)] = types['apprentissage'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Apprentissage'][list(jours_contrats).index(jour)] > max:
-                                max = types['Apprentissage'][list(jours_contrats).index(jour)]
+                            if types['apprentissage'][list(jours_contrats).index(jour)] > max:
+                                max = types['apprentissage'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'VI':
-                            types['VI'][list(jours_contrats).index(jour)] = types['VI'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'vi':
+                            types['vi'][list(jours_contrats).index(jour)] = types['vi'][list(jours_contrats).index(jour)] + 1
 
-                            if types['VI'][list(jours_contrats).index(jour)] > max:
-                                max = types['VI'][list(jours_contrats).index(jour)]
+                            if types['vi'][list(jours_contrats).index(jour)] > max:
+                                max = types['vi'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Thèse':
-                            types['Thèse'][list(jours_contrats).index(jour)] = types['Thèse'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'these':
+                            types['these'][list(jours_contrats).index(jour)] = types['these'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Thèse'][list(jours_contrats).index(jour)] > max:
-                                max = types['Thèse'][list(jours_contrats).index(jour)]
+                            if types['these'][list(jours_contrats).index(jour)] > max:
+                                max = types['these'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Post doc':
-                            types['Post doc'][list(jours_contrats).index(jour)] = types['Post doc'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'post doc':
+                            types['post doc'][list(jours_contrats).index(jour)] = types['post doc'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Post doc'][list(jours_contrats).index(jour)] > max:
-                                max = types['Post doc'][list(jours_contrats).index(jour)]
+                            if types['post doc'][list(jours_contrats).index(jour)] > max:
+                                max = types['post doc'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Mission':
-                            types['Mission'][list(jours_contrats).index(jour)] = types['Mission'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'mission':
+                            types['mission'][list(jours_contrats).index(jour)] = types['mission'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Mission'][list(jours_contrats).index(jour)] > max:
-                                max = types['Mission'][list(jours_contrats).index(jour)]
+                            if types['mission'][list(jours_contrats).index(jour)] > max:
+                                max = types['mission'][list(jours_contrats).index(jour)]
 
-                        elif annonce[1] == 'Autre':
-                            types['Autre'][list(jours_contrats).index(jour)] = types['Autre'][list(jours_contrats).index(jour)] + 1
+                        elif annonce[1] == 'autre':
+                            types['autre'][list(jours_contrats).index(jour)] = types['autre'][list(jours_contrats).index(jour)] + 1
 
-                            if types['Autre'][list(jours_contrats).index(jour)] > max:
-                                max = types['Autre'][list(jours_contrats).index(jour)]
+                            if types['autre'][list(jours_contrats).index(jour)] > max:
+                                max = types['autre'][list(jours_contrats).index(jour)]
 
                         data = {'max': max, 'types': types, 'legend': agreg}
 
@@ -265,71 +265,71 @@ class Fillin():
                                       .values_list()
 
                     for annonce in annonces:
-                        if annonce[1] == 'CDI':
-                            types['CDI'][list(weeks).index(week)] = types['CDI'][list(weeks).index(week)] + 1
+                        if annonce[1] == 'cdi':
+                            types['cdi'][list(weeks).index(week)] = types['cdi'][list(weeks).index(week)] + 1
 
-                            if types['CDI'][list(weeks).index(week)] > max:
-                                max = types['CDI'][list(weeks).index(week)]
+                            if types['cdi'][list(weeks).index(week)] > max:
+                                max = types['cdi'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'CDD':
-                            types['CDD'][list(weeks).index(week)] = types['CDD'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'cdd':
+                            types['cdd'][list(weeks).index(week)] = types['cdd'][list(weeks).index(week)] + 1
 
-                            if types['CDD'][list(weeks).index(week)] > max:
-                                max = types['CDD'][list(weeks).index(week)]
+                            if types['cdd'][list(weeks).index(week)] > max:
+                                max = types['cdd'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'FPT':
-                            types['FPT'][list(weeks).index(week)] = types['FPT'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'fpt':
+                            types['fpt'][list(weeks).index(week)] = types['fpt'][list(weeks).index(week)] + 1
 
-                            if types['FPT'][list(weeks).index(week)] > max:
-                                max = types['FPT'][list(weeks).index(week)]
+                            if types['fpt'][list(weeks).index(week)] > max:
+                                max = types['fpt'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'Stage':
-                            types['Stage'][list(weeks).index(week)] = types['Stage'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'stage':
+                            types['stage'][list(weeks).index(week)] = types['stage'][list(weeks).index(week)] + 1
 
-                            if types['Stage'][list(weeks).index(week)] > max:
-                                max = types['Stage'][list(weeks).index(week)]
+                            if types['stage'][list(weeks).index(week)] > max:
+                                max = types['stage'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'Apprentissage':
-                            types['Apprentissage'][list(weeks).index(week)] = types['Apprentissage'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'apprentissage':
+                            types['apprentissage'][list(weeks).index(week)] = types['apprentissage'][list(weeks).index(week)] + 1
 
-                            if types['Apprentissage'][list(weeks).index(week)]\
+                            if types['apprentissage'][list(weeks).index(week)]\
                                > max:
-                                max = types['Apprentissage'][list(weeks)
+                                max = types['apprentissage'][list(weeks)
                                                              .index(week)]
 
-                        elif annonce[1] == 'VI':
-                            types['VI'][list(weeks).index(week)] = types['VI'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'vi':
+                            types['vi'][list(weeks).index(week)] = types['vi'][list(weeks).index(week)] + 1
 
-                            if types['VI'][list(weeks).index(week)] > max:
-                                max = types['VI'][list(weeks).index(week)]
+                            if types['vi'][list(weeks).index(week)] > max:
+                                max = types['vi'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'Thèse':
-                            types['Thèse'][list(weeks).index(week)] = types['Thèse'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'these':
+                            types['these'][list(weeks).index(week)] = types['these'][list(weeks).index(week)] + 1
 
-                            if types['Thèse'][list(weeks).index(week)] > max:
-                                max = types['Thèse'][list(weeks).index(week)]
+                            if types['these'][list(weeks).index(week)] > max:
+                                max = types['these'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'Post doc':
-                            types['Post doc'][list(weeks).index(week)] = types['Post doc'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'post doc':
+                            types['post doc'][list(weeks).index(week)] = types['post doc'][list(weeks).index(week)] + 1
 
-                            if types['Post doc'][list(weeks).index(week)]\
+                            if types['post doc'][list(weeks).index(week)]\
                                > max:
-                                max = types['Post doc'][list(weeks)
+                                max = types['post doc'][list(weeks)
                                                         .index(week)]
 
-                        elif annonce[1] == 'Mission':
-                            types['Mission'][list(weeks).index(week)] = \
-                            types['Mission'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'mission':
+                            types['mission'][list(weeks).index(week)] = \
+                            types['mission'][list(weeks).index(week)] + 1
 
-                            if types['Mission'][list(weeks).index(week)] > max:
-                                max = types['Mission'][list(weeks).index(week)]
+                            if types['mission'][list(weeks).index(week)] > max:
+                                max = types['mission'][list(weeks).index(week)]
 
-                        elif annonce[1] == 'Autre':
-                            types['Autre'][list(weeks).index(week)] =\
-                            types['Autre'][list(weeks).index(week)] + 1
+                        elif annonce[1] == 'autre':
+                            types['autre'][list(weeks).index(week)] =\
+                            types['autre'][list(weeks).index(week)] + 1
 
-                            if types['Autre'][list(weeks).index(week)] > max:
-                                max = types['Autre'][list(weeks).index(week)]
+                            if types['autre'][list(weeks).index(week)] > max:
+                                max = types['autre'][list(weeks).index(week)]
 
                         data = {'max': max, 'types': types, 'legend': agreg}
 
