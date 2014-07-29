@@ -101,7 +101,7 @@ class Fillin():
                                       (?,?,?,?,?,?,?)', (str(offre),
                                       type_contrat, date_object,
                                       date_object.isocalendar()[1],
-                                      date_object.isocalendar()[2]), '', '')
+                                      date_object.isocalendar()[2], '', ''))
 
                 self.conn_django.commit()
 
