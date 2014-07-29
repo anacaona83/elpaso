@@ -9,7 +9,7 @@
 #
 # Python: 3.4.x
 # Created: 18/04/2014
-# Updated: 23/06/2014
+# Updated: 23/07/2014
 # Licence: GPL 3
 #-------------------------------------------------------------------------------
 
@@ -140,34 +140,35 @@ class Analizer():
 
     def parse_lieux(self, li_id, db_cursor):
         """ extraction des lieux des offres 
-        liste des pays issues de : http://sql.sh/514-liste-pays-csv-xml"""
+        liste des pays issue de : http://sql.sh/514-liste-pays-csv-xml"""
         for offre in li_id:
             db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
             titre = db_cursor.fetchone()
+            titre = titre[0][titre[0].index("]")+1:len(titre[0])]
             # trying to get the French departement code
-            dpt_code = re.findall("(2[AB]|[0-9]+)", titre[0])
+            dpt_code = re.findall("(2[AB]|[0-9]+)", titre)
             if dpt_code:
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(dpt_code[0]), 3))
                 self.manage_connection(1)
                 logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
                 continue
-            elif "idf" in titre[0].lower() or "Paris" in titre[0].lower() or "île de france" in titre[0].lower() or "île-de-france" in titre[0].lower():
+            elif "idf" in titre.lower() or "Paris" in titre.lower() or "île de france" in titre.lower() or "île-de-france" in titre[0].lower():
                 db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(75), 3))
                 self.manage_connection(1)
                 logger.append("{0} ({1}) => Lieux parsed".format(str(offre), "IDF"))
                 continue
-            elif any(pays.lower() in titre[0].lower() for pays in data.tup_pays):
+            elif any(pays.lower() in titre.lower() for pays in data.tup_pays):
                 for pays in data.tup_pays:
-                    if pays in titre[0]:
+                    if pays in titre:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), pays, 1))
                         self.manage_connection(1)
                         logger.append("{0} ({1}) => Lieux parsed".format(str(offre), pays))
                         break
                     else:
                         continue
-            elif any(ville.lower() in titre[0].lower() for ville in data.tup_villes_fr100):
+            elif any(ville.lower() in titre.lower() for ville in data.tup_villes_fr100):
                 for ville in data.tup_villes_fr100:
-                    if ville in titre[0]:
+                    if ville in titre:
                         db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), ville, 4))
                         self.manage_connection(1)
                         logger.append("{0} ({1}) => Lieux parsed".format(str(offre), ville))
