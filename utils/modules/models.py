@@ -1,13 +1,14 @@
-from os import path, environ
+from os import path, environ, listdir
 import sys
 import sqlite3
 import json
-from datetime import datetime
+import time
+from datetime import date as dt, datetime
 from . import LogGuy
 
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
-from jobs.models import Contrat
+from jobs.models import Contrat, Year
 
 # logger object
 logger = LogGuy.Logyk()
@@ -35,6 +36,36 @@ class Fillin():
         self.create_json('month')
         self.create_json('week')
         self.create_json('day')
+
+    def periodizer(self, li_id, db_cursor):
+
+        for offre in li_id:
+            db_cursor.execute("SELECT * FROM contrats WHERE id = "
+                              + str(offre))
+            # Je récupère dans la variable 'contrat' toutes les colonnes de
+            # l'objet
+            contrat = db_cursor.fetchall()
+
+            # Je récupère la date de l'annonce
+            db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
+                              + str(offre))
+            date = db_cursor.fetchone()
+            date_object = datetime.strptime(date[0], "%a, %d %b %Y \
+                                            %H:%M:%S +0200")
+
+            year = date_object[0]
+            month_number = date_object[1]
+            day_number = date_object[2]
+            week = dt(year, month_number, day_number).isocalendar()[1]
+            first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
+
+            self.c_django.execute('INSERT INTO jobs_years VALUES \
+                                      (?,?,?,?,?,?,?,?,?,?,?)', ())
+
+            self.conn_django.commit()
+
+
+
 
     def contrats(self, li_id, db_cursor):
         """Méthode qui remplit la table du modele à partir de la table
@@ -362,6 +393,30 @@ class Fillin():
                         with open('/home/pvernier/code/python/elpaso/static/json/contrats_' + periode + '.json', 'w') as f:
                             f.write(json.dumps(data))
 
+        # Je traite les lieux
+        # Je fais un CSV par mois et par année qui contiennent tous les
+        # types de contrats pour ce mois ou cette année
+
+        # Je dois savoir si le ficheir CSV correspondant à la date existe
+        # déjà (dans ce cas je dois l'éditer) ou s'il faut que j'en créé
+        # un nouveau
+
+        # structure des noms de fichiers CSV :
+        # 2014_01.csv (mois)
+        # 2014_12.csv
+        # 2014.csv (année)
+        # 2015.csv
+
+        # Je dois donc récupérer le mois et l'année de l'offre et comparer
+        # avec le dernier fichier CSV (des mois et des années)
+
+        # Les années
+        files_year = listdir('/home/pvernier/code/python/elpaso/static/csv/year')
+
+        # Les mois
+        files_month = listdir('/home/pvernier/code/python/elpaso/static/csv/month')
+
+
 if __name__ == '__main__':
 
     #print('Stand-alone execution')
@@ -372,7 +427,6 @@ if __name__ == '__main__':
     # fetching the ID list
     c.execute("SELECT id FROM georezo")
     liste_input = [i[0] for i in c.fetchall()]
-    #liste_input = c.fetchall()
     #print(liste_input)
     Fillin(liste_input).contrats(liste_input, c)
 
