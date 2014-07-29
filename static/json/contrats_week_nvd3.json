@@ -1,0 +1,128 @@
+/*
+Structure données
+"key" : "type de contrat"
+"values" : [
+			[date_epochtime, occurrences],
+			....
+			]
+En python, pour avoir l'epoch time (en secondes) : 
+int(time.mktime(time.strptime('2000-01-01 12:34:00', '%Y-%m-%d %H:%M:%S'))) - time.timezone
+> 946730040
+
+avoir l'epoch time à partir du numéro de la semaine d'une année :
+int(time.mktime(time.strptime('2014-25', '%Y-%W'))) - time.timezone
+> 1403478000000
+
+pour avoir l'epoch time du 1er jour d'une semaine et d'une année données :
+int(time.mktime(time.strptime('2014 30 1', '%Y %W %w'))) - time.timezone
+> 1406502000
+
+Traduire l'epoch time :
+si le timestamps est en millisecondes :
+time.gmtime(1025409600000/1000)
+> time.struct_time(tm_year=2002, tm_mon=6, tm_mday=30, tm_hour=4, tm_min=0, tm_sec=0, tm_wday=6, tm_yday=181, tm_isdst=0)
+
+si le timestamp est en secondes :
+time.gmtime(946730040)
+> time.struct_time(tm_year=2000, tm_mon=1, tm_mday=1, tm_hour=12, tm_min=34, tm_sec=0, tm_wday=5, tm_yday=1, tm_isdst=0)
+
+pour avoir le numéro de la semaine de l'année à partir d'un jour
+datetime.date(2014,07,01).isocalendar()[1]
+
+pour avoir l'epoch time du 1er jour d'une semaine d'une année données :
+1000 * (int(time.mktime(time.strptime('2014 30 1', '%Y %W %w'))) - time.timezone)
+			*/
+
+
+
+[
+	{"key" : "fpt",
+	"values" : [ 
+				[ 1403478000000, 1],
+				[ 1404082800000, 3],
+				[ 1404687600000, 2],
+				[ 1405292400000, 0],
+				[ 1405897200000, 0],
+				[ 1406502000000, 1]
+			]
+	},
+
+	{"key" : "these",
+	"values" : [ 
+				[ 1403478000000, 0],
+				[ 1404082800000, 0],
+				[ 1404687600000, 0],
+				[ 1405292400000, 0],
+				[ 1405897200000, 0],
+				[ 1406502000000, 1]
+			]
+	},
+
+	{"key" : "apprentissage",
+	"values" : [ 
+				[ 1403478000000, 0],
+				[ 1404082800000, 3],
+				[ 1404687600000, 0],
+				[ 1405292400000, 0],
+				[ 1405897200000, 1],
+				[ 1406502000000, 0]
+			]
+	},
+
+	{"key" : "autre",
+	"values" : [ 
+				[ 1403478000000, 1],
+				[ 1404082800000, 0],
+				[ 1404687600000, 1],
+				[ 1405292400000, 3],
+				[ 1405897200000, 0],
+				[ 1406502000000, 0]
+			]
+	},
+
+	{"key" : "cdd",
+	"values" : [ 
+				[ 1403478000000, 2],
+				[ 1404082800000, 11],
+				[ 1404687600000, 9],
+				[ 1405292400000, 7],
+				[ 1405897200000, 6],
+				[ 1406502000000, 5]
+			]
+	},
+
+
+	{"key" : "cdi",
+	"values" : [ 
+				[ 1403478000000, 7],
+				[ 1404082800000, 5],
+				[ 1404687600000, 6],
+				[ 1405292400000, 6],
+				[ 1405897200000, 9],
+				[ 1406502000000, 8]
+			]
+	},
+
+	{"key" : "mission",
+	"values" : [ 
+				[ 1403478000000, 0],
+				[ 1404082800000, 1],
+				[ 1404687600000, 1],
+				[ 1405292400000, 1],
+				[ 1405897200000, 0],
+				[ 1406502000000, 5]
+			]
+	},
+
+	{"key" : "stage",
+	"values" : [ 
+				[ 1403478000000, 0],
+				[ 1404082800000, 3],
+				[ 1404687600000, 0],
+				[ 1405292400000, 1],
+				[ 1405897200000, 2],
+				[ 1406502000000, 0]
+			]
+	}
+
+]

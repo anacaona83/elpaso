@@ -20,7 +20,7 @@ Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/
 - [X] finaliser le script de récupération et d'insertion dans la BD
 - [ ] Nombre de workers de gunicorn
 - [ ] Différents logs serveur
-- [ ] installer et configurer NVD3 @novus/nvd3
+- [X] installer et configurer NVD3 @Guts
 
 # Principe
 
@@ -220,7 +220,11 @@ Bibliographie :
 
 ## Dépendances
 
-bootstrap etc
+Télécharger les librairies et modifier les chemins correspondants
+
+* [Bootstrap 3.2.0](https://github.com/twbs/bootstrap/releases/download/v3.2.0/bootstrap-3.2.0-dist.zip)
+* [D3.js](https://github.com/mbostock/d3/releases/download/v3.4.11/d3.zip)
+* [NVD3](http://nvd3.org) : [nv.d3.js](https://raw.github.com/novus/nvd3/master/nv.d3.min.js) & [NVD3 CSS](https://raw.githubusercontent.com/novus/nvd3/master/src/nv.d3.css)
 
 ## Planifier la tâche planifiée (cron)
 
