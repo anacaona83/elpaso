@@ -58,6 +58,11 @@ class Fillin():
             date_object = datetime.strptime(date[0], "%a, %d %b %Y \
                                             %H:%M:%S +0200")
 
+            # Je récupère les infos sur les lieux
+            db_cursor.execute("SELECT lieu_lib, lieu_type FROM lieux WHERE id = " + str(offre))
+            # Je récupère ces infos dans la variable 'lieux'
+            lieux = db_cursor.fetchall()
+
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
                     type_contrat = 'cdi'
@@ -96,12 +101,33 @@ class Fillin():
                 elif contrat[0][10]:
                     type_contrat = 'autre'
 
-                # etc ...
+                # Je traite les lieux
+                # Ces conditions seront à changer plus tard
+                # Il ne devrait pas y avoir autant de cas
+
+                # Departement
+                if lieux[0][1] == '3':
+                    if (len(lieux[0][0]) == 2 or len(lieux[0][0]) == 3):
+                        dept = lieux[0][0]
+                    elif len(lieux[0][0]) == 1:
+                        dept = '0' + lieux[0][0]
+                    elif len(lieux[0][0]) > 3:
+                        dept = lieux[0][0][0:2]
+                    # Ne devrait pas être nécessaire
+                    else:
+                        dept = '99'
+                    pays = 'France'
+                # Pays
+                if lieux[0][1] == '1':
+                    pays = lieux[0][1]
+                    dept = '99'
+
                 self.c_django.execute('INSERT INTO jobs_contrat VALUES \
                                       (?,?,?,?,?,?,?)', (str(offre),
                                       type_contrat, date_object,
                                       date_object.isocalendar()[1],
-                                      date_object.isocalendar()[2], '', ''))
+                                      date_object.isocalendar()[2],
+                                      dept, pays))
 
                 self.conn_django.commit()
 
