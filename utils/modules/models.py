@@ -170,29 +170,32 @@ class Fillin():
                 # Ces conditions seront à changer plus tard
                 # Il ne devrait pas y avoir autant de cas
 
+                # Le code commenté ci-dessous n'est pas bon
+
                 # Departement
-                if lieux[0][1] == '3':
-                    if (len(lieux[0][0]) == 2 or len(lieux[0][0]) == 3):
-                        dept = lieux[0][0]
-                    elif len(lieux[0][0]) == 1:
-                        dept = '0' + lieux[0][0]
-                    elif len(lieux[0][0]) > 3:
-                        dept = lieux[0][0][0:2]
-                    # Ne devrait pas être nécessaire
-                    else:
-                        dept = '99'
-                    pays = 'France'
-                # Pays
-                else:
-                    pays = lieux[0][1]
-                    dept = '99'
+                # if lieux[0][1] == '3':
+                #     if (len(lieux[0][0]) == 2 or len(lieux[0][0]) == 3):
+                #         dept = lieux[0][0]
+                #     elif len(lieux[0][0]) == 1:
+                #         dept = '0' + lieux[0][0]
+                #     elif len(lieux[0][0]) > 3:
+                #         dept = lieux[0][0][0:2]
+                #     # Ne devrait pas être nécessaire
+                #     else:
+                #         dept = '99'
+                #     pays = 'France'
+                # # Pays
+                # else:
+                #     pays = lieux[0][1]
+                #     dept = '99'
+
 
                 self.c_django.execute('INSERT INTO jobs_contrat VALUES \
                                       (?,?,?,?,?,?,?)', (str(offre),
                                       type_contrat, date_object,
                                       date_object.isocalendar()[1],
                                       date_object.isocalendar()[2],
-                                      dept, pays))
+                                      '', ''))
 
                 self.conn_django.commit()
 
