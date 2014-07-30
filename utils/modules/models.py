@@ -59,6 +59,46 @@ class Fillin():
             week = dt(year, month_number, day_number).isocalendar()[1]
             first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
 
+            if len(contrat) > 0:
+                if contrat[0][1] == 1:
+                    type_contrat = 'cdi'
+
+                elif contrat[0][2] == 1:
+                    type_contrat = 'cdd'
+
+                elif contrat[0][3] == 1:
+                    print(str(offre))
+                    type_contrat = 'fpt'
+
+                elif contrat[0][4] == 1:
+                    print(str(offre))
+                    type_contrat = 'stage'
+
+                elif contrat[0][5] == 1:
+                    print(str(offre))
+                    type_contrat = 'apprentissage'
+
+                elif contrat[0][6] == 1:
+                    print(str(offre))
+                    type_contrat = 'vi'
+
+                elif contrat[0][7] == 1:
+                    print(str(offre))
+                    type_contrat = 'these'
+
+                elif contrat[0][8] == 1:
+                    print(str(offre))
+                    type_contrat = 'post doc'
+
+                elif contrat[0][9] == 1:
+                    print(str(offre))
+                    type_contrat = 'mission'
+
+                elif contrat[0][10]:
+                    type_contrat = 'autre'
+
+
+
             self.c_django.execute('INSERT INTO jobs_years VALUES \
                                       (?,?,?,?,?,?,?,?,?,?,?)', ())
 
@@ -102,11 +142,9 @@ class Fillin():
                     type_contrat = 'cdd'
 
                 elif contrat[0][3] == 1:
-                    print(str(offre))
                     type_contrat = 'fpt'
 
                 elif contrat[0][4] == 1:
-                    print(str(offre))
                     type_contrat = 'stage'
 
                 elif contrat[0][5] == 1:
@@ -114,19 +152,15 @@ class Fillin():
                     type_contrat = 'apprentissage'
 
                 elif contrat[0][6] == 1:
-                    print(str(offre))
                     type_contrat = 'vi'
 
                 elif contrat[0][7] == 1:
-                    print(str(offre))
                     type_contrat = 'these'
 
                 elif contrat[0][8] == 1:
-                    print(str(offre))
                     type_contrat = 'post doc'
 
                 elif contrat[0][9] == 1:
-                    print(str(offre))
                     type_contrat = 'mission'
 
                 elif contrat[0][10]:
@@ -149,7 +183,7 @@ class Fillin():
                         dept = '99'
                     pays = 'France'
                 # Pays
-                if lieux[0][1] == '1':
+                else:
                     pays = lieux[0][1]
                     dept = '99'
 
