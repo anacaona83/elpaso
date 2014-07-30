@@ -8,7 +8,7 @@ from . import LogGuy
 
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
-from jobs.models import Contrat, Year
+from jobs.models import Contrat
 
 # logger object
 logger = LogGuy.Logyk()
@@ -37,8 +37,10 @@ class Fillin():
         self.create_json('week')
         self.create_json('day')
 
-    def periodizer(self, li_id, db_cursor):
+        self.periodizer(liste_identifiants_offre, self.c)
 
+    def periodizer(self, li_id, db_cursor):
+        ''' TO DO '''
         for offre in li_id:
             db_cursor.execute("SELECT * FROM contrats WHERE id = "
                               + str(offre))
@@ -53,56 +55,68 @@ class Fillin():
             date_object = datetime.strptime(date[0], "%a, %d %b %Y \
                                             %H:%M:%S +0200")
 
-            year = date_object[0]
-            month_number = date_object[1]
-            day_number = date_object[2]
-            week = dt(year, month_number, day_number).isocalendar()[1]
-            first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
+            year = date_object.year
+            month_number = date_object.month
+            # A corriger
+            # day_number = date_object[2]
+            # week = dt(year, month_number, day_number).isocalendar()[1]
+            # first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
+
+            self.c_django.execute('SELECT * FROM jobs_years WHERE year = ' +
+                                   str(year))
+            val_types = self.c_django.fetchall()
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
-                    type_contrat = 'cdi'
+                    self.c_django.execute('UPDATE jobs_year SET cdi = ' +
+                                      str(val_types[0][2] + 1) + ' WHERE year = ' + str(year))
 
                 elif contrat[0][2] == 1:
-                    type_contrat = 'cdd'
+                    self.c_django.execute('UPDATE jobs_year SET cdd = ' +
+                                      str(val_types[0][3] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][3] == 1:
-                    print(str(offre))
-                    type_contrat = 'fpt'
+                    self.c_django.execute('UPDATE jobs_year SET fpt = ' +
+                                      str(val_types[0][4] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][4] == 1:
-                    print(str(offre))
-                    type_contrat = 'stage'
+                    self.c_django.execute('UPDATE jobs_year SET stage = ' +
+                                      str(val_types[0][5] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][5] == 1:
-                    print(str(offre))
-                    type_contrat = 'apprentissage'
+                    self.c_django.execute('UPDATE jobs_year SET apprentissage = ' +
+                                      str(val_types[0][6] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][6] == 1:
-                    print(str(offre))
-                    type_contrat = 'vi'
+                    self.c_django.execute('UPDATE jobs_year SET vi = ' +
+                                      str(val_types[0][7] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][7] == 1:
-                    print(str(offre))
-                    type_contrat = 'these'
+                    self.c_django.execute('UPDATE jobs_year SET these = ' +
+                                      str(val_types[0][8] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][8] == 1:
-                    print(str(offre))
-                    type_contrat = 'post doc'
+                    self.c_django.execute('UPDATE jobs_year SET post_doc = ' +
+                                      str(val_types[0][9] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][9] == 1:
-                    print(str(offre))
-                    type_contrat = 'mission'
+                    self.c_django.execute('UPDATE jobs_year SET mission = ' +
+                                      str(val_types[0][10] + 1) + ' WHERE year = ' +
+                                      str(year))
 
                 elif contrat[0][10]:
-                    type_contrat = 'autre'
+                    self.c_django.execute('UPDATE jobs_year SET autre = ' +
+                                      str(val_types[0][11] + 1) + ' WHERE year = ' +
+                                      str(year))
 
-
-
-            self.c_django.execute('INSERT INTO jobs_years VALUES \
-                                      (?,?,?,?,?,?,?,?,?,?,?)', ())
-
-            self.conn_django.commit()
+                self.conn_django.commit()
 
 
 

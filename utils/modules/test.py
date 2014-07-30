@@ -1,6 +1,9 @@
-from os import environ
+from os import environ, path
 import sys
 import json
+import sqlite3
+import time
+from datetime import date as dt, datetime
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
@@ -238,19 +241,108 @@ def create_json(periode):
                         f.write(json.dumps(data))
 
 
-create_json('year') 
-create_json('month')   
-create_json('week')
-create_json('day')
 
-# create_json('month')
-# # print('\n')
-# # print('\n')
-# create_json('year')
+def periodizer(li_id, db_cursor):
+
+    # connexion à la BD Django
+    db_django = path.abspath('/home/pvernier/code/python/elpaso/db.sqlite3')
+    conn_django = sqlite3.connect(db_django)
+    c_django = conn_django.cursor()
+
+    for offre in li_id:
+        db_cursor.execute("SELECT * FROM contrats WHERE id = "
+                          + str(offre))
+        # Je récupère dans la variable 'contrat' toutes les colonnes de
+        # l'objet
+        contrat = db_cursor.fetchall()
+
+        # Je récupère la date de l'annonce
+        db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
+                          + str(offre))
+        date = db_cursor.fetchone()
+        date_object = datetime.strptime(date[0], "%a, %d %b %Y \
+                                        %H:%M:%S +0200")
+
+        year = date_object.year
+        month_number = date_object.month
+        # A corriger
+        # day_number = date_object[2]
+        # week = dt(year, month_number, day_number).isocalendar()[1]
+        # first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
+
+        c_django.execute('SELECT * FROM jobs_year\
+                                          WHERE year = ' + str(year))
+        val_types = c_django.fetchall()
+
+        if len(contrat) > 0:
+            if contrat[0][1] == 1:
+                c_django.execute('UPDATE jobs_year SET cdi = ' +
+                                  str(val_types[0][2] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][2] == 1:
+                c_django.execute('UPDATE jobs_year SET cdd = ' +
+                                  str(val_types[0][3] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][3] == 1:
+                c_django.execute('UPDATE jobs_year SET fpt = ' +
+                                  str(val_types[0][4] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][4] == 1:
+                c_django.execute('UPDATE jobs_year SET stage = ' +
+                                  str(val_types[0][5] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][5] == 1:
+                c_django.execute('UPDATE jobs_year SET apprentissage = ' +
+                                  str(val_types[0][6] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][6] == 1:
+                c_django.execute('UPDATE jobs_year SET vi = ' +
+                                  str(val_types[0][7] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][7] == 1:
+                c_django.execute('UPDATE jobs_year SET these = ' +
+                                  str(val_types[0][8] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][8] == 1:
+                c_django.execute('UPDATE jobs_year SET post_doc = ' +
+                                  str(val_types[0][9] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][9] == 1:
+                c_django.execute('UPDATE jobs_year SET mission = ' +
+                                  str(val_types[0][10] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            elif contrat[0][10]:
+                c_django.execute('UPDATE jobs_year SET autre = ' +
+                                  str(val_types[0][11] + 1) + ' WHERE year = ' +
+                                  str(year))
+
+            conn_django.commit()
 
 
 
+# create_json('year') 
+# create_json('month')   
+# create_json('week')
+# create_json('day')
 
+
+db = path.abspath(r"../../elpaso.sqlite")
+conn = sqlite3.connect(db)
+c = conn.cursor()
+# fetching the ID list
+c.execute("SELECT id FROM georezo")
+liste_input = [i[0] for i in c.fetchall()]
+
+periodizer(liste_input, c)
 
 
 
