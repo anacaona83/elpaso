@@ -62,7 +62,7 @@ class Fillin():
             # week = dt(year, month_number, day_number).isocalendar()[1]
             # first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
 
-            self.c_django.execute('SELECT * FROM jobs_years WHERE year = ' +
+            self.c_django.execute('SELECT * FROM jobs_year WHERE year = ' +
                                    str(year))
             val_types = self.c_django.fetchall()
 
