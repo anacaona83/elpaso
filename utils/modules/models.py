@@ -57,10 +57,11 @@ class Fillin():
 
             year = date_object.year
             month_number = date_object.month
-            # A corriger
-            # day_number = date_object[2]
-            # week = dt(year, month_number, day_number).isocalendar()[1]
-            # first_day = time.strptime("{0} {1} 1".format(year, week), "%Y %W %w") - time.timezone
+            day_number = date_object.day
+            week = dt(year, month_number, day_number).isocalendar()[1]
+            first_day = time.asctime(time.strptime('{0} {1} 1'.format(year, week - 1), '%Y %W %w'))
+            first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
+            
 
             self.c_django.execute('SELECT * FROM jobs_year WHERE year = ' +
                                    str(year))
