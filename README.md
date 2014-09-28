@@ -6,8 +6,13 @@ Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/
 
 # ToDoList
 
+- [ ] union des tables dans une seule BD (django et crawler)
+- [ ] alimenter les tables par périodes
+- [ ] exporter en json sous format : key : date, values: (liste valeurs par types de contrats)
 - [ ] camembert par mois et par type de contrat (@Guts)
 - [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
+- [ ] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
+- [ ] graphique pour les types de contrats par mois (http://nvd3.org/examples/multiBar.html)
 - [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
 - [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
 - [X] optimiser le html avec intégration de bootstrap (@pvernier)
@@ -15,7 +20,6 @@ Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/
 - [ ] optimisation du cache pour les fichiers JSON
 - [X] ajout des libraires JS en local (d3, bootstrap et jquery)
 - [ ] mise en page globale (menu bandeau type BS)
-- [ ] union des tables dans une seule BD (django et crawler)
 - [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
 - [X] finaliser le script de récupération et d'insertion dans la BD
 - [ ] Nombre de workers de gunicorn

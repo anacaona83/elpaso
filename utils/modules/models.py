@@ -52,9 +52,10 @@ class Fillin():
             db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
                               + str(offre))
             date = db_cursor.fetchone()
-            date_object = datetime.strptime(date[0], "%a, %d %b %Y \
-                                            %H:%M:%S +0200")
+            date_object = datetime.strptime(date[0],
+                                            "%a, %d %b %Y %H:%M:%S +0200")
 
+            # découpage de la date
             year = date_object.year
             month_number = date_object.month
             day_number = date_object.day
@@ -62,15 +63,16 @@ class Fillin():
             first_day = time.asctime(time.strptime('{0} {1} 1'.format(year, week - 1), '%Y %W %w'))
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
             
-
-            self.c_django.execute('SELECT * FROM jobs_year WHERE year = ' +
-                                   str(year))
+            #
+            self.c_django.execute('SELECT * FROM jobs_year WHERE year = ' + str(year))
             val_types = self.c_django.fetchall()
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
                     self.c_django.execute('UPDATE jobs_year SET cdi = ' +
                                       str(val_types[0][2] + 1) + ' WHERE year = ' + str(year))
+                    self.c_django.execute('UPDATE jobs_month SET cdi = ' +
+                                      str(val_types[0][2] + 1) + ' WHERE year = {0} AND month = {1}'.format(str(year), str(month)) )
 
                 elif contrat[0][2] == 1:
                     self.c_django.execute('UPDATE jobs_year SET cdd = ' +

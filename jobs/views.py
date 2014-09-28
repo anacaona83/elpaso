@@ -30,13 +30,15 @@ def contrat_json(request):
 
         if periode == 'month':
             annonces = Contrat.objects.filter(date_pub__year = jour.year,
-                                   date_pub__month = jour.month).values_list()
+                                              date_pub__month = jour.month).values_list()
         elif periode == 'year':
             annonces = Contrat.objects.filter(date_pub__year = jour.year).values_list()
-        else:
+        elif periode == 'week':
             annonces = Contrat.objects.filter(date_pub__year = jour.year,
-                                   date_pub__month = jour.month,
-                                   date_pub__day = jour.day).values_list()
+                                              date_pub__month = jour.month,
+                                              date_pub__day = jour.day).values_list()
+        else:
+            continue
 
         for annonce in annonces:
             if annonce[1] == 'cdi':

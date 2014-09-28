@@ -16,7 +16,7 @@ nv.addGraph(function() {
 //Donut chart example
 nv.addGraph(function() {
   var chart = nv.models.pieChart()
-      // .x(function(d) { return d.label })
+      .x(function(d) { return d.label })
       .y(function(d) { return d.value })
       .showLabels(false)     //Display pie labels
       .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
