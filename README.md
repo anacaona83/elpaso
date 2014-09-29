@@ -4,6 +4,11 @@ El Paso
 Statistiques dynamiques sur les offres d'emploi en géomatique publiées sur le forum francophone de géomatique [GeoRezo](http://georezo.net/forum/viewforum.php?id=10).
 Pour tester : [serveur de démonstration](http://62.210.239.81/contrats_exploit/)
 
+Pourquoi El Paso ? Depuis des temps immémoriaux, le choix d'un nom de projet informatique est cornélien. Né autour de fajitas et de rhum, le nom El Paso s'est imposé comme une évidence. Bien traduit, il représente le petit pas qui sépare un chercheur d'emploi d'un poste. Une simple offre, un simple pas... non, en fait, rien de tout cela, c'était juste parce-que les fajitas étaient bonnes !
+
+![El Paso, logo](doc/OldElPaso_logo.jpg "Logo Old El Paso")
+
+
 # ToDoList
 
 - [ ] union des tables dans une seule BD (django et crawler)
