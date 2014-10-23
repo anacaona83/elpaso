@@ -245,7 +245,7 @@ def create_json(periode):
 def periodizer(li_id, db_cursor):
 
     # connexion à la BD Django
-    db_django = path.abspath('/home/pvernier/code/python/elpaso/db.sqlite3')
+    db_django = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
     conn_django = sqlite3.connect(db_django)
     c_django = conn_django.cursor()
 

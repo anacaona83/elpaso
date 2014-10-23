@@ -23,7 +23,7 @@ class Fillin():
         self.c = self.conn.cursor()
 
         # connexion à la BD Django
-        db_django = path.abspath('/home/pvernier/code/python/elpaso/db.sqlite3')
+        db_django = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
         self.conn_django = sqlite3.connect(db_django)
         self.c_django = self.conn_django.cursor()
 
