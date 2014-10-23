@@ -11,7 +11,7 @@ Pourquoi El Paso ? Depuis des temps immémoriaux, le choix d'un nom de projet in
 
 # ToDoList
 
-- [ ] union des tables dans une seule BD (django et crawler)
+- [X] union des tables dans une seule BD (django et crawler)
 - [ ] alimenter les tables par périodes
 - [ ] exporter en json sous format : key : date, values: (liste valeurs par types de contrats)
 - [ ] camembert par mois et par type de contrat (@Guts)
