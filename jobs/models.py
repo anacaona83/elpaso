@@ -54,7 +54,6 @@ class Week(models.Model):
     """ """
     # specific fields for period
     year = models.IntegerField()
-    month = models.IntegerField()
     week = models.IntegerField()
     first_day = models.DateTimeField()
     # contrats types fields

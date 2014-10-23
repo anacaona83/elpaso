@@ -61,6 +61,7 @@ class Fillin():
             day_number = date_object.day
             week = dt(year, month_number, day_number).isocalendar()[1]
             first_day = time.asctime(time.strptime('{0} {1} 1'.format(year, week - 1), '%Y %W %w'))
+            # Not sure if necessary. May be string format better.
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
             db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' + str(year))
