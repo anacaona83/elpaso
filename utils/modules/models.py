@@ -22,10 +22,10 @@ class Fillin():
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
 
-        # connexion à la BD Django
-        db_django = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
-        self.conn_django = sqlite3.connect(db_django)
-        self.c_django = self.conn_django.cursor()
+        # connexion à la BD Django - NO MORE NEEDED
+        # db_django = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
+        # self.conn_django = sqlite3.connect(db_django)
+        # self.c_django = self.conn_django.cursor()
 
         # Remplissage des contrats dans la BD django
         logger.append("\tFill in contrats in the Django DB")
@@ -62,64 +62,63 @@ class Fillin():
             week = dt(year, month_number, day_number).isocalendar()[1]
             first_day = time.asctime(time.strptime('{0} {1} 1'.format(year, week - 1), '%Y %W %w'))
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
-            
-            #
-            self.c_django.execute('SELECT * FROM jobs_year WHERE year = ' + str(year))
-            val_types = self.c_django.fetchall()
+
+            db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' + str(year))
+            val_types = db_cursor.fetchall()
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET cdi = ' +
+                    db_cursor.execute('UPDATE jobs_year SET cdi = ' +
                                       str(val_types[0][2] + 1) + ' WHERE year = ' + str(year))
-                    self.c_django.execute('UPDATE jobs_month SET cdi = ' +
-                                      str(val_types[0][2] + 1) + ' WHERE year = {0} AND month = {1}'.format(str(year), str(month)) )
+                    db_cursor.execute('UPDATE jobs_month SET cdi = ' +
+                                      str(val_types[0][2] + 1) + ' WHERE year = {0} AND month = {1}'.format(str(year), str(month_number)))
 
                 elif contrat[0][2] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET cdd = ' +
+                    db_cursor.execute('UPDATE jobs_year SET cdd = ' +
                                       str(val_types[0][3] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][3] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET fpt = ' +
+                    db_cursor.execute('UPDATE jobs_year SET fpt = ' +
                                       str(val_types[0][4] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][4] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET stage = ' +
+                    db_cursor.execute('UPDATE jobs_year SET stage = ' +
                                       str(val_types[0][5] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][5] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET apprentissage = ' +
+                    db_cursor.execute('UPDATE jobs_year SET apprentissage = ' +
                                       str(val_types[0][6] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][6] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET vi = ' +
+                    db_cursor.execute('UPDATE jobs_year SET vi = ' +
                                       str(val_types[0][7] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][7] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET these = ' +
+                    db_cursor.execute('UPDATE jobs_year SET these = ' +
                                       str(val_types[0][8] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][8] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET post_doc = ' +
+                    db_cursor.execute('UPDATE jobs_year SET post_doc = ' +
                                       str(val_types[0][9] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][9] == 1:
-                    self.c_django.execute('UPDATE jobs_year SET mission = ' +
+                    db_cursor.execute('UPDATE jobs_year SET mission = ' +
                                       str(val_types[0][10] + 1) + ' WHERE year = ' +
                                       str(year))
 
                 elif contrat[0][10]:
-                    self.c_django.execute('UPDATE jobs_year SET autre = ' +
+                    db_cursor.execute('UPDATE jobs_year SET autre = ' +
                                       str(val_types[0][11] + 1) + ' WHERE year = ' +
                                       str(year))
 
-                self.conn_django.commit()
+                self.conn.commit()
 
 
 
@@ -206,15 +205,14 @@ class Fillin():
                 #     pays = lieux[0][1]
                 #     dept = '99'
 
-
-                self.c_django.execute('INSERT INTO jobs_contrat VALUES \
+                db_cursor.execute('INSERT INTO jobs_contrat VALUES \
                                       (?,?,?,?,?,?,?)', (str(offre),
                                       type_contrat, date_object,
                                       date_object.isocalendar()[1],
                                       date_object.isocalendar()[2],
                                       '', ''))
 
-                self.conn_django.commit()
+                self.conn.commit()
 
     def create_json(self, periode):
         '''Méthode qui créé les différentes agrégations (par jour de la
