@@ -60,11 +60,13 @@ class Fillin():
             month_number = date_object.month
             day_number = date_object.day
             week = dt(year, month_number, day_number).isocalendar()[1]
-            first_day = time.asctime(time.strptime('{0} {1} 1'.format(year, week - 1), '%Y %W %w'))
+            first_day = time.asctime(time.strptime('{0} {1} 1'.format(year,
+                                     week - 1), '%Y %W %w'))
             # Not sure if necessary. May be string format better.
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
-            db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' + str(year))
+            db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
+                              str(year))
             val_types = db_cursor.fetchall()
 
             if len(contrat) > 0:
@@ -76,6 +78,10 @@ class Fillin():
                                       str(val_types[0][2] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET cdi = ' +
+                                      str(val_types[0][2] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][2] == 1:
                     db_cursor.execute('UPDATE jobs_year SET cdd = ' +
@@ -85,6 +91,10 @@ class Fillin():
                                       str(val_types[0][3] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET cdd = ' +
+                                      str(val_types[0][3] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][3] == 1:
                     db_cursor.execute('UPDATE jobs_year SET fpt = ' +
@@ -94,6 +104,10 @@ class Fillin():
                                       str(val_types[0][4] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET fpt = ' +
+                                      str(val_types[0][4] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][4] == 1:
                     db_cursor.execute('UPDATE jobs_year SET stage = ' +
@@ -103,6 +117,10 @@ class Fillin():
                                       str(val_types[0][5] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET stage = ' +
+                                      str(val_types[0][5] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][5] == 1:
                     db_cursor.execute('UPDATE jobs_year SET apprentissage = ' +
@@ -112,6 +130,10 @@ class Fillin():
                                       ' + str(val_types[0][6] + 1) + ' WHERE \
                                       year  = {0} AND month = {1}'.format(str(
                                       year), str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET apprentissage = ' +
+                                      str(val_types[0][6] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][6] == 1:
                     db_cursor.execute('UPDATE jobs_year SET vi = ' +
@@ -121,6 +143,10 @@ class Fillin():
                                       str(val_types[0][7] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET vi = ' +
+                                      str(val_types[0][7] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][7] == 1:
                     db_cursor.execute('UPDATE jobs_year SET these = ' +
@@ -130,6 +156,10 @@ class Fillin():
                                       str(val_types[0][8] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET these = ' +
+                                      str(val_types[0][8] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][8] == 1:
                     db_cursor.execute('UPDATE jobs_year SET post_doc = ' +
@@ -139,6 +169,10 @@ class Fillin():
                                       str(val_types[0][9] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET post_doc = ' +
+                                      str(val_types[0][9] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][9] == 1:
                     db_cursor.execute('UPDATE jobs_year SET mission = ' +
@@ -148,6 +182,10 @@ class Fillin():
                                       str(val_types[0][10] + 1) + ' WHERE year\
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET mission = ' +
+                                      str(val_types[0][10] + 1) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 elif contrat[0][10]:
                     db_cursor.execute('UPDATE jobs_year SET autre = ' +
@@ -157,6 +195,10 @@ class Fillin():
                                       str(val_types[0][11] + 1) + ' WHERE year\
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET autre = ' +
+                                      str(val_types[0][11] + 1) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
 
                 self.conn.commit()
 
