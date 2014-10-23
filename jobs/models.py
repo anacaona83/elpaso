@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Contrat(models.Model):
+    """ """
     id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=255)
     date_pub = models.DateTimeField()
@@ -15,7 +16,10 @@ class Contrat(models.Model):
 
 
 class Year(models.Model):
+    """ """
+    # specific fields for period
     year = models.IntegerField()
+    # contrats types fields
     cdi = models.IntegerField()
     cdd = models.IntegerField()
     fpt = models.IntegerField()
@@ -28,33 +32,39 @@ class Year(models.Model):
     autre = models.IntegerField()
 
 
-# class Month(models.Model):
-#     year = models.IntegerField()
-#     month = models.IntegerField()
-#     cdi = models.IntegerField()
-#     cdd = models.IntegerField()
-#     fpt = models.IntegerField()
-#     stage = models.IntegerField()
-#     apprentissage = models.IntegerField()
-#     vi = models.IntegerField()
-#     these = models.IntegerField()
-#     post_doc = models.IntegerField()
-#     mission = models.IntegerField()
-#     autre = models.IntegerField()
+class Month(models.Model):
+    """ """
+    # specific fields for period
+    year = models.IntegerField()
+    month = models.IntegerField()
+    # contrats types fields
+    cdi = models.IntegerField()
+    cdd = models.IntegerField()
+    fpt = models.IntegerField()
+    stage = models.IntegerField()
+    apprentissage = models.IntegerField()
+    vi = models.IntegerField()
+    these = models.IntegerField()
+    post_doc = models.IntegerField()
+    mission = models.IntegerField()
+    autre = models.IntegerField()
 
 
-# class Week(models.Model):
-#     year = models.IntegerField()
-#     month = models.IntegerField()
-#     week = models.IntegerField()
-#     first_day = models.DateTimeField()
-#     cdi = models.IntegerField()
-#     cdd = models.IntegerField()
-#     fpt = models.IntegerField()
-#     stage = models.IntegerField()
-#     apprentissage = models.IntegerField()
-#     vi = models.IntegerField()
-#     these = models.IntegerField()
-#     post_doc = models.IntegerField()
-#     mission = models.IntegerField()
-#     autre = models.IntegerField()
+class Week(models.Model):
+    """ """
+    # specific fields for period
+    year = models.IntegerField()
+    month = models.IntegerField()
+    week = models.IntegerField()
+    first_day = models.DateTimeField()
+    # contrats types fields
+    cdi = models.IntegerField()
+    cdd = models.IntegerField()
+    fpt = models.IntegerField()
+    stage = models.IntegerField()
+    apprentissage = models.IntegerField()
+    vi = models.IntegerField()
+    these = models.IntegerField()
+    post_doc = models.IntegerField()
+    mission = models.IntegerField()
+    autre = models.IntegerField()
