@@ -67,136 +67,144 @@ class Fillin():
 
             db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
                               str(year))
-            val_types = db_cursor.fetchall()
+            val_year = db_cursor.fetchall()
+
+            db_cursor.execute('SELECT * FROM jobs_month WHERE year = ' +
+                              str(year) + 'AND month = ' + str(month_number))
+            val_month = db_cursor.fetchall()
+
+            db_cursor.execute('SELECT * FROM jobs_week WHERE year = ' +
+                              str(year) + 'AND week = ' + str(week))
+            val_week = db_cursor.fetchall()
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
                     db_cursor.execute('UPDATE jobs_year SET cdi = ' +
-                                      str(val_types[0][2] + 1) + ' WHERE year \
+                                      str(val_year[0][2] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET cdi = ' +
-                                      str(val_types[0][2] + 1) + ' WHERE year \
+                                      str(val_month[0][3] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET cdi = ' +
-                                      str(val_types[0][2] + 1) + ' WHERE year \
+                                      str(val_week[0][4] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][2] == 1:
                     db_cursor.execute('UPDATE jobs_year SET cdd = ' +
-                                      str(val_types[0][3] + 1) + ' WHERE year \
+                                      str(val_year[0][3] + 1) + ' WHERE year \
                                        = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET cdd = ' +
-                                      str(val_types[0][3] + 1) + ' WHERE year \
+                                      str(val_month[0][4] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET cdd = ' +
-                                      str(val_types[0][3] + 1) + ' WHERE year \
+                                      str(val_week[0][5] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][3] == 1:
                     db_cursor.execute('UPDATE jobs_year SET fpt = ' +
-                                      str(val_types[0][4] + 1) + ' WHERE year \
+                                      str(val_year[0][4] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET fpt = ' +
-                                      str(val_types[0][4] + 1) + ' WHERE year \
+                                      str(val_month[0][5] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET fpt = ' +
-                                      str(val_types[0][4] + 1) + ' WHERE year \
+                                      str(val_week[0][6] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][4] == 1:
                     db_cursor.execute('UPDATE jobs_year SET stage = ' +
-                                      str(val_types[0][5] + 1) + ' WHERE year \
+                                      str(val_year[0][5] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET stage = ' +
-                                      str(val_types[0][5] + 1) + ' WHERE year \
+                                      str(val_month[0][6] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET stage = ' +
-                                      str(val_types[0][5] + 1) + ' WHERE year \
+                                      str(val_week[0][7] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][5] == 1:
                     db_cursor.execute('UPDATE jobs_year SET apprentissage = ' +
-                                      str(val_types[0][6] + 1) + ' WHERE year \
+                                      str(val_year[0][6] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET apprentissage = \
-                                      ' + str(val_types[0][6] + 1) + ' WHERE \
+                                      ' + str(val_month[0][7] + 1) + ' WHERE \
                                       year  = {0} AND month = {1}'.format(str(
                                       year), str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET apprentissage = ' +
-                                      str(val_types[0][6] + 1) + ' WHERE year \
+                                      str(val_week[0][8] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][6] == 1:
                     db_cursor.execute('UPDATE jobs_year SET vi = ' +
-                                      str(val_types[0][7] + 1) + ' WHERE year \
+                                      str(val_year[0][7] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET vi = ' +
-                                      str(val_types[0][7] + 1) + ' WHERE year \
+                                      str(val_month[0][8] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET vi = ' +
-                                      str(val_types[0][7] + 1) + ' WHERE year \
+                                      str(val_week[0][9] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][7] == 1:
                     db_cursor.execute('UPDATE jobs_year SET these = ' +
-                                      str(val_types[0][8] + 1) + ' WHERE year \
+                                      str(val_year[0][8] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET these = ' +
-                                      str(val_types[0][8] + 1) + ' WHERE year \
+                                      str(val_month[0][9] + 1) + ' WHERE year \
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET these = ' +
-                                      str(val_types[0][8] + 1) + ' WHERE year \
+                                      str(val_week[0][10] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][8] == 1:
                     db_cursor.execute('UPDATE jobs_year SET post_doc = ' +
-                                      str(val_types[0][9] + 1) + ' WHERE year \
+                                      str(val_year[0][9] + 1) + ' WHERE year \
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET post_doc = ' +
-                                      str(val_types[0][9] + 1) + ' WHERE year \
+                                      str(val_month[0][10] + 1) + ' WHERE year\
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET post_doc = ' +
-                                      str(val_types[0][9] + 1) + ' WHERE year \
+                                      str(val_week[0][11] + 1) + ' WHERE year \
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][9] == 1:
                     db_cursor.execute('UPDATE jobs_year SET mission = ' +
-                                      str(val_types[0][10] + 1) + ' WHERE year\
+                                      str(val_year[0][10] + 1) + ' WHERE year\
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET mission = ' +
-                                      str(val_types[0][10] + 1) + ' WHERE year\
+                                      str(val_month[0][11] + 1) + ' WHERE year\
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET mission = ' +
-                                      str(val_types[0][10] + 1) + ' WHERE year\
+                                      str(val_week[0][12] + 1) + ' WHERE year\
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
                 elif contrat[0][10]:
                     db_cursor.execute('UPDATE jobs_year SET autre = ' +
-                                      str(val_types[0][11] + 1) + ' WHERE year\
+                                      str(val_year[0][11] + 1) + ' WHERE year\
                                       = ' + str(year))
                     db_cursor.execute('UPDATE jobs_month SET autre = ' +
-                                      str(val_types[0][11] + 1) + ' WHERE year\
+                                      str(val_month[0][12] + 1) + ' WHERE year\
                                       = {0} AND month = {1}'.format(str(year),
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET autre = ' +
-                                      str(val_types[0][11] + 1) + ' WHERE year\
+                                      str(val_week[0][13] + 1) + ' WHERE year\
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
