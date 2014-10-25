@@ -70,11 +70,11 @@ class Fillin():
             val_year = db_cursor.fetchall()
 
             db_cursor.execute('SELECT * FROM jobs_month WHERE year = ' +
-                              str(year) + 'AND month = ' + str(month_number))
+                              str(year) + ' AND month = ' + str(month_number))
             val_month = db_cursor.fetchall()
 
             db_cursor.execute('SELECT * FROM jobs_week WHERE year = ' +
-                              str(year) + 'AND week = ' + str(week))
+                              str(year) + ' AND week = ' + str(week))
             val_week = db_cursor.fetchall()
 
             if len(contrat) > 0:
