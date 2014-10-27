@@ -229,8 +229,13 @@ class Fillin():
             db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
                               + str(offre))
             date = db_cursor.fetchone()
-            date_object = datetime.strptime(date[0], "%a, %d %b %Y \
+            try:
+              date_object = datetime.strptime(date[0], "%a, %d %b %Y \
                                             %H:%M:%S +0200")
+            except ValueError:
+              date_object = datetime.strptime(date[0], "%a, %d %b %Y \
+                                            %H:%M:%S +0100")
+
 
             # Je récupère les infos sur les lieux
             db_cursor.execute("SELECT lieu_lib, lieu_type FROM lieux WHERE id = " + str(offre))
