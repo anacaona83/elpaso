@@ -19,6 +19,7 @@ Pourquoi El Paso ? Depuis des temps immémoriaux, le choix d'un nom de projet in
 - [ ] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
 - [ ] graphique pour les types de contrats par mois (http://nvd3.org/examples/multiBar.html)
 - [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
+- [ ] changer chemins absolus par chemains relatifs
 - [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
 - [X] optimiser le html avec intégration de bootstrap (@pvernier)
 - [X] configuration serveur web (nginx)
