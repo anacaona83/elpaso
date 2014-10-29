@@ -66,7 +66,6 @@ class Fillin():
             week = dt(year, month_number, day_number).isocalendar()[1]
             first_day = time.asctime(time.strptime('{0} {1} 1'.format(year,
                                      week - 1), '%Y %W %w'))
-            # Not sure if necessary. May be string format better.
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
             db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
@@ -209,6 +208,13 @@ class Fillin():
                                       str(month_number)))
                     db_cursor.execute('UPDATE jobs_week SET autre = ' +
                                       str(val_week[0][13] + 1) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
+
+                # Pour remplir la colonne first_day
+                if val_week[3] is None:
+                    db_cursor.execute('UPDATE jobs_week SET first_day = ' +
+                                      str(first_day) + ' WHERE year\
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
