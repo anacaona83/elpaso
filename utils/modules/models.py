@@ -316,6 +316,17 @@ class Fillin():
 
                 self.conn.commit()
 
+    def create_json2(self, periode):
+
+        data = {'cdi': [[1398895200, 12], [1401573600, 14 ]],
+                 'cdd': [[1398895200, 10], [1401573600, 9 ]],
+                 'stage': [[1398895200, 5], [1401573600, 7 ]]
+                }
+
+        with open('/home/pvernier/code/python/elpaso/static/json/contrats2_' + periode + '.json', 'w') as f:
+                            f.write(json.dumps(data))
+
+
     def create_json(self, periode):
         '''Méthode qui créé les différentes agrégations (par jour de la
         semaine, semaine de l'année, mois et année) et les sauvegarde dans un

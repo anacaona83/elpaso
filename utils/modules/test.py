@@ -9,6 +9,34 @@ environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 
 
+def create_json2(periode):
+
+    data = [
+    {'key': 'CDI',
+    'values': []
+    },
+    {'key': 'CDD',
+    'values': []
+    },
+    {'key': 'stage',
+    'values' : []
+    }]
+
+    data = [
+    {'key': 'CDI',
+    'values': [[1398895200, 12], [1401573600, 14 ]]
+    },
+    {'key': 'CDD',
+    'values': [[1398895200, 10], [1401573600, 9 ]]
+    },
+    {'key': 'stage',
+    'values' : [[1398895200, 5], [1401573600, 7 ]]
+    }]
+
+    with open('/home/pvernier/code/python/elpaso/static/json/contrats2_' + periode + '.json', 'w') as f:
+                        f.write(json.dumps(data))
+
+
 def create_json(periode):
     '''Méthode qui créé les différentes agrégations (par jour de la
     semaine, semaine de l'année, mois et année) et les sauvegarde dans un
@@ -327,7 +355,7 @@ def periodizer(li_id, db_cursor):
 
             conn_django.commit()
 
-
+create_json2('month')
 
 # create_json('year') 
 # create_json('month')   
@@ -335,14 +363,15 @@ def periodizer(li_id, db_cursor):
 # create_json('day')
 
 
-db = path.abspath(r"../../elpaso.sqlite")
-conn = sqlite3.connect(db)
-c = conn.cursor()
-# fetching the ID list
-c.execute("SELECT id FROM georezo")
-liste_input = [i[0] for i in c.fetchall()]
+# db = path.abspath(r"../../elpaso.sqlite")
+# conn = sqlite3.connect(db)
+# c = conn.cursor()
+# # fetching the ID list
+# c.execute("SELECT id FROM georezo")
+# liste_input = [i[0] for i in c.fetchall()]
 
-periodizer(liste_input, c)
+# periodizer(liste_input, c)
+
 
 
 
