@@ -211,6 +211,8 @@ class Fillin():
                                       = {0} AND week = {1}'.format(str(year),
                                       str(week)))
 
+                self.conn.commit()
+
                 # Pour remplir la colonne first_day
                 if val_week[0][3] is None:
                     db_cursor.execute('UPDATE jobs_week SET first_day = ' +
