@@ -19,17 +19,22 @@ class Year(models.Model):
     """ """
     # specific fields for period
     year = models.IntegerField()
-    # contrats types fields
-    cdi = models.IntegerField()
-    cdd = models.IntegerField()
-    fpt = models.IntegerField()
-    stage = models.IntegerField()
-    apprentissage = models.IntegerField()
-    vi = models.IntegerField()
-    these = models.IntegerField()
-    post_doc = models.IntegerField()
-    mission = models.IntegerField()
-    autre = models.IntegerField()
+        # contrats types fields
+    cdi = models.IntegerField(default=0)
+    cdd = models.IntegerField(default=0)
+    fpt = models.IntegerField(default=0)
+    stage = models.IntegerField(default=0)
+    apprentissage = models.IntegerField(default=0)
+    vi = models.IntegerField(default=0)
+    these = models.IntegerField(default=0)
+    post_doc = models.IntegerField(default=0)
+    mission = models.IntegerField(default=0)
+    autre = models.IntegerField(default=0)
+    # timestamp in milliseconds
+    year_milsec = models.BigIntegerField()
+
+    def __str__(self):
+        return str(self.year)
 
 
 class Month(models.Model):
@@ -38,16 +43,21 @@ class Month(models.Model):
     year = models.IntegerField()
     month = models.IntegerField()
     # contrats types fields
-    cdi = models.IntegerField()
-    cdd = models.IntegerField()
-    fpt = models.IntegerField()
-    stage = models.IntegerField()
-    apprentissage = models.IntegerField()
-    vi = models.IntegerField()
-    these = models.IntegerField()
-    post_doc = models.IntegerField()
-    mission = models.IntegerField()
-    autre = models.IntegerField()
+    cdi = models.IntegerField(default=0)
+    cdd = models.IntegerField(default=0)
+    fpt = models.IntegerField(default=0)
+    stage = models.IntegerField(default=0)
+    apprentissage = models.IntegerField(default=0)
+    vi = models.IntegerField(default=0)
+    these = models.IntegerField(default=0)
+    post_doc = models.IntegerField(default=0)
+    mission = models.IntegerField(default=0)
+    autre = models.IntegerField(default=0)
+    # timestamp in milliseconds
+    month_milsec = models.BigIntegerField()
+
+    def __str__(self):
+        return str(self.month)
 
 
 class Week(models.Model):
@@ -56,14 +66,19 @@ class Week(models.Model):
     year = models.IntegerField()
     week = models.IntegerField()
     first_day = models.DateTimeField()
-    # contrats types fields
-    cdi = models.IntegerField()
-    cdd = models.IntegerField()
-    fpt = models.IntegerField()
-    stage = models.IntegerField()
-    apprentissage = models.IntegerField()
-    vi = models.IntegerField()
-    these = models.IntegerField()
-    post_doc = models.IntegerField()
-    mission = models.IntegerField()
-    autre = models.IntegerField()
+        # contrats types fields
+    cdi = models.IntegerField(default=0)
+    cdd = models.IntegerField(default=0)
+    fpt = models.IntegerField(default=0)
+    stage = models.IntegerField(default=0)
+    apprentissage = models.IntegerField(default=0)
+    vi = models.IntegerField(default=0)
+    these = models.IntegerField(default=0)
+    post_doc = models.IntegerField(default=0)
+    mission = models.IntegerField(default=0)
+    autre = models.IntegerField(default=0)
+    # timestamp in milliseconds
+    week_milsec = models.BigIntegerField()
+
+    def __str__(self):
+        return str(self.week)

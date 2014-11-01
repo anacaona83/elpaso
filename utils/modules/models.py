@@ -9,6 +9,9 @@ from . import LogGuy
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
+from jobs.models import Year
+from jobs.models import Month
+from jobs.models import Week
 
 # logger object
 logger = LogGuy.Logyk()
@@ -39,6 +42,38 @@ class Fillin():
 
         self.periodizer(liste_identifiants_offre, self.c)
 
+    def check_date(self):
+        '''Vérifie que la date du jour existe dans les 3 tables.
+        Sinon créé la ligne correspondante.'''
+
+        today = dt.today()
+        week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
+        first_day = time.asctime(time.strptime('{0} {1} 1'.format(today.year,
+                                     week_nb - 1), '%Y %W %w'))
+        first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
+
+        result_month = Month.objects.filter(month=today.month, year= today.year)
+        result_year = Year.objects.filter(year= today.year)
+
+        result_week = Week.objects.filter(week=week_nb, year= today.year)
+
+        if len(result_month) == 0:
+            month_timestamp = time.mktime(dt(today.year, today.month, 1).timetuple()) * 1000
+            update_month = Month(month=today.month, year= today.year, month_milsec=month_timestamp)
+            update_month.save()
+
+        if len(result_year) == 0:
+            year_timestamp = time.mktime(dt(today.year, 1, 1).timetuple()) * 1000
+            update_year = Year(year= today.year, year_milsec=year_timestamp)
+            update_year.save()
+
+        if len(result_week) == 0:
+            week_timestamp = time.mktime(first_day.timetuple()) * 1000
+            update_week = Week(year= today.year, week_milsec=week_timestamp, week=week_nb)
+            update_week.save()
+
+
+
     def periodizer(self, li_id, db_cursor):
         ''' TO DO '''
         for offre in li_id:
@@ -68,6 +103,7 @@ class Fillin():
                                      week - 1), '%Y %W %w'))
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
+            # récupération des offres par périodes  : années, mois, semaines
             db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
                               str(year))
             val_year = db_cursor.fetchall()
@@ -213,14 +249,49 @@ class Fillin():
 
                 self.conn.commit()
 
-                # Pour remplir la colonne first_day
-                # if val_week[0][3] is None:
-                #     db_cursor.execute('UPDATE jobs_week SET first_day = ' +
-                #                       str(first_day) + ' WHERE year\
-                #                       = {0} AND week = {1}'.format(str(year),
-                #                       str(week)))
+                # Pour remplir la colonne first_day*
+                if val_week[0][3] is None:
+                    query_pb = 'UPDATE jobs_week SET first_day = ' + str(first_day) + ' WHERE year = {0} AND week = {1}'.format(str(year), str(week))
+                    print val_week[0][3]
+                    print query_pb
+                    db_cursor.execute('UPDATE jobs_week SET first_day = ' +
+                                      str(first_day) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year),
+                                      str(week)))
+                    self.conn.commit()
+                else:
+                    pass
 
-                # self.conn.commit()
+                # Pour remplir la date au format universel en milisecondes
+                if val_week[0][-1] is None:
+                    week_timestamp = time.mktime(first_day.timetuple()) * 1000
+                    db_cursor.execute('UPDATE jobs_week SET week_milsec = {0}\
+                                       WHERE year = {1} AND week = {2}'.format(str(week_timestamp), str(year), str(week))) 
+                    self.conn.commit()
+                 
+                else:
+                    pass
+
+                # Pour remplir la date au format universel en milisecondes
+                if val_month[0][-1] is None:
+                    month_timestamp = time.mktime(date(year, month, 1).timetuple()) * 1000
+                    db_cursor.execute('UPDATE jobs_month SET month_milsec = {0}\
+                                       WHERE year = {1} AND month = {2}'.format(str(month_timestamp), str(year), str(month))) 
+                    self.conn.commit()
+                 
+                else:
+                    pass
+
+                # Pour remplir la date au format universel en milisecondes
+                if val_year[0][-1] is None:
+                    year_timestamp = time.mktime(date(year, 1, 1).timetuple()) * 1000
+                    db_cursor.execute('UPDATE jobs_year SET year_milsec = {0}\
+                                       WHERE year = {1}'.format(str(month_timestamp), str(year))) 
+                    self.conn.commit()
+                 
+                else:
+                    pass
+
 
     def contrats(self, li_id, db_cursor):
         """Méthode qui remplit la table du modele à partir de la table
@@ -319,6 +390,40 @@ class Fillin():
                 self.conn.commit()
 
     def create_json2(self, periode):
+        """  """
+        # récupérer la liste des types de contrats
+        types_contrat = Contrat.objects.values('type')
+        types = [{'key': t, 'values': []} for t in types_contrats]
+
+        # timestamps en milliseconds
+        ts_year = Year.objects.values('year_milsec')
+        ts_month = Month.objects.values('month_milsec')
+        ts_week = Week.objects.values('week_milsec')
+
+        # listes de valeurs des ta
+        month_cdi = Month.objects.values('cdi')
+        month_cdd = Month.objects.values('cdd')
+        month_fpt = Month.objects.values('fpt')
+        month_stage = Month.objects.values('stage')
+        month_appre = Month.objects.values('apprentissage')
+        month_vi = Month.objects.values('vi')
+        month_these = Month.objects.values('these')
+        month_psdoc = Month.objects.values('post_doc')
+        month_missi = Month.objects.values('mission')
+        month_other = Month.objects.values('autre')
+
+        # parcourir la table de chaque période (cad 3 fois). Faire gaffe aux futures lignes vides (déjà créées)
+        for month, cdi in ts_month:
+            print month, month_cdi[ts_month.index(month)]
+
+
+
+
+        # récupérer une ligne, calculer le timestamp de chaque ligne, récupérer la valeur de chaque type et le rentrer dans le dictionnaire
+
+
+
+        # sérialiser le dico en json
 
         data = {'cdi': [[1398895200, 12], [1401573600, 14 ]],
                  'cdd': [[1398895200, 10], [1401573600, 9 ]],

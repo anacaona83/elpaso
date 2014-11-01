@@ -6,10 +6,62 @@ import time
 from datetime import date as dt, datetime
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
-from jobs.models import Contrat
 
+from jobs.models import Contrat
+from jobs.models import Month, Year, Week
 
 def create_json2(periode):
+    """ """
+    # récupérer la liste des types de contrats
+    types_contrat = Contrat.objects.values('type')
+    types = [{'key': t, 'values': []} for t in types_contrat]
+
+    today = dt.today()
+    week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
+    first_day = time.asctime(time.strptime('{0} {1} 1'.format(today.year,
+                                 week_nb - 1), '%Y %W %w'))
+    first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
+
+    result_month = Month.objects.filter(month=today.month, year= 2056)
+    result_year = Year.objects.filter(year= 2088)
+
+    result_week = Week.objects.filter(week=week_nb, year= 5654)
+
+    if len(result_month) == 0:
+        month_timestamp = time.mktime(dt(today.year, today.month, 1).timetuple()) * 1000
+        update_month = Month(month=today.month, year= today.year, month_milsec=month_timestamp)
+        update_month.save()
+
+    if len(result_year) == 0:
+        year_timestamp = time.mktime(dt(today.year, 1, 1).timetuple()) * 1000
+        update_year = Year(year= today.year, year_milsec=year_timestamp)
+        update_year.save()
+
+    if len(result_week) == 0:
+        week_timestamp = time.mktime(first_day.timetuple()) * 1000
+        update_week = Week(year= today.year, week_milsec=week_timestamp, week=week_nb)
+        update_week.save()
+
+    # timestamps en milliseconds
+    #ts_year = Year.objects.values('year_milsec')
+    #ts_month = Month.objects.values_list('month_milsec', 'cdi')
+    #ts_week = Week.objects.values('week_milsec')
+
+    # listes de valeurs des ta
+    month_cdi = Month.objects.values('cdi')
+    month_cdd = Month.objects.values('cdd')
+    month_fpt = Month.objects.values('fpt')
+    month_stage = Month.objects.values('stage')
+    month_appre = Month.objects.values('apprentissage')
+    month_vi = Month.objects.values('vi')
+    month_these = Month.objects.values('these')
+    month_psdoc = Month.objects.values('post_doc')
+    month_missi = Month.objects.values('mission')
+    month_other = Month.objects.values('autre')
+
+    # parcourir la table de chaque période (cad 3 fois). Faire gaffe aux futures lignes vides (déjà créées)
+    #data_cdi = list(zip(ts_month, month_cdi))
+    print(ts_month)
 
     data = [
     {'key': 'CDI',
