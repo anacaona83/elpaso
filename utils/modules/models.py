@@ -214,13 +214,13 @@ class Fillin():
                 self.conn.commit()
 
                 # Pour remplir la colonne first_day
-                if val_week[0][3] is None:
-                    db_cursor.execute('UPDATE jobs_week SET first_day = ' +
-                                      str(first_day) + ' WHERE year\
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
+                # if val_week[0][3] is None:
+                #     db_cursor.execute('UPDATE jobs_week SET first_day = ' +
+                #                       str(first_day) + ' WHERE year\
+                #                       = {0} AND week = {1}'.format(str(year),
+                #                       str(week)))
 
-                self.conn.commit()
+                # self.conn.commit()
 
     def contrats(self, li_id, db_cursor):
         """Méthode qui remplit la table du modele à partir de la table
