@@ -108,25 +108,33 @@ class Analizer():
             db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
             #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
             titre = db_cursor.fetchone()
+            # nettoyage du titre : virer texte avant crochet ouvrant et 
+            # après crochet fermant
             contrat = titre[0].split(']')[0].lstrip('[')
             # insertion
             if contrat[0:3].lower() == 'cdi':
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
             elif contrat[0:3].lower() == 'cdd':
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
-            elif "fpt" in contrat.lower():
+            elif "fpt" in contrat.lower()\
+                or "fpe" in contrat.lower()\
+                or "ftp" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
-            elif contrat.lower() == 'stage':
+            elif "stage" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
             elif "appr" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0, 1,0,0,0,0,""))
-            elif "vi" in contrat.lower() or "volontariat" in contrat.lower():
+            elif "vi" in contrat.lower() \
+                or "volontariat" in contrat.lower()\
+                or "vsc" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0, 1,0,0,0,""))
-            elif contrat.lower() == "thèse":
+            elif "these" in contrat.lower() or "thèse" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0, 1,0,0,""))
             elif "post" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0, 1,0,""))
-            elif "mission" in contrat.lower() or "interim" in contrat.lower():
+            elif "mission" in contrat.lower() \
+                or "interim" in contrat.lower()\
+                or "intérim" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0, 1,""))
             else:
                 db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0, contrat))
@@ -142,25 +150,32 @@ class Analizer():
         """ extraction des lieux des offres 
         liste des pays issue de : http://sql.sh/514-liste-pays-csv-xml"""
         for offre in li_id:
+            # récupération du titre de l'offre
             db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
             titre = db_cursor.fetchone()
-            titre = titre[0][titre[0].index("]")+1:len(titre[0])]
+            # tentative de nettoyage du titre
+            try:
+                titre = titre[0][titre[0].index("]")+1:len(titre[0])]
+            except ValueError:
+                logger.append("\n\t==== ERRREUR : formatage titre de l'offre.")
+                titre = titre[0]
+
             # trying to get the French departement code
             dpt_code = re.findall("(2[AB]|[0-9]+)", titre)
             if dpt_code:
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(dpt_code[0]), 3))
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), str(dpt_code[0]), 3, ""))
                 self.manage_connection(1)
                 logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
                 continue
             elif "idf" in titre.lower() or "Paris" in titre.lower() or "île de france" in titre.lower() or "île-de-france" in titre[0].lower():
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), str(75), 3))
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), str(75), 3, ""))
                 self.manage_connection(1)
                 logger.append("{0} ({1}) => Lieux parsed".format(str(offre), "IDF"))
                 continue
             elif any(pays.lower() in titre.lower() for pays in data.tup_pays):
                 for pays in data.tup_pays:
                     if pays in titre:
-                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), pays, 1))
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), pays, 1, ""))
                         self.manage_connection(1)
                         logger.append("{0} ({1}) => Lieux parsed".format(str(offre), pays))
                         break
@@ -169,7 +184,7 @@ class Analizer():
             elif any(ville.lower() in titre.lower() for ville in data.tup_villes_fr100):
                 for ville in data.tup_villes_fr100:
                     if ville in titre:
-                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?)", (str(offre), ville, 4))
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), ville, 4, ""))
                         self.manage_connection(1)
                         logger.append("{0} ({1}) => Lieux parsed".format(str(offre), ville))
                         break
@@ -229,8 +244,9 @@ class Analizer():
             else:
                 li_values.append(0)
 
+            li_values.append("")
             # adding the data into the database
-            db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?,?)", tuple(li_values))
+            db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?,?,?)", tuple(li_values))
             # Save (commit) the changes
             self.manage_connection(1)
             logger.append("{0} => Logiciels parsed. ".format(str(offre)))
@@ -264,7 +280,7 @@ class Analizer():
             elif any(metier in contenu.lower() for metier in ("cartographe", "cartographie")):
                 li_values.append(1)
             else:
-                li_values.append(0)               
+                li_values.append(0)
 
             if any(metier in titre[0].lower() for metier in ("chargé d'étude", "chargé d'études")):
                 li_values.append(2)
@@ -336,8 +352,10 @@ class Analizer():
             else:
                 li_values.append(0)
 
+            li_values.append("")
+
             # adding the data into the database
-            db_cursor.execute("INSERT INTO metiers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", tuple(li_values))
+            db_cursor.execute("INSERT INTO metiers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tuple(li_values))
             # Save (commit) the changes
             self.manage_connection(1)
             logger.append("{0} => Métiers parsed".format(str(offre)))
@@ -380,4 +398,3 @@ if __name__ == '__main__':
 
     # closing
     conn.close()
-
