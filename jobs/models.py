@@ -3,7 +3,7 @@ from django.db import models
 
 class Contrat(models.Model):
     """ """
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, db_index=True)
     type = models.CharField(max_length=255)
     date_pub = models.DateTimeField()
     week_number = models.IntegerField()
@@ -18,8 +18,8 @@ class Contrat(models.Model):
 class Year(models.Model):
     """ """
     # specific fields for period
-    year = models.IntegerField()
-        # contrats types fields
+    year = models.IntegerField(db_index=True)
+    # contrats types fields
     cdi = models.IntegerField(default=0)
     cdd = models.IntegerField(default=0)
     fpt = models.IntegerField(default=0)
@@ -40,8 +40,8 @@ class Year(models.Model):
 class Month(models.Model):
     """ """
     # specific fields for period
-    year = models.IntegerField()
-    month = models.IntegerField()
+    year = models.IntegerField(db_index=True)
+    month = models.IntegerField(db_index=True)
     # contrats types fields
     cdi = models.IntegerField(default=0)
     cdd = models.IntegerField(default=0)
@@ -63,9 +63,9 @@ class Month(models.Model):
 class Week(models.Model):
     """ """
     # specific fields for period
-    year = models.IntegerField()
-    week = models.IntegerField()
-    first_day = models.DateTimeField()
+    year = models.IntegerField(db_index=True)
+    week = models.IntegerField(db_index=True)
+    first_day = models.DateTimeField(db_index=True)
         # contrats types fields
     cdi = models.IntegerField(default=0)
     cdd = models.IntegerField(default=0)

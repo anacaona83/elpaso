@@ -30,9 +30,6 @@ class Fillin():
         # self.conn_django = sqlite3.connect(db_django)
         # self.c_django = self.conn_django.cursor()
 
-        # check des entrées correspondant aux périodes
-        self.check_date()
-
         # Remplissage des contrats dans la BD django
         logger.append("\tFill in contrats in the Django DB")
         self.contrats(liste_identifiants_offre, self.c)
@@ -45,47 +42,48 @@ class Fillin():
 
         self.periodizer(liste_identifiants_offre, self.c)
 
-    def check_date(self):
+    def check_date(self, annee, mois, semaine):
         '''
         Vérifie que la date du jour existe dans les 3 tables de périodes
         (année, mois, semaines) et créent les lignes correspondantes
         le cas échéant.
         '''
-        # Date du jour, numéro et 1er jour de la semaine actuelle
-        today = dt.today()
-        week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
-        first_day = time.asctime(time.strptime('{0} {1} 1'.format(today.year,
-                                     week_nb - 1), '%Y %W %w'))
+        # # Date du jour, numéro et 1er jour de la semaine actuelle
+        # today = dt.today()
+        # week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
+
+        first_day = time.asctime(time.strptime('{0} {1} 1'.format(annee,
+                                     semaine - 1), '%Y %W %w'))
         first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
         # récupération des périodes dans la BDD
-        result_month = Month.objects.filter(month=today.month,
-                                            year= today.year)
-        result_year = Year.objects.filter(year= today.year)
-        result_week = Week.objects.filter(week=week_nb,
-                                          year= today.year)
+        result_month = Month.objects.filter(month=mois,
+                                            year= annee)
+        result_year = Year.objects.filter(year= annee)
+        result_week = Week.objects.filter(week=semaine,
+                                          year=annee)
 
         # check des résultats des requêtes et création le cas échéant
         if len(result_month) == 0:
             # calcul du timestamp en millisecond
-            month_timestamp = time.mktime(dt(today.year, today.month, 1).timetuple()) * 1000
+            month_timestamp = time.mktime(dt(annee, mois, 1).timetuple()) * 1000
             # mise à jour de la table en créant la ligne correspondante
-            update_month = Month(month=today.month, year= today.year, month_milsec=month_timestamp)
+            update_month = Month(month=mois, year=annee, month_milsec=month_timestamp)
             # sauvegarde / commit
             update_month.save()
         else:
             pass
 
         if len(result_year) == 0:
-            year_timestamp = time.mktime(dt(today.year, 1, 1).timetuple()) * 1000
-            update_year = Year(year= today.year, year_milsec=year_timestamp)
+            year_timestamp = time.mktime(dt(annee, 1, 1).timetuple()) * 1000
+            update_year = Year(year=annee, year_milsec=year_timestamp)
             update_year.save()
         else:
             pass
 
         if len(result_week) == 0:
             week_timestamp = time.mktime(first_day.timetuple()) * 1000
-            update_week = Week(year= today.year, week_milsec=week_timestamp, week=week_nb)
+            update_week = Week(year=annee, week_milsec=week_timestamp, week=semaine)
             update_week.save()
         else:
             pass
@@ -119,6 +117,9 @@ class Fillin():
                                      week - 1), '%Y %W %w'))
             first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
+            # check if date exists in DB
+            self.check_date(year, month_number, week)
+
             # récupération des offres par périodes  : années, mois, semaines
             db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
                               str(year))
@@ -127,9 +128,7 @@ class Fillin():
             db_cursor.execute('SELECT * FROM jobs_month WHERE year = ' +
                               str(year) + ' AND month = ' + str(month_number))
             val_month = db_cursor.fetchall()
-            print(month_number)
-            print(year)
-            print(val_month)
+
 
             db_cursor.execute('SELECT * FROM jobs_week WHERE year = ' +
                               str(year) + ' AND week = ' + str(week))
@@ -270,18 +269,10 @@ class Fillin():
 
                 # Pour remplir la colonne first_day
                 if val_week[0][3] is None:
-                    query_pb = 'UPDATE jobs_week SET first_day = ' + str(first_day) + ' WHERE year = {0} AND week = {1}'.format(str(year), str(week))
-                    print(val_week[0][3])
-                    print(query_pb)
-                    db_cursor.execute('UPDATE jobs_week SET first_day = ' +
-                                      str(first_day) + ' WHERE year\
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
+                    db_cursor.execute('UPDATE jobs_week SET first_day = "{0}" WHERE year = {1} AND week = {2}'.format(str(first_day), str(year), str(week)))
                     self.conn.commit()
                 else:
                     pass
-
-
 
     def contrats(self, li_id, db_cursor):
         """Méthode qui remplit la table du modele à partir de la table
