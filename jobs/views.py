@@ -1,7 +1,17 @@
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 #from django.views.generic import ListView
 from .models import Contrat
 import json
+
+def stats_home(requests):
+    nb_contrats = Contrat.objects.count()
+    first_date = Contrat.objects.all()
+
+    return render_to_response('jobs/home.html', {
+        'nb_contrats': nb_contrats,
+        'first_date': first_date[0].date_pub,
+    })
 
 
 def contrat_json(request):

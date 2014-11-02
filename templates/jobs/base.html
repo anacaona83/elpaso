@@ -9,51 +9,50 @@
     <meta name="author" content="">
 
     <title>
-      {% block title %}El paso{% endblock title %}
+        {% block title %}El paso{% endblock title %}
     </title>
 
     {% block js_css %}
-    <script src="{% static "jquery/jquery-2.1.1.min.js" %}"></script>
-    <script src="{% static "d3/d3_3.4.9.min.js" %}"></script>
-    <script src="{% static "bootstrap/bootstrap-3.2.0-dist/js/bootstrap.min.js" %}"></script>
-    <link rel="stylesheet" href="{% static "bootstrap/bootstrap-3.2.0-dist/css/bootstrap.min.css" %}">
-    <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
-    <!-- <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'> -->
-        {% endblock js_css %}
+        <script src="{% static "jquery/jquery-2.1.1.min.js" %}"></script>
+        <script src="{% static "d3/d3_3.4.9.min.js" %}"></script>
+        <script src="{% static "bootstrap/bootstrap-3.2.0-dist/js/bootstrap.min.js" %}"></script>
+        <script src="{% static "nvd3/nv.d3-1.1.15-beta.min.js" %}"></script>
+
+        <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap/bootstrap-3.2.0-dist/css/bootstrap.min.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "nvd3/nv.d3-1.1.15-beta.css" %}">
+    {% endblock js_css %}
   </head>
 
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    {% block navbar %}
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">El paso</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <!-- <li class="active"><a href="#">Home</a></li> -->
-            <li><a href="/contrats">Contrats</a></li>
-            <li><a href="#map">Carte</a></li>
-            <li><a href="#">Logiciels</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
+        {% block navbar %}
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">El paso</a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <!-- <li class="active"><a href="#">Home</a></li> -->
+                <li><a href="/contrats">Contrats</a></li>
+                <li><a href="#map">Carte</a></li>
+                <li><a href="#">Logiciels</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
       {% endblock navbar %}
     </div>
     <div id= "main" class="container">
-    <a href="https://github.com/pvernier/elpaso" target='_blank' >
-    <img width="149" height="149" alt="Fork me on GitHub" src="{% static "img/forkme.png" %}" style="position:fixed;top:0;right:0;border:0;z-index:10000;">
-    </a>
+        <a href="https://github.com/pvernier/elpaso" target='_blank' >
+        <img width="149" height="149" alt="Fork me on GitHub" src="{% static "img/forkme.png" %}" style="position:fixed;top:0;right:0;border:0;z-index:10000;">
+        </a>
+
         {% block content %}
         {% endblock content %}
     </div>
