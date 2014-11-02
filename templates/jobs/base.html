@@ -45,13 +45,15 @@
             <li><a href="/contrats">Contrats</a></li>
             <li><a href="#map">Carte</a></li>
             <li><a href="#">Logiciels</a></li>
-            <li><a href="/about">A propos</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
       {% endblock navbar %}
     </div>
     <div id= "main" class="container">
+    <a href="https://github.com/pvernier/elpaso" target='_blank' >
+    <img width="149" height="149" alt="Fork me on GitHub" src="{% static "img/forkme.png" %}" style="position:fixed;top:0;right:0;border:0;z-index:10000;">
+    </a>
         {% block content %}
         {% endblock content %}
     </div>

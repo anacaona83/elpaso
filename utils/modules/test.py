@@ -13,80 +13,76 @@ from jobs.models import Month, Year, Week
 def create_json2(periode):
     """ """
     # récupérer la liste des types de contrats
-    types_contrat = Contrat.objects.values('type')
-    types = [{'key': t, 'values': []} for t in types_contrat]
+    # types_contrats = Contrat.objects.values_list('type')
 
-    today = dt.today()
-    week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
-    first_day = time.asctime(time.strptime('{0} {1} 1'.format(today.year,
-                                 week_nb - 1), '%Y %W %w'))
-    first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
+    types_contrats = Year._meta.get_all_field_names()
+    types_contrats.remove('id')
+    types_contrats.remove('year')
+    types_contrats.remove('year_milsec')
 
-    result_month = Month.objects.filter(month=today.month, year= 2056)
-    result_year = Year.objects.filter(year= 2088)
+    print(len(set(types_contrats)))
 
-    result_week = Week.objects.filter(week=week_nb, year= 5654)
+    types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
 
-    if len(result_month) == 0:
-        month_timestamp = time.mktime(dt(today.year, today.month, 1).timetuple()) * 1000
-        update_month = Month(month=today.month, year= today.year, month_milsec=month_timestamp)
-        update_month.save()
-
-    if len(result_year) == 0:
-        year_timestamp = time.mktime(dt(today.year, 1, 1).timetuple()) * 1000
-        update_year = Year(year= today.year, year_milsec=year_timestamp)
-        update_year.save()
-
-    if len(result_week) == 0:
-        week_timestamp = time.mktime(first_day.timetuple()) * 1000
-        update_week = Week(year= today.year, week_milsec=week_timestamp, week=week_nb)
-        update_week.save()
+    print(types)
 
     # timestamps en milliseconds
-    #ts_year = Year.objects.values('year_milsec')
-    #ts_month = Month.objects.values_list('month_milsec', 'cdi')
-    #ts_week = Week.objects.values('week_milsec')
+    # ts_year = Year.objects.values('year_milsec')
+    # ts_month = Month.objects.values('month_milsec')
+    # ts_week = Week.objects.values('week_milsec')
 
     # listes de valeurs des ta
-    month_cdi = Month.objects.values('cdi')
-    month_cdd = Month.objects.values('cdd')
-    month_fpt = Month.objects.values('fpt')
-    month_stage = Month.objects.values('stage')
-    month_appre = Month.objects.values('apprentissage')
-    month_vi = Month.objects.values('vi')
-    month_these = Month.objects.values('these')
-    month_psdoc = Month.objects.values('post_doc')
-    month_missi = Month.objects.values('mission')
-    month_other = Month.objects.values('autre')
+    month_cdi = Month.objects.values_list('month_milsec', 'cdi')
+    month_cdd = Month.objects.values_list('month_milsec', 'cdd')
+    month_fpt = Month.objects.values_list('month_milsec', 'fpt')
+    month_stage = Month.objects.values_list('month_milsec', 'stage')
+    month_appre = Month.objects.values_list('month_milsec', 'apprentissage')
+    month_vi = Month.objects.values_list('month_milsec', 'vi')
+    month_these = Month.objects.values_list('month_milsec', 'these')
+    month_psdoc = Month.objects.values_list('month_milsec', 'post_doc')
+    month_missi = Month.objects.values_list('month_milsec', 'mission')
+    month_other = Month.objects.values_list('month_milsec', 'autre')
 
     # parcourir la table de chaque période (cad 3 fois). Faire gaffe aux futures lignes vides (déjà créées)
     #data_cdi = list(zip(ts_month, month_cdi))
-    print(ts_month)
 
-    data = [
-    {'key': 'CDI',
-    'values': []
-    },
-    {'key': 'CDD',
-    'values': []
-    },
-    {'key': 'stage',
-    'values' : []
-    }]
+    types[0]['values'] = [list(x) for x in month_appre]
+    types[1]['values'] = [list(x) for x in month_other]
+    types[2]['values'] = [list(x) for x in month_cdd]
+    types[3]['values'] = [list(x) for x in month_cdi]
+    types[4]['values'] = [list(x) for x in month_fpt]
+    types[5]['values'] = [list(x) for x in month_missi]
+    types[6]['values'] = [list(x) for x in month_psdoc]
+    types[7]['values'] = [list(x) for x in month_stage]
+    types[8]['values'] = [list(x) for x in month_these]
+    types[9]['values'] = [list(x) for x in month_vi]
 
-    data = [
-    {'key': 'CDI',
-    'values': [[1398895200, 12], [1401573600, 14 ]]
-    },
-    {'key': 'CDD',
-    'values': [[1398895200, 10], [1401573600, 9 ]]
-    },
-    {'key': 'stage',
-    'values' : [[1398895200, 5], [1401573600, 7 ]]
-    }]
+    print(types)
+
+    # data = [
+    # {'key': 'CDI',
+    # 'values': []
+    # },
+    # {'key': 'CDD',
+    # 'values': []
+    # },
+    # {'key': 'stage',
+    # 'values' : []
+    # }]
+
+    # data = [
+    # {'key': 'CDI',
+    # 'values': [[1398895200, 12], [1401573600, 14 ]]
+    # },
+    # {'key': 'CDD',
+    # 'values': [[1398895200, 10], [1401573600, 9 ]]
+    # },
+    # {'key': 'stage',
+    # 'values' : [[1398895200, 5], [1401573600, 7 ]]
+    # }]
 
     with open('/home/pvernier/code/python/elpaso/static/json/contrats2_' + periode + '.json', 'w') as f:
-                        f.write(json.dumps(data))
+                        f.write(json.dumps(types))
 
 
 def create_json(periode):

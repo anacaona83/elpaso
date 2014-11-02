@@ -8,11 +8,11 @@
   </head>
   <body>
         <div id='chart' class='span4'>
-            Camembert - juin 2014
-            <svg style='height:500px;width:400px'> </svg>
+            Répartition des types de contrats par mois
+            <svg style='height:600px;width:80%'> </svg>
         </div>
     <script type="text/javascript">
-    d3.json('../static/json/contrats2_month.json', function(data) {
+    d3.json('../static/json/types_contrats_week.json', function(data) {
     nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
                   .margin({right: 100})
@@ -26,21 +26,24 @@
 
     //Format x-axis labels with custom function.
     chart.xAxis
-        .ticks(d3.time.months, 1)
+        .ticks(d3.time.month, 1)
+        .axisLabel('Mois / Années')
         .tickFormat(function(d) { 
-          return d3.time.format('%m/%y')(new Date(d)) 
+          return d3.time.format('%m/%y')(new Date(d));
     });
 
     chart.yAxis
         .tickFormat(d3.format(',.0f'));
 
+
     d3.select('#chart svg')
       .datum(data)
       .call(chart);
 
-    nv.utils.windowResize(chart.update);
+  //Update the chart when window resizes.
+  nv.utils.windowResize(function() { chart.update() });
+  return chart;
 
-    return chart;
   });
 })
     </script>

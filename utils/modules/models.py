@@ -42,6 +42,11 @@ class Fillin():
 
         self.periodizer(liste_identifiants_offre, self.c)
 
+        # 
+        self.serializer_types_contrats(Year, 'year_milsec')
+        self.serializer_types_contrats(Month, 'month_milsec')
+        self.serializer_types_contrats(Week, 'week_milsec')
+
     def check_date(self, annee, mois, semaine):
         '''
         Vérifie que la date du jour existe dans les 3 tables de périodes
@@ -370,49 +375,47 @@ class Fillin():
 
                 self.conn.commit()
 
-    def create_json2(self, periode):
-        """  """
+    def serializer_types_contrats(self, model_periode, field_milsec):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+
+        model_periode = Modèle de la BD Django à exporter
+        field_milsec = nom du champ du temps en millisecondes
+        """
         # récupérer la liste des types de contrats
-        types_contrat = Contrat.objects.values('type')
-        types = [{'key': t, 'values': []} for t in types_contrats]
+        types_contrats = Year._meta.get_all_field_names()
+        types_contrats.remove('id')
+        types_contrats.remove('year')
+        types_contrats.remove('year_milsec')
+        types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
 
-        # timestamps en milliseconds
-        ts_year = Year.objects.values('year_milsec')
-        ts_month = Month.objects.values('month_milsec')
-        ts_week = Week.objects.values('week_milsec')
+        # listes des valeurs de chaque type de contrat selon la période demandée
+        periode_cdi = model_periode.objects.values_list(field_milsec, 'cdi')
+        periode_cdd = model_periode.objects.values_list(field_milsec, 'cdd')
+        periode_fpt = model_periode.objects.values_list(field_milsec, 'fpt')
+        periode_stage = model_periode.objects.values_list(field_milsec, 'stage')
+        periode_appre = model_periode.objects.values_list(field_milsec, 'apprentissage')
+        periode_vi = model_periode.objects.values_list(field_milsec, 'vi')
+        periode_these = model_periode.objects.values_list(field_milsec, 'these')
+        periode_psdoc = model_periode.objects.values_list(field_milsec, 'post_doc')
+        periode_missi = model_periode.objects.values_list(field_milsec, 'mission')
+        periode_other = model_periode.objects.values_list(field_milsec, 'autre')
 
-        # listes de valeurs des ta
-        month_cdi = Month.objects.values('cdi')
-        month_cdd = Month.objects.values('cdd')
-        month_fpt = Month.objects.values('fpt')
-        month_stage = Month.objects.values('stage')
-        month_appre = Month.objects.values('apprentissage')
-        month_vi = Month.objects.values('vi')
-        month_these = Month.objects.values('these')
-        month_psdoc = Month.objects.values('post_doc')
-        month_missi = Month.objects.values('mission')
-        month_other = Month.objects.values('autre')
-
-        # # parcourir la table de chaque période (cad 3 fois). Faire gaffe aux futures lignes vides (déjà créées)
-        # for month, cdi in ts_month:
-        #     print(month, month_cdi[ts_month.index(month)]
-
-
-
-
-        # récupérer une ligne, calculer le timestamp de chaque ligne, récupérer la valeur de chaque type et le rentrer dans le dictionnaire
+        # remplissage de la structure de données
+        types[0]['values'] = [list(x) for x in periode_appre]
+        types[1]['values'] = [list(x) for x in periode_other]
+        types[2]['values'] = [list(x) for x in periode_cdd]
+        types[3]['values'] = [list(x) for x in periode_cdi]
+        types[4]['values'] = [list(x) for x in periode_fpt]
+        types[5]['values'] = [list(x) for x in periode_missi]
+        types[6]['values'] = [list(x) for x in periode_psdoc]
+        types[7]['values'] = [list(x) for x in periode_stage]
+        types[8]['values'] = [list(x) for x in periode_these]
+        types[9]['values'] = [list(x) for x in periode_vi]
 
 
-
-        # sérialiser le dico en json
-
-        data = {'cdi': [[1398895200, 12], [1401573600, 14 ]],
-                 'cdd': [[1398895200, 10], [1401573600, 9 ]],
-                 'stage': [[1398895200, 5], [1401573600, 7 ]]
-                }
-
-        with open('/home/pvernier/code/python/elpaso/static/json/contrats2_' + periode + '.json', 'w') as f:
-                            f.write(json.dumps(data))
+        with open('/home/pvernier/code/python/elpaso/static/json/types_contrats_' + model_periode.__name__.lower() + '.json', 'w') as f:
+                            f.write(json.dumps(types))
 
 
     def create_json(self, periode):
