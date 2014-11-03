@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# A changer pour le formulaire de contact
+# EMAIL_HOST = 'smtp.alwaysdata.com'
+# DEFAULT_FROM_EMAIL = "admin@datamadre.com"
+# EMAIL_PORT = 587
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -66,7 +70,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 

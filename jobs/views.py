@@ -1,16 +1,42 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-#from django.views.generic import ListView
-from .models import Contrat
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from .models import Contrat, Year, Month, Week
+from .forms import ContactForm
 import json
 
-def stats_home(requests):
+@csrf_exempt
+def stats_home(request):
     nb_contrats = Contrat.objects.count()
-    first_date = Contrat.objects.all()
+    first_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
+    nb_years = Year.objects.count()
+    nb_months = Month.objects.count()
+    nb_weeks = Week.objects.count()
+
+    if request.method == 'POST': # If the form has been submitted...
+        form = ContactForm(request.POST) # A form bound to the POST data
+        if form.is_valid():
+            sender = form.cleaned_data['sender']
+            subject = 'Contact - ' + form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            recipients = ['admin@datamadre.com']
+
+            
+            send_mail(subject, message, sender, recipients)
+            return HttpResponseRedirect('/thanks/') # Redirect after POST
+    else:
+        form = ContactForm() # An unbound form
+
 
     return render_to_response('jobs/home.html', {
         'nb_contrats': nb_contrats,
-        'first_date': first_date[0].date_pub,
+        'nb_years': nb_years,
+        'nb_months': nb_months,
+        'nb_weeks': nb_weeks,
+        'first_date': first_date,
+        'form': form,
     })
 
 

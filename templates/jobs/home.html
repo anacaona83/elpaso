@@ -3,6 +3,9 @@
 {% block content %}
 <h1>Statistiques sur l'emploi en géomatique francophone</h1>
 <p>Nombre total d'offres : {{ nb_contrats }} depuis le {{ first_date }}</p>
+<p>Nombre d'années : {{ nb_years }}</p>
+<p>Nombre de mois : {{ nb_months }}</p>
+<p>Nombre de semaines : {{ nb_weeks }}</p>
 <div>
     GeoRezo => Django => 
 </div>
@@ -25,6 +28,19 @@
 </div>
 <h2>Contact</h2>
 <div>
-    @
+@
+    <!-- <form action="/" method="post">{% csrf_token %}
+
+            {{ form.sender.errors }}
+            <p><label for="e-mail">E-mail</label>  {{ form.sender }}</p>
+            {{ form.subject.errors }}
+            <p><label for="asunto">Sujet</label>  {{ form.subject }}</p>
+            {{ form.message.errors }}
+            <p><label for="mensaje">Message</label>  {{ form.message }}</p>
+
+            
+            <p class="submit"><input type="submit" value="GO!" /></p>
+
+        </form> -->
 </div>
 {% endblock content %}
