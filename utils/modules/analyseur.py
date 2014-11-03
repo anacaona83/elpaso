@@ -474,7 +474,8 @@ class Analizer():
             # basic clean of the content
             contenu = self.remove_tags(contenu[0])
             # tokenizing and cleaning html tags
-            contenu = nltk.word_tokenize(nltk.clean_html(contenu))
+            # contenu = nltk.word_tokenize(nltk.clean_html(contenu))
+            contenu = nltk.word_tokenize(contenu)
             # filtering
             for mot in contenu:
                 if mot not in stop_fr:
