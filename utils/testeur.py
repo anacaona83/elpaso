@@ -1,41 +1,59 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 
-from os import path, environ, listdir
-import feedparser
+#------------------------------------------------------------------------------
+# Name:         Test suite
+# Purpose:      Make possible to test the parser and the crawler manually.
+#
+# Authors:      pvernier (https://github.com/pvernier)
+#               & Guts (https://github.com/Guts)
+#
+# Python:       3.4.x
+# Created:      01/05/2014
+# Updated:      03/11/2014
+#
+# Licence:      GPL 3
+#------------------------------------------------------------------------------
+
+###############################################################################
+########### Libraries #############
+###################################
+
+# Standard library
+from os import path, environ
 import sqlite3
 import sys
 
-import time
-from datetime import date as dt, datetime
+from datetime import date as datetime
 
 # Custom modules
 from modules import analyseur
 from modules import models
 from modules import LogGuy
 
-sys.path.append('/home/pvernier/code/python/elpaso')
+# Django specifics
+sys.path.append(path.abspath(r'../'))
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 from jobs.models import Year
 from jobs.models import Month
 from jobs.models import Week
 
-
+###############################################################################
+########## Main program ###########
+###################################
 logger = LogGuy.Logyk()
 
 # opening the log file
 logger.config()
 
-# empty tables to prevent conflicts
-# Entry.objects.all().delete()
-
 print("\nFin imports : {0}".format(datetime.now()))
 
 # DB connection settings
-db = path.abspath(r"/home/pvernier/code/python/elpaso/elpaso.sqlite")
+db = path.abspath(r"../elpaso.sqlite")
 conn = sqlite3.connect(db)
 c = conn.cursor()
+
 # fetching the ID list
 c.execute("SELECT id FROM georezo")
 liste_input = [i[0] for i in c.fetchall()]
@@ -76,4 +94,4 @@ c.execute("PRAGMA auto_vacuum;")
 print("\nFin auto_vaccum : {0}".format(datetime.now()))
 
 # closing process
-logger.append('<<<<<<<<<<<< Testing El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>\n')
+logger.append('<<<<<<<<< Testing El Paso finished without any issue ! >>>>>>>>>>>\n')
