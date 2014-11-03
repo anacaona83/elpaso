@@ -27,6 +27,10 @@ import sqlite3
 # import threading # multi threads handling
 from xml.etree import ElementTree as ET
 
+# third party libraries
+import nltk
+from nltk.corpus import stopwords
+
 # custom
 from . import data
 from . import LogGuy
@@ -76,6 +80,10 @@ class Analizer():
         # extraction of types of job
         logger.append("\tParsing métiers")
         self.parse_metiers(liste_identifiants_offre, self.c)
+
+        # extraction of words semantic
+        logger.append("\tParsing termes")
+        self.parse_words(liste_identifiants_offre, self.c)
 
         ###############
         ## Disabling multithreading because of official documentation warning
@@ -440,6 +448,67 @@ class Analizer():
             logger.append("{0} => Métiers parsed".format(str(offre)))
         # end of function
         return li_id
+
+    def parse_words(self, li_id, db_cursor):
+        """
+        Extraction of words mentioned into the offers. The goal is to perform
+        a semantic analysis.
+        It's based on NLTK: http://www.nltk.org
+
+        li_id = list of offers'IDs to process
+        db_cursor = connection cursor to the DB where to store extracted data
+        """
+        # list to store words OK
+        li_words_ok = []
+        # dictionary of words/frequency
+        dict_words_frek = {}
+
+        # get list of common French words to filter
+        stop_fr = set(stopwords.words('french'))   # add specific French
+
+        # looping on the offers list
+        for offre in li_id:
+            # get the content
+            db_cursor.execute("SELECT content FROM georezo WHERE id = {0}".format(str(offre)))
+            contenu = db_cursor.fetchone()
+            # basic clean of the content
+            contenu = self.remove_tags(contenu[0])
+            # tokenizing and cleaning html tags
+            contenu = nltk.word_tokenize(nltk.clean_html(contenu))
+            # filtering
+            for mot in contenu:
+                if mot not in stop_fr:
+                    li_words_ok.append(mot)
+                else:
+                    pass
+
+        # calc words frequency
+        for mot in li_words_ok:
+            if dict_words_frek(mot):
+                dict_words_frek[mot] = dict_words_frek.get(mot) + 1
+            else:
+                dict_words_frek[mot] = 1
+
+        # storing words frequency
+        for mot in sorted(dict_words_frek.keys()):
+            # test s'il est déjà présent dans la BD
+            arecup = (mot, )
+            db_cursor.execute('SELECT * FROM semantique WHERE word=?', arecup)
+            row = db_cursor.fetchone()
+            if row:
+                # S'il est déjà présent on met à jour les occurences
+                db_cursor.execute("UPDATE semantique SET frequency = ? WHERE mots= ?", (row[1] + dict_words_frek.get(mot), mot))
+            else:
+                # Sinon, on l'ajoute à la BD
+                # timestamp = datetime.now()
+                # timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                db_cursor.execute("INSERT INTO semantique VALUES ( ?, ?, 1)", (mot, dict_words_frek.get(mot)))
+
+        # commit changes
+        self.manage_connection(1)
+
+        # end of function
+        return
 
     def remove_tags(self, html_text):
         """
