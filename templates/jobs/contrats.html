@@ -22,7 +22,6 @@
           //Create SVG element
           var svg = d3.select("div#weekday")
           .append("svg")
-          .attr("preserveAspectRatio", "xMidYMin")
           .attr("class", "chart_weekday")
           .attr("width", w)
           .attr("height", h);
@@ -86,6 +85,7 @@
       <button type="button" id="month" class="btn btn-default">Mois</button>
       <!-- <button type="button" id="year" class="btn btn-default">Année</button> -->
     </div>
+    <br/>
     <br/>
         <div id='chart'>
             Répartition des types de contrats par mois

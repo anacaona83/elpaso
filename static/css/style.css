@@ -6,17 +6,6 @@ body {
   text-align: center;
 }
 
-/*svg {
-  padding: 40px 15px;
-  text-align: center;
-}
-*/
-
-/*svg.chart_weekday {
-  display: block;
-  margin: auto;
-}
-*/
 p.weekday {
   margin-top: 20px;
   font-size: 20;
