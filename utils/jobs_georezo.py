@@ -107,7 +107,7 @@ if compteur > 0:
     # log info
     logger.append("New offers IDs: " + str(li_id))
     # analyzing offers
-    analyseur.Analizer(li_id)
+    analyseur.Analizer(li_id, path.abspath(r'../elpaso.sqlite'))
     # fillfulling the DB
     models.Fillin(li_id)
 else:
