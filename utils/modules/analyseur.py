@@ -57,6 +57,7 @@ class Analizer():
         logger.append("Launching analyze")
 
         # connection to the DB
+        db_path = path.abspath(db_path)
         db = path.abspath(db_path)
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
