@@ -24,7 +24,7 @@ from os import path, environ
 import sqlite3
 import sys
 
-from datetime import date as datetime
+from datetime import datetime
 
 # Custom modules
 from modules import analyseur
