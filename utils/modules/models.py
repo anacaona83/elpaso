@@ -1,48 +1,82 @@
+# -*- coding: UTF-8 -*-
+#!/usr/bin/env python
+
+#------------------------------------------------------------------------------
+# Name:         Test suite
+# Purpose:      Make possible to test the parser and the crawler manually.
+#
+# Authors:      pvernier (https://github.com/pvernier)
+#               & Guts (https://github.com/Guts)
+#
+# Python:       3.4.x
+# Created:      01/05/2014
+# Updated:      03/11/2014
+#
+# Licence:      GPL 3
+#------------------------------------------------------------------------------
+
+###############################################################################
+########### Libraries #############
+###################################
+
+# Standard library
 from os import path, environ, listdir
 import sys
 import sqlite3
 import json
 import time
 from datetime import date as dt, datetime
+
+# Custom modules
 from . import LogGuy
 
-sys.path.append('/home/pvernier/code/python/elpaso')
+# Django specifics
+sys.path.append(r'../')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 from jobs.models import Year
 from jobs.models import Month
 from jobs.models import Week
 
+###############################################################################
+############ Globals ##############
+###################################
+
 # logger object
 logger = LogGuy.Logyk()
+
+###############################################################################
+############ Classes ##############
+###################################
 
 
 class Fillin():
     def __init__(self, liste_identifiants_offre):
-        '''liste_identifiants_offre = liste des ID des nouvelles offres'''
-        # connexion à la BD EL Paso
-        db = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
+        '''
+        Fill Django table to prepare serialization
+
+        liste_identifiants_offre = IDs of offers to process
+        '''
+        # connection to DB
+        db = path.abspath('../../elpaso.sqlite')
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
 
-        # connexion à la BD Django - NO MORE NEEDED
-        # db_django = path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite')
-        # self.conn_django = sqlite3.connect(db_django)
-        # self.c_django = self.conn_django.cursor()
-
-        # Remplissage des contrats dans la BD django
+        # fill table of statistics about types of contracts
         logger.append("\tFill in contrats in the Django DB")
         self.contrats(liste_identifiants_offre, self.c)
 
+        # serialization for histograms by types of contracts
         logger.append("\tCreate JSON files")
         self.create_json('year')
         self.create_json('month')
         self.create_json('week')
         self.create_json('day')
 
+        # divide contracts statistics according to periods (year, month, week)
         self.periodizer(liste_identifiants_offre, self.c)
 
-        # 
+        # serialization for the NVD3 stacked area
         self.serializer_types_contrats(Year, 'year_milsec')
         self.serializer_types_contrats(Month, 'month_milsec')
         self.serializer_types_contrats(Week, 'week_milsec')
@@ -53,15 +87,12 @@ class Fillin():
         (année, mois, semaines) et créent les lignes correspondantes
         le cas échéant.
         '''
-        # # Date du jour, numéro et 1er jour de la semaine actuelle
-        # today = dt.today()
-        # week_nb = dt(today.year, today.month, today.day).isocalendar()[1]
-
+        # calc the first day of a week
         first_day = time.asctime(time.strptime('{0} {1} 1'.format(annee,
                                      semaine - 1), '%Y %W %w'))
         first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
 
-        # récupération des périodes dans la BDD
+        # get periods from the DB
         result_month = Month.objects.filter(month=mois,
                                             year= annee)
         result_year = Year.objects.filter(year= annee)
@@ -93,8 +124,13 @@ class Fillin():
         else:
             pass
 
+        # end of function
+        return
+
     def periodizer(self, li_id, db_cursor):
-        ''' TO DO '''
+        '''
+        to comments
+        '''
         for offre in li_id:
             db_cursor.execute("SELECT * FROM contrats WHERE id = "
                               + str(offre))
