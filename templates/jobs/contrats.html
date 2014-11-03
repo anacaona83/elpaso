@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block content %}
     <p class="weekday">Nombre d'annonces par jour de la semaine :</p>
-    <div id= "weekday">
+    <div id= "weekday" style="text-align:center;">
         <script type="text/javascript">
             //Width and height
             var w = 600;
@@ -22,6 +22,8 @@
           //Create SVG element
           var svg = d3.select("div#weekday")
           .append("svg")
+          .attr("preserveAspectRatio", "xMidYMin")
+          .attr("class", "chart_weekday")
           .attr("width", w)
           .attr("height", h);
 

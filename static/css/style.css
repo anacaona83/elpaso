@@ -6,11 +6,17 @@ body {
   text-align: center;
 }
 
-svg {
+/*svg {
   padding: 40px 15px;
   text-align: center;
 }
+*/
 
+/*svg.chart_weekday {
+  display: block;
+  margin: auto;
+}
+*/
 p.weekday {
   margin-top: 20px;
   font-size: 20;
@@ -39,7 +45,7 @@ div.contrats span {
 div#weekday rect {
     fill: #FF0080;
 }
-/*
+
 div#cdi rect {
     fill: #1589FF;
 }
@@ -70,5 +76,9 @@ div#these rect {
 
 div#autre rect {
     fill: #7E3817;
-}*/
+}
 
+svg.chart_periode {
+  width:100%;
+  height: 400px;
+}

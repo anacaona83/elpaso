@@ -10,3 +10,5 @@
 # via pypi
 django
 feedparser
+numpy
+nltk
