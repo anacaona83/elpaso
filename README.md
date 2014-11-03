@@ -13,13 +13,13 @@ Pourquoi El Paso ? Depuis des temps immémoriaux, le choix d'un nom de projet in
 
 - [X] union des tables dans une seule BD (django et crawler)
 - [X] alimenter les tables par périodes
-- [ ] exporter en json sous format : key : date, values: (liste valeurs par types de contrats)
+- [X] exporter en json sous format : key : date, values: (liste valeurs par types de contrats)
 - [ ] camembert par mois et par type de contrat (@Guts)
 - [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
-- [ ] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
+- [X] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
 - [ ] graphique pour les types de contrats par mois (http://nvd3.org/examples/multiBar.html)
 - [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
-- [ ] changer chemins absolus par chemains relatifs
+- [ ] changer chemins absolus par chemins relatifs
 - [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
 - [X] optimiser le html avec intégration de bootstrap (@pvernier)
 - [X] configuration serveur web (nginx)

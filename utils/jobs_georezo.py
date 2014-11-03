@@ -1,73 +1,117 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 
+#------------------------------------------------------------------------------
+# Name:         Jobs from GeoRezo
+# Purpose:      RSS parser of GeoRezo jobs forum to store offers into the
+#               database. It's usually launched by a cron, twice a day.
+#
+# Authors:      pvernier (https://github.com/pvernier)
+#               & Guts (https://github.com/Guts)
+#
+# Python:       3.4.x
+# Created:      01/05/2014
+# Updated:      03/11/2014
+#
+# Licence:      GPL 3
+#------------------------------------------------------------------------------
+
+###############################################################################
+########### Libraries #############
+###################################
+
+# Standard library
 from os import path
 import feedparser
 import sqlite3
-
 
 # Custom modules
 from modules import analyseur
 from modules import models
 from modules import LogGuy
 
+###############################################################################
+########## Main program ###########
+###################################
+
+## LOG
+# get the logger object
 logger = LogGuy.Logyk()
 
 # opening the log file
 logger.config()
 
-# connexion à BD
-conn = sqlite3.connect(path.abspath('/home/pvernier/code/python/elpaso/elpaso.sqlite'))
+## DB
+conn = sqlite3.connect(path.abspath(r'../elpaso.sqlite'))
 c = conn.cursor()
 logger.append("Connected to the database")
 
-# Ce fichier contient l'id de la dernière annonce traitée
-fichier = open(path.abspath('/home/pvernier/code/python/elpaso/utils/last_id_georezo.txt'), 'r')
-last_id = int(fichier.readline())
-fichier.close()
+## PARSING
+# Get the id of the last offer parsed
+with open(path.abspath(r'last_id_georezo.txt'), 'r') as fichier:
+    last_id = int(fichier.readline())
 logger.append("Read ID of the last update")
 
-# l'URL du flux RSS des annonces
-d = feedparser.parse('http://georezo.net/extern.php?fid=10')
+# RSS parser
+feed = feedparser.parse('http://georezo.net/extern.php?fid=10')
 logger.append("Parser created")
 
-# liste des identifiants des nouvelles offres
+# list to store offers IDs
 li_id = []
 
+# reset offers counter
 compteur = 0
-for entry in d.entries:
+
+# looping on feed entries
+for entry in feed.entries:
+    # get the ID cleaning 'link' markup
     job_id = int(entry.id.split('#')[1].lstrip('p'))
-    # La première annonce traitée est la dernière publiée, donc celle
-    # qui a l'id le plus grand. Je mets cet id dans le fichier texte.
-    if d.entries.index(entry) == 0:
-        fichier = open(path.abspath('/home/pvernier/code/python/elpaso/utils/last_id_georezo.txt'), 'w')
-        fichier.write(str(job_id))
-        fichier.close()
-    # Si l'id de l'annonce est supérieur à l'id du fichier, cela signifie
-    # que l'annonce est plus récente et n'a pas encore été traitée
+
+    # first offer parsed is the last published, so the biggest ID. Put the ID in
+    # the text file dedicated.
+    if feed.entries.index(entry) == 0:
+        with open(path.abspath(r'last_id_georezo.txt'), 'w') as fichier:
+            fichier.write(str(job_id))
+    else:
+        pass
+
+    # if the entry's ID is greater than ID stored in the file, that means
+    # the offer is more recent and has not been processed yet.
     if job_id > last_id:
         try:
             with conn:
-                #  J'insère les données dans la BD
-                c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id), entry.title, entry.summary, entry.published))
-                # Save (commit) the changes
+                #  storing the offer into the DB
+                c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id),
+                                                                   entry.title,
+                                                                   entry.summary,
+                                                                   entry.published))
+                # incrementing counter
                 compteur += 1
+                # adding the offer's ID to the list of new offers to process
                 li_id.append(job_id)
         except sqlite3.IntegrityError:
+            # in case of duplicated offer
             logger.append("Offer already exists: " + str(job_id))
+            continue
+    else:
+        pass
 
+# closing connection
 conn.close()
-# Affiche le nombre d'annonces insérées dans la BD
+
+# log the number of new offers processed
 logger.append(str(compteur) + ' offers have been added !')
 
-# si de nouvelles annonces ont été insérées, alors on lance l'analyse
+# if new offers => launch next processes
 if compteur > 0:
+    # log info
     logger.append("New offers IDs: " + str(li_id))
+    # analyzing offers
     analyseur.Analizer(li_id)
+    # fillfulling the DB
     models.Fillin(li_id)
-
-# mettre à jour les index
-## CREATE UNIQUE INDEX "main"."idx_id" ON "logiciels" ("id" ASC)
+else:
+    pass
 
 # closing process
-logger.append('<<<<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>>>>>>>>\n')
+logger.append('<<<<<<<<< El Paso finished without any issue ! >>>>>>>>>>>>>>\n')

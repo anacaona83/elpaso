@@ -1,19 +1,22 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 
-#-------------------------------------------------------------------------------
-# Name:         Analyseur
-# Purpose: 
+#------------------------------------------------------------------------------
+# Name:         Analyseur (or Analizer in English)
+# Purpose:      Analyzes the offers published on GeoRezo, extracts and formats
+#               interesting informations: contracts types, date, etc.
 #
-# Author: @pvernier et @guts
+# Authors:      pvernier (https://github.com/pvernier)
+#               & Guts (https://github.com/Guts)
 #
-# Python: 3.4.x
-# Created: 18/04/2014
-# Updated: 23/07/2014
-# Licence: GPL 3
-#-------------------------------------------------------------------------------
+# Python:       3.4.x
+# Created:      01/05/2014
+# Updated:      03/11/2014
+#
+# Licence:      GPL 3
+#------------------------------------------------------------------------------
 
-################################################################################
+###############################################################################
 ########### Libraries #############
 ###################################
 
@@ -21,54 +24,62 @@
 from os import path
 import re
 import sqlite3
-import threading # multi threads handling
+# import threading # multi threads handling
 from xml.etree import ElementTree as ET
 
 # custom
 from . import data
 from . import LogGuy
 
-
-################################################################################
+###############################################################################
 ############ Globals ##############
 ###################################
 
 # logger object
 logger = LogGuy.Logyk()
 
-################################################################################
+###############################################################################
 ############ Classes ##############
 ###################################
 
+
 class Analizer():
-    """ analyse les dernière offres parues sur GeoRezo et enregistrées dans la table 
-    georezo. """
-    def __init__(self, liste_identifiants_offre, db_path=r"/home/pvernier/code/python/elpaso/elpaso.sqlite"):
-        """ crée le curseur de connexion à la BD et répartit les tâches.
-        liste_identifiants_offre = liste des ID des nouvelles offres """
+    """
+    analyze of last offers published on GeoRezo and stored in the main table.
+    """
+    def __init__(self, liste_identifiants_offre, db_path=r"../../elpaso.sqlite"):
+        """
+        manage the connection cursor and task related
+
+        liste_identifiants_offre = IDs list of offers to process
+        """
+        # a little log message to know where we are
         logger.append("Launching analyze")
-        # connexion à la BD
+
+        # connection to the DB
         db = path.abspath(db_path)
         self.conn = sqlite3.connect(db)
-        self.c  = self.conn.cursor()
+        self.c = self.conn.cursor()
 
-        # extraction des types de contrats
+        # extraction of types of contracts
         logger.append("\tParsing contrats")
         self.parse_contrats(liste_identifiants_offre, self.c)
 
-        # extraction des lieux des offres
+        # extraction of places
         logger.append("\tParsing lieux")
         self.parse_lieux(liste_identifiants_offre, self.c)
 
-        # extraction des logiciels
+        # extraction of software
         logger.append("\tParsing logiciels")
         self.parse_technos(liste_identifiants_offre, self.c)
 
-        # extraction des métiers
+        # extraction of types of job
         logger.append("\tParsing métiers")
         self.parse_metiers(liste_identifiants_offre, self.c)
 
-        #### Disabling multithreading because of official documentation warning: https://docs.python.org/3/library/sqlite3.html#multithreading
+        ###############
+        ## Disabling multithreading because of official documentation warning
+        ## see: https://docs.python.org/3/library/sqlite3.html#multithreading
         # tr_contrats = threading.Thread(target=self.parse_contrats,
         #                                args=(liste_identifiants_offre, self.c))
         # tr_contrats.daemon = True
@@ -85,13 +96,18 @@ class Analizer():
         #                                args=(liste_identifiants_offre, self.c))
         # tr_techno.daemon = True
         # tr_techno.run()
+        #################
 
-        # fermeture de la connexion à la BD
+        # closing connection
         self.manage_connection(2)
         logger.append("Connection closed")
 
     def manage_connection(self, action):
-        """ commit ou ferme la connexion à la demande """
+        """
+        perform actions depending on the parameter:
+        1 = commit/save
+        2 = close
+        """
         if action == 1:
             self.conn.commit()
         elif action == 2:
@@ -101,92 +117,139 @@ class Analizer():
         # end of function
         return self.conn
 
-
     def parse_contrats(self, li_id, db_cursor):
-        """ extraction des types de contrats """
+        """
+        Extraction of types of contracts: CDI, CDD, mission, volontariat, etc.
+        In theory, the offer's title is formatted to contain the type between []
+
+        li_id = list of offers'IDs to process
+        db_cursor = connection cursor to the DB where to store extracted data
+        """
+        # looping on the offers list
         for offre in li_id:
-            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
-            #c.execute("SELECT title FROM georezo WHERE id = ?", str(offre))
+            # get the offer from the main table
+            db_cursor.execute("SELECT title FROM georezo WHERE id = {0}".format(str(offre)))
+            # get the title
             titre = db_cursor.fetchone()
-            # nettoyage du titre : virer texte avant crochet ouvrant et 
-            # après crochet fermant
+            # clean the title: excluding text out of brackets
             contrat = titre[0].split(']')[0].lstrip('[')
-            # insertion
+            # depending on the type found, inserting into the DB
             if contrat[0:3].lower() == 'cdi':
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre), 1,0,0,0,0,0,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),1,0,0,0,0,0,0,0,0,""))
             elif contrat[0:3].lower() == 'cdd':
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0, 1,0,0,0,0,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,1,0,0,0,0,0,0,0,""))
             elif "fpt" in contrat.lower()\
                 or "fpe" in contrat.lower()\
                 or "ftp" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0, 1,0,0,0,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,1,0,0,0,0,0,0,""))
             elif "stage" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0, 1,0,0,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,1,0,0,0,0,0,""))
             elif "appr" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0, 1,0,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,1,0,0,0,0,""))
             elif "vi" in contrat.lower() \
                 or "volontariat" in contrat.lower()\
                 or "vsc" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0, 1,0,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,1,0,0,0,""))
             elif "these" in contrat.lower() or "thèse" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0, 1,0,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,1,0,0,""))
             elif "post" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0, 1,0,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,1,0,""))
             elif "mission" in contrat.lower() \
                 or "interim" in contrat.lower()\
                 or "intérim" in contrat.lower():
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0, 1,""))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,1,""))
             else:
-                db_cursor.execute("INSERT INTO contrats VALUES (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0, contrat))
+                db_cursor.execute("INSERT INTO contrats VALUES \
+                    (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,0,0,0,0,contrat))
             # Save (commit) the changes
             self.manage_connection(1)
             logger.append("{0} => Contrats parsed".format(str(offre)))
         # end of function
-        # self.manage_connection(2)
         return li_id
 
-
     def parse_lieux(self, li_id, db_cursor):
-        """ extraction des lieux des offres 
-        liste des pays issue de : http://sql.sh/514-liste-pays-csv-xml"""
+        """
+        Extraction of places of contracts: regions, countries, cities, etc.
+        In theory, offer's title is formatted to contain the place between ()
+
+        li_id = list of offers'IDs to process
+        db_cursor = connection cursor to the DB where to store extracted data
+        
+        Countries list from: http://sql.sh/514-liste-pays-csv-xml
+        """
+        # looping on the offers list
         for offre in li_id:
-            # récupération du titre de l'offre
-            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+            # get the offer from the main table
+            db_cursor.execute("SELECT title FROM georezo WHERE id = {0}".format(str(offre)))
+            # get the title
             titre = db_cursor.fetchone()
-            # tentative de nettoyage du titre
+            # clean the title: get the text after the closing bracket
             try:
-                titre = titre[0][titre[0].index("]")+1:len(titre[0])]
+                titre = titre[0][titre[0].index("]") + 1:len(titre[0])]
             except ValueError:
+                # if title is not correctly formatted, just get it the raw
                 logger.append("\n\t==== ERRREUR : formatage titre de l'offre.")
                 titre = titre[0]
-
-            # trying to get the French departement code
+            # trying to get the French departement code with a regex
             dpt_code = re.findall("(2[AB]|[0-9]+)", titre)
+            # depending on the result, classify the place according to the
+            # territory scale
             if dpt_code:
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), str(dpt_code[0]), 3, ""))
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)",\
+                    (str(offre), str(dpt_code[0]), 3, ""))
+                # saving the  change because there are offers which contain
+                # other type of place information. ie: 33 (France)
                 self.manage_connection(1)
-                logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
+                # a little log
+                logger.append("{0} ({1}) => Lieux parsed".format(str(offre),
+                                                                 dpt_code))
                 continue
-            elif "idf" in titre.lower() or "Paris" in titre.lower() or "île de france" in titre.lower() or "île-de-france" in titre[0].lower():
-                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), str(75), 3, ""))
+            elif "idf" in titre.lower() \
+                or "Paris" in titre.lower() \
+                or "île de france" in titre.lower() \
+                or "île-de-france" in titre[0].lower():
+                db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)",\
+                    (str(offre), str(75), 3, ""))
+                # saving the  change because there are offers which contain
+                # other type of place information. ie: 33 (France)
                 self.manage_connection(1)
+                # a little log
                 logger.append("{0} ({1}) => Lieux parsed".format(str(offre), "IDF"))
                 continue
             elif any(pays.lower() in titre.lower() for pays in data.tup_pays):
                 for pays in data.tup_pays:
                     if pays in titre:
-                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), pays, 1, ""))
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)",\
+                            (str(offre), pays, 1, ""))
+                        # saving the  change because there are offers which
+                        # contain other type of place information. ie: 33 (France)
                         self.manage_connection(1)
-                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre), pays))
+                        # a little log
+                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre),
+                                                                         pays))
                         break
                     else:
                         continue
             elif any(ville.lower() in titre.lower() for ville in data.tup_villes_fr100):
                 for ville in data.tup_villes_fr100:
                     if ville in titre:
-                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)", (str(offre), ville, 4, ""))
+                        db_cursor.execute("INSERT INTO lieux VALUES (?,?,?,?)",
+                            (str(offre), ville, 4, ""))
+                        # saving the  change because there are offers which
+                        # contain other type of place information. ie: 33 (France)
                         self.manage_connection(1)
-                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre), ville))
+                        # a little log
+                        logger.append("{0} ({1}) => Lieux parsed".format(str(offre),
+                                                                         ville))
                         break
                     else:
                         continue
@@ -196,16 +259,25 @@ class Analizer():
             self.manage_connection(1)
             logger.append("{0} ({1}) => Lieux parsed".format(str(offre), dpt_code))
         # end of function
-        # self.manage_connection(2)
         return li_id
 
-
     def parse_technos(self, li_id, db_cursor):
-        """ extraction des logiciels cités dans l'offre """
+        """
+        Extraction of softwares mentioned into the offers: ArcGIS, QGIS, etc.
+        Softwares are usually mentioned in the offer body and it could be hard
+        to distinct the names. It's based on a list stored in data.py
+
+        li_id = list of offers'IDs to process
+        db_cursor = connection cursor to the DB where to store extracted data
+        """
+        # looping on the offers list
         for offre in li_id:
+            # local list of values to insert at the end of loop
             li_values = [str(offre)]
-            db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
+            # 
+            db_cursor.execute("SELECT content FROM georezo WHERE {0}".format(str(offre)))
             contenu = db_cursor.fetchone()
+            # clean the content removing HTML tags
             contenu = self.remove_tags(contenu[0])
             # testing softwares recognition
             if any(software in contenu.lower() for software in data.tup_prop):
@@ -252,20 +324,27 @@ class Analizer():
             logger.append("{0} => Logiciels parsed. ".format(str(offre)))
 
         # end of function
-        # self.manage_connection(2)
         return li_id
 
     def parse_metiers(self, li_id, db_cursor):
-        """ extraction des métiers cités dans l'offre """
+        """
+        Extraction of types of jobs mentioned into the offers: cartographer,
+        GIS analyst, engineer, etc.
+        Jobs'labels are usually mentioned into the offer body and it can be hard
+        to distinct the names. It's based on a list written in data.py
+
+        li_id = list of offers'IDs to process
+        db_cursor = connection cursor to the DB where to store extracted data
+        """
         for offre in li_id:
             li_values = [str(offre)]
-            # getting the content
-            db_cursor.execute("SELECT content FROM georezo WHERE id = " + str(offre))
+            # get the content
+            db_cursor.execute("SELECT content FROM georezo WHERE id = {0}".format(str(offre)))
             contenu = db_cursor.fetchone()
             contenu = self.remove_tags(contenu[0])
 
-            # getting the title
-            db_cursor.execute("SELECT title FROM georezo WHERE id = " + str(offre))
+            # get the title
+            db_cursor.execute("SELECT title FROM georezo WHERE id = {0}".format(str(offre)))
             titre = db_cursor.fetchone()
 
             if any(metier in titre[0].lower() for metier in ("administrateur", "administration")):
@@ -360,11 +439,12 @@ class Analizer():
             self.manage_connection(1)
             logger.append("{0} => Métiers parsed".format(str(offre)))
         # end of function
-        # self.manage_connection(2)
         return li_id
 
     def remove_tags(self, html_text):
-        """ nettoie les balises HTML du contenu des offres """
+        """
+        very basic cleaner for HTML markups
+        """
         try:
             text = ''.join(ET.fromstring(html_text).itertext())
         except:
@@ -373,17 +453,14 @@ class Analizer():
         # end of function
         return text.lower()
 
-################################################################################
+###############################################################################
 ###### Stand alone program ########
 ###################################
 
 if __name__ == '__main__':
-    u""" standalone execution for tests. Paths are relative considering a test
-    within the official repository (https://github.com/Guts/DicoShapes/)"""
-    # libraries import
-    # from os import path, getcwd
-    # import sqlite3
-    #
+    u"""
+    standalone execution.
+    """
     print('Stand-alone execution')
     # DB connection settings
     db = path.abspath(r"../elpaso.sqlite")

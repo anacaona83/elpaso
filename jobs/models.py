@@ -2,7 +2,9 @@ from django.db import models
 
 
 class Contrat(models.Model):
-    """ """
+    """
+    table to store jobs offers per contracts types
+    """
     id = models.IntegerField(primary_key=True, db_index=True)
     type = models.CharField(max_length=255)
     date_pub = models.DateTimeField()
@@ -16,7 +18,9 @@ class Contrat(models.Model):
 
 
 class Year(models.Model):
-    """ """
+    """
+    table to store jobs offers per years
+    """
     # specific fields for period
     year = models.IntegerField(db_index=True)
     # contrats types fields
@@ -38,7 +42,9 @@ class Year(models.Model):
 
 
 class Month(models.Model):
-    """ """
+    """
+    table to store jobs offers per month
+    """
     # specific fields for period
     year = models.IntegerField(db_index=True)
     month = models.IntegerField(db_index=True)
@@ -61,7 +67,9 @@ class Month(models.Model):
 
 
 class Week(models.Model):
-    """ """
+    """
+    table to store jobs offers per week
+    """
     # specific fields for period
     year = models.IntegerField(db_index=True)
     week = models.IntegerField(db_index=True)
