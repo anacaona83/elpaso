@@ -71,7 +71,7 @@ conn.commit()
 print("\nFin nettoyage tables en entrées : {0}".format(datetime.now()))
 
 # fill input tables from georezo with analyseur
-analyseur.Analizer(liste_input, path.abspath(r'../elpaso.sqlite'))
+analyseur.Analizer(liste_input)
 
 print("\nFin analyseur : {0}".format(datetime.now()))
 
