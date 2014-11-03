@@ -485,7 +485,7 @@ class Analizer():
 
         # calc words frequency
         for mot in li_words_ok:
-            if dict_words_frek(mot):
+            if mot in dict_words_frek:
                 dict_words_frek[mot] = dict_words_frek.get(mot) + 1
             else:
                 dict_words_frek[mot] = 1
