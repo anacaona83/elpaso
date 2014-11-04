@@ -66,6 +66,7 @@ c.execute("DELETE FROM lieux;")
 c.execute("DELETE FROM autres;")
 c.execute("DELETE FROM metiers;")
 c.execute("DELETE FROM logiciels;")
+c.execute("DELETE FROM semantique;")
 conn.commit()
 
 print("\nFin nettoyage tables en entrées : {0}".format(datetime.now()))

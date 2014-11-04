@@ -31,7 +31,7 @@ from datetime import date as dt, datetime
 from . import LogGuy
 
 # Django specifics
-sys.path.append(r'../')
+sys.path.append(path.abspath(r'../'))
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 from jobs.models import Year
@@ -58,7 +58,8 @@ class Fillin():
         liste_identifiants_offre = IDs of offers to process
         '''
         # connection to DB
-        db = path.abspath('../../elpaso.sqlite')
+        db = path.abspath(r'../elpaso.sqlite')
+        print("\tDBBBB :" + db)
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
 

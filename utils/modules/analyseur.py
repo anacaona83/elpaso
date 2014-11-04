@@ -458,16 +458,19 @@ class Analizer():
         li_id = list of offers'IDs to process
         db_cursor = connection cursor to the DB where to store extracted data
         """
-        # list to store words OK
-        li_words_ok = []
-        # dictionary of words/frequency
-        dict_words_frek = {}
-
         # get list of common French words to filter
         stop_fr = set(stopwords.words('french'))   # add specific French
 
+        # custom list
+        li_stop_custom = ['(', ')', '.',':',';','/','nbsp','&','#',',','-',':',\
+                          'http', 'img', 'br', 'amp', '<', '>', '%', 'border', 'border=']
+
         # looping on the offers list
         for offre in li_id:
+            # list to store words OK
+            li_words_ok = []
+            # dictionary of words/frequency
+            dict_words_frek = {}
             # get the content
             db_cursor.execute("SELECT content FROM georezo WHERE id = {0}".format(str(offre)))
             contenu = db_cursor.fetchone()
@@ -478,35 +481,35 @@ class Analizer():
             contenu = nltk.word_tokenize(contenu)
             # filtering
             for mot in contenu:
-                if mot not in stop_fr:
+                if mot not in stop_fr and mot not in li_stop_custom and len(mot) > 2:
                     li_words_ok.append(mot)
                 else:
                     pass
 
-        # calc words frequency
-        for mot in li_words_ok:
-            if mot in dict_words_frek:
-                dict_words_frek[mot] = dict_words_frek.get(mot) + 1
-            else:
-                dict_words_frek[mot] = 1
+            # calc words frequency
+            for mot in li_words_ok:
+                if mot in dict_words_frek:
+                    dict_words_frek[mot] = dict_words_frek.get(mot) + 1
+                else:
+                    dict_words_frek[mot] = 1
 
-        # storing words frequency
-        for mot in sorted(dict_words_frek.keys()):
-            # test s'il est déjà présent dans la BD
-            arecup = (mot, )
-            db_cursor.execute('SELECT * FROM semantique WHERE word=?', arecup)
-            row = db_cursor.fetchone()
-            if row:
-                # S'il est déjà présent on met à jour les occurences
-                db_cursor.execute("UPDATE semantique SET frequency = ? WHERE mots= ?", (row[1] + dict_words_frek.get(mot), mot))
-            else:
-                # Sinon, on l'ajoute à la BD
-                # timestamp = datetime.now()
-                # timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                db_cursor.execute("INSERT INTO semantique VALUES ( ?, ?, 1)", (mot, dict_words_frek.get(mot)))
+            # storing words frequency
+            for mot in sorted(dict_words_frek.keys()):
+                # test s'il est déjà présent dans la BD
+                arecup = (mot, )
+                db_cursor.execute('SELECT * FROM semantique WHERE word=?', arecup)
+                row = db_cursor.fetchone()
+                if row:
+                    # S'il est déjà présent on met à jour les occurences
+                    db_cursor.execute("UPDATE semantique SET frequency = ? WHERE word= ?", (row[1] + dict_words_frek.get(mot), mot))
+                    print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
+                else:
+                    # Sinon, on l'ajoute à la BD
+                    db_cursor.execute("INSERT INTO semantique VALUES (?, ?)", (mot, dict_words_frek.get(mot)))
+                    print('nouveau mot : {0}'.format(mot))
 
-        # commit changes
-        self.manage_connection(1)
+            # commit changes
+            self.manage_connection(1)
 
         # end of function
         return
