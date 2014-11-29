@@ -31,7 +31,7 @@ from datetime import date as dt, datetime
 from . import LogGuy
 
 # Django specifics
-sys.path.append(path.abspath(r'../'))
+sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 from jobs.models import Contrat
 from jobs.models import Year

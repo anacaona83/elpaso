@@ -21,9 +21,15 @@
 ###################################
 
 # Standard library
-from os import path
+import os
+from os import path, environ
 import feedparser
 import sqlite3
+import sys
+
+print("Dossier courant : " + os.getcwd())
+os.chdir(path.dirname(path.abspath(__file__)))
+print("Dossier courant : " + os.getcwd())
 
 # Custom modules
 from modules import analyseur
@@ -33,6 +39,10 @@ from modules import LogGuy
 ###############################################################################
 ########## Main program ###########
 ###################################
+
+sys.path.append('/home/pvernier/code/python/elpaso')
+environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
+
 
 ## LOG
 # get the logger object
@@ -65,7 +75,12 @@ compteur = 0
 # looping on feed entries
 for entry in feed.entries:
     # get the ID cleaning 'link' markup
-    job_id = int(entry.id.split('#')[1].lstrip('p'))
+    try:
+        job_id = int(entry.id.split('#')[1].lstrip('p'))
+    except AttributeError:
+        print(feed.entries.index(entry))
+        logger.append("Houston! There's a problem with this feed!")
+        continue
 
     # first offer parsed is the last published, so the biggest ID. Put the ID in
     # the text file dedicated.

@@ -11,26 +11,34 @@ Pourquoi El Paso ? Depuis des temps immémoriaux, le choix d'un nom de projet in
 
 # ToDoList
 
+- [ ] mettre en page l'accueil : sidebar BS
+- [ ] débugguer CSS (conflits BS - NVD3)
+- [ ] camembert par types de contrat et par types de logiciel (@Guts)
+- [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
+- [ ] Passer toutes les tables dans le modèle Django
+- [ ] graphique pour les types de contrats par mois (http://nvd3.org/examples/multiBar.html)
+- [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
+- [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
+- [ ] optimisation du cache pour les fichiers JSON
+- [ ] corriger bug timezone SQLite / Django
+- [ ] configurer serveur mail (formulaire contact)
+- [ ] imagine un système de notifications frontend
+- [ ] Nombre de workers de gunicorn
+- [ ] Différents logs serveur
+
+- [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
+- [X] finaliser le script de récupération et d'insertion dans la BD
+- [X] installer et configurer NVD3 @Guts
+- [X] ajout des libraires JS en local (d3, bootstrap et jquery)
+- [X] optimiser le html avec intégration de bootstrap (@pvernier)
+- [X] configuration serveur web (nginx)
+- [X] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
 - [X] union des tables dans une seule BD (django et crawler)
 - [X] alimenter les tables par périodes
 - [X] exporter en json sous format : key : date, values: (liste valeurs par types de contrats)
-- [ ] camembert par mois et par type de contrat (@Guts)
-- [ ] exemple de courbes selon temps [prénoms](http://dataaddict.fr/prenoms/)
-- [X] graphique pour les types de contrats par semaines (http://nvd3.org/examples/stackedArea.html)
-- [ ] graphique pour les types de contrats par mois (http://nvd3.org/examples/multiBar.html)
-- [ ] histogramme cumulatif et interactif : http://bl.ocks.org/mbostock/3886208
-- [ ] changer chemins absolus par chemins relatifs
-- [ ] représenter graphiquement les lieux (carte ?) et logiciels (bulles ?)
-- [X] optimiser le html avec intégration de bootstrap (@pvernier)
-- [X] configuration serveur web (nginx)
-- [ ] optimisation du cache pour les fichiers JSON
-- [X] ajout des libraires JS en local (d3, bootstrap et jquery)
-- [ ] mise en page globale (menu bandeau type BS)
-- [X] migration vers PostgreSQL ? mieux vaut rester sur sqlite.
-- [X] finaliser le script de récupération et d'insertion dans la BD
-- [ ] Nombre de workers de gunicorn
-- [ ] Différents logs serveur
-- [X] installer et configurer NVD3 @Guts
+- [X] changer chemins absolus par chemins relatifs
+- [X] mise en page globale (menu bandeau type BS)
+
 
 # Principe
 

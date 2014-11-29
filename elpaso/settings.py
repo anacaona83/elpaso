@@ -95,3 +95,11 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static_elpaso"),
     os.path.join(BASE_DIR, "../../js_libs"),
 )
+
+# handling timezones
+from django.utils import timezone
+import warnings
+
+warnings.filterwarnings(
+    'error', r"DateTimeField .* received a naive datetime",
+    RuntimeWarning, r'django\.db\.models\.fields')

@@ -462,8 +462,10 @@ class Analizer():
         stop_fr = set(stopwords.words('french'))   # add specific French
 
         # custom list
-        li_stop_custom = ['(', ')', '.',':',';','/','nbsp','&','#',',','-',':',\
-                          'http', 'img', 'br', 'amp', '<', '>', '%', 'border', 'border=']
+        li_stop_custom = ('(', ')', '...', '.',':',';','/','nbsp','&','#',',','-',':',\
+                          'http', 'img', 'br', 'amp', '<', '>', '%', 'border', '*', 'border=',
+                          'les', 'leurs', '&', '#', '-', '+', ':', '.', ';', 'à', 'où', 'des',
+                          ',', 'nbsp', 'De', 'et', 'en', '(', ')', 'pour')
 
         # looping on the offers list
         for offre in li_id:
@@ -476,6 +478,8 @@ class Analizer():
             contenu = db_cursor.fetchone()
             # basic clean of the content
             contenu = self.remove_tags(contenu[0])
+            # removing all numbers / digits
+            contenu = ''.join([i for i in contenu if not i.isdigit()])
             # tokenizing and cleaning html tags
             # contenu = nltk.word_tokenize(nltk.clean_html(contenu))
             contenu = nltk.word_tokenize(contenu)
@@ -502,11 +506,11 @@ class Analizer():
                 if row:
                     # S'il est déjà présent on met à jour les occurences
                     db_cursor.execute("UPDATE semantique SET frequency = ? WHERE word= ?", (row[1] + dict_words_frek.get(mot), mot))
-                    print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
+                    # print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
                 else:
                     # Sinon, on l'ajoute à la BD
                     db_cursor.execute("INSERT INTO semantique VALUES (?, ?)", (mot, dict_words_frek.get(mot)))
-                    print('nouveau mot : {0}'.format(mot))
+                    # print('nouveau mot : {0}'.format(mot))
 
             # commit changes
             self.manage_connection(1)
@@ -519,10 +523,10 @@ class Analizer():
         very basic cleaner for HTML markups
         """
         try:
-            text = ''.join(ET.fromstring(html_text).itertext())
+            text = ' '.join(ET.fromstring(html_text).itertext())
         except:
             TAG_RE = re.compile(r'<[^>]+>')
-            return TAG_RE.sub('', html_text)
+            return TAG_RE.sub(' ', html_text)
         # end of function
         return text.lower()
 
