@@ -31,7 +31,7 @@ pip-log.txt
 
 
 # custom
-*.log
+*.log*
 static/d3
 static/bootstrap
 static/jquery
