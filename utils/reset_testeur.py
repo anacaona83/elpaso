@@ -65,11 +65,11 @@ print("\nFin connexion BD et récupération Ids : {0}".format(datetime.now()))
 
 # empty tables which are out of Django ORM
 c.execute("DELETE FROM contrats;")
-# c.execute("DELETE FROM lieux;")
+c.execute("DELETE FROM lieux;")
 c.execute("DELETE FROM autres;")
 c.execute("DELETE FROM metiers;")
-# c.execute("DELETE FROM logiciels;")
-# c.execute("DELETE FROM semantique;")
+c.execute("DELETE FROM logiciels;")
+c.execute("DELETE FROM semantique;")
 conn.commit()
 
 print("\nFin nettoyage tables en entrées : {0}".format(datetime.now()))
