@@ -1,0 +1,26 @@
+{% extends "jobs/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<p class="technos_global">Proportions des types de technologies mentionnées</p>
+<div id='piechart_technos_global'>
+  Proportions des types de technologies mentionnées
+  <svg class="piechart_technos_global"> </svg>
+</div>
+<script type="text/javascript">
+  d3.json('../static/json/technos_global.json', function(data) {
+    nv.addGraph(function() {
+      var chart = nv.models.pieChart()
+      .x(function(d) { return d.label })
+      .y(function(d) { return d.value })
+      .showLabels(true);
+
+      d3.select("#piechart_technos_global svg")
+      .datum(data)
+      .transition().duration(350)
+      .call(chart);
+
+      return chart;
+    });
+  });
+</script>
+{% endblock content %}

@@ -317,8 +317,10 @@ class Fillin():
                     pass
 
     def contrats(self, li_id, db_cursor):
-        """Méthode qui remplit la table du modele à partir de la table
-        initiale"""
+        """
+        Méthode qui remplit la table du modele à partir de la table
+        initiale
+        """
 
         # TO DO :
         # Faire une requete sur la table lieux
@@ -714,7 +716,7 @@ if __name__ == '__main__':
 
     #print('Stand-alone execution')
     # DB connection settings
-    db = path.abspath(r"../elpaso.sqlite")
+    db = path.abspath(r"../../elpaso.sqlite")
     conn = sqlite3.connect(db)
     c = conn.cursor()
     # fetching the ID list

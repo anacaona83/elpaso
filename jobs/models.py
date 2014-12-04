@@ -90,3 +90,50 @@ class Week(models.Model):
 
     def __str__(self):
         return str(self.week)
+
+
+class Places_Global(models.Model):
+    """
+    table to store jobs offers per places mentioned
+    """
+    id = models.IntegerField(primary_key=True, db_index=True)
+    libelle = models.CharField(max_length=200)
+    niveau_territorial = models.IntegerField(default=0)
+    logs = models.CharField(max_length=200)
+
+    # end
+    def __str__(self):
+        return str(self.places_global)
+
+
+class Technos_Types(models.Model):
+    """
+    table to store jobs offers per type of technology required
+    """
+    id = models.IntegerField(primary_key=True, db_index=True)
+    proprietaire = models.IntegerField(default=0)
+    libre = models.IntegerField(default=0)
+    sgbd = models.IntegerField(default=0)
+    programmation = models.IntegerField(default=0)
+    web = models.IntegerField(default=0)
+    cao_dao = models.IntegerField(default=0)
+    teledec = models.IntegerField(default=0)
+    autres = models.CharField(max_length=100)
+
+    # end
+    def __str__(self):
+        return str(self.technos_types)
+
+
+class Semantic_Global(models.Model):
+    """
+    table to store words used in jobs offers to perform semantic analysis
+    """
+    mot = models.CharField(default=200, db_index=True)
+    occurrences = models.IntegerField(default=0)    # frequency
+    first_time = models.DateTimeField()
+    last_time = models.DateTimeField()
+
+    # end
+    def __str__(self):
+        return str(self.semantic_global)

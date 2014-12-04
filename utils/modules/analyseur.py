@@ -540,7 +540,7 @@ if __name__ == '__main__':
     """
     print('Stand-alone execution')
     # DB connection settings
-    db = path.abspath(r"../elpaso.sqlite")
+    db = path.abspath(r"../../elpaso.sqlite")
     conn = sqlite3.connect(db)
     c = conn.cursor()
     # fetching the ID list
