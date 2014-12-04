@@ -24,6 +24,7 @@
 from os import path
 import re
 
+from bs4 import BeautifulSoup
 
 # third party libraries
 import nltk
@@ -111,3 +112,6 @@ print(annonce_clean1)
 print("\n\n")
 print(contenu_final)
 
+raw = BeautifulSoup(annonce).get_text()
+print("\n\n")
+print(raw)
