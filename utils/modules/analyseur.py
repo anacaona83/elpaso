@@ -465,7 +465,10 @@ class Analizer():
         li_stop_custom = ('(', ')', '...', '.',':',';','/','nbsp','&','#',',','-',':',\
                           'http', 'img', 'br', 'amp', '<', '>', '%', 'border', '*', 'border=',
                           'les', 'leurs', '&', '#', '-', '+', ':', '.', ';', 'à', 'où', 'des',
-                          ',', 'nbsp', 'De', 'et', 'en', '(', ')', 'pour')
+                          ',', 'nbsp', 'De', 'Des', 'et', 'en', '(', ')', 'pour', 'plus',
+                          'sein', 'sous', 'Les', 'auprès', 'etc', 'the', 'for', 'ème',
+                          'via', 'Vos', 'dès', 'plein', 'tel', 'etc.', 'etc..', 'Ces',
+                          'tél', 'cela', 'ceci', 'cet')
 
         # looping on the offers list
         for offre in li_id:
