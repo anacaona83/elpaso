@@ -84,7 +84,7 @@ Contrat.objects.all().delete()
 Year.objects.all().delete()
 Month.objects.all().delete()
 Week.objects.all().delete()
-Places_global.objects.all().delete()
+Places_Global.objects.all().delete()
 Technos_Types.objects.all().delete()
 Semantic_Global.objects.all().delete()
 

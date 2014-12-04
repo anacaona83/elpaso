@@ -336,7 +336,8 @@ class Analizer():
 
             li_values.append("")
             # adding the data into the database
-            db_cursor.execute("INSERT INTO jobs_technos_types VALUES (?,?,?,?,?,?,?,?,?)", tuple(li_values))
+            db_cursor.execute("INSERT INTO jobs_technos_types \
+                               VALUES (?,?,?,?,?,?,?,?,?)", tuple(li_values))
             # Save (commit) the changes
             self.manage_connection(1)
 
