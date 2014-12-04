@@ -488,8 +488,15 @@ class Analizer():
             # dictionary of words/frequency
             dict_words_frek = {}
             # get the content
-            db_cursor.execute("SELECT content FROM georezo WHERE id = {0}".format(str(offre)))
+            db_cursor.execute("SELECT content \
+                               FROM georezo \
+                               WHERE id = {0}".format(str(offre)))
             contenu = db_cursor.fetchone()
+            # get offer datetime
+            db_cursor.execute("SELECT date_pub \
+                               FROM georezo \
+                               WHERE id = {0}".format(str(offre)))
+            date_published = db_cursor.fetchone()
             # basic clean of the content
             contenu = self.remove_tags(contenu[0])
             # removing all numbers / digits
@@ -499,6 +506,29 @@ class Analizer():
             contenu = nltk.word_tokenize(contenu)
             # filtering
             for mot in contenu:
+                if mot.startswith('*'):
+                    mot = mot[1:]
+                    continue
+                elif mot.startswith('-'):
+                    mot = mot[1:]
+                    continue
+                elif mot.startswith('+'):
+                    mot = mot[1:]
+                    continue
+                elif mot.startswith("'"):
+                    mot = mot[1:]
+                    continue
+                elif mot.startswith("/"):
+                    mot = mot[1:]
+                    continue
+                elif mot.startswith(u"\u2022"):
+                    mot = mot[1:]
+                    continue 
+                elif mot.startswith("//"):
+                    mot = mot[1:]
+                    break
+                else:
+                    pass
                 if mot not in stop_fr and mot not in li_stop_custom and len(mot) > 2:
                     li_words_ok.append(mot)
                 else:
@@ -515,15 +545,31 @@ class Analizer():
             for mot in sorted(dict_words_frek.keys()):
                 # test s'il est déjà présent dans la BD
                 arecup = (mot, )
-                db_cursor.execute('SELECT * FROM semantique WHERE word=?', arecup)
+                db_cursor.execute('SELECT * FROM jobs_semantic_global \
+                                   WHERE word=?', arecup)
                 row = db_cursor.fetchone()
                 if row:
                     # S'il est déjà présent on met à jour les occurences
-                    db_cursor.execute("UPDATE semantique SET frequency = ? WHERE word= ?", (row[1] + dict_words_frek.get(mot), mot))
+                    db_cursor.execute("UPDATE jobs_semantic_global \
+                                       SET frequency = ?,\
+                                           last_offer = ?,\
+                                           last_time = ?\
+                                       WHERE word= ?",
+                                                    (row[1] + dict_words_frek.get(mot),
+                                                    str(offre),
+                                                    date_published
+                                                    mot,
+                                        ))
                     # print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
                 else:
                     # Sinon, on l'ajoute à la BD
-                    db_cursor.execute("INSERT INTO semantique VALUES (?, ?)", (mot, dict_words_frek.get(mot)))
+                    db_cursor.execute("INSERT INTO jobs_semantic_global \
+                                       VALUES (?, ?, ?, ?, ?, ?)", (mot,
+                                                                    dict_words_frek.get(mot),
+                                                                    str(offre),
+                                                                    date_published,
+                                                                    str(offre),
+                                                                    date_published))
                     # print('nouveau mot : {0}'.format(mot))
 
             # commit changes
