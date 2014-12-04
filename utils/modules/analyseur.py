@@ -529,6 +529,8 @@ class Analizer():
                     break
                 else:
                     pass
+
+                # sto words filter
                 if mot not in stop_fr and mot not in li_stop_custom and len(mot) > 2:
                     li_words_ok.append(mot)
                 else:
@@ -557,7 +559,7 @@ class Analizer():
                                        WHERE word= ?",
                                                     (row[1] + dict_words_frek.get(mot),
                                                     str(offre),
-                                                    date_published
+                                                    date_published,
                                                     mot,
                                         ))
                     # print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
