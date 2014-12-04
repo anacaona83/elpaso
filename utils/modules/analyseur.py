@@ -24,6 +24,7 @@
 from os import path
 import re
 import sqlite3
+import sys
 # import threading # multi threads handling
 from xml.etree import ElementTree as ET
 
@@ -34,6 +35,15 @@ from nltk.corpus import stopwords
 # custom
 from . import data
 from . import LogGuy
+
+# # Django specifics
+# sys.path.append('/home/pvernier/code/python/elpaso')
+# environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
+# from jobs.models import Contrat
+# from jobs.models import Year
+# from jobs.models import Month
+# from jobs.models import Week
+# from jobs.models import Technos_Types
 
 ###############################################################################
 ############ Globals ##############
@@ -326,9 +336,10 @@ class Analizer():
 
             li_values.append("")
             # adding the data into the database
-            db_cursor.execute("INSERT INTO logiciels VALUES (?,?,?,?,?,?,?,?,?)", tuple(li_values))
+            db_cursor.execute("INSERT INTO jobs_technos_types VALUES (?,?,?,?,?,?,?,?,?)", tuple(li_values))
             # Save (commit) the changes
             self.manage_connection(1)
+
             logger.append("{0} => Logiciels parsed. ".format(str(offre)))
 
         # end of function
