@@ -28,8 +28,14 @@ import re
 # third party libraries
 import nltk
 from nltk.corpus import stopwords
+from nltk.tokenize import WhitespaceTokenizer as wst
+import nltk.data
 
+# http://stackoverflow.com/questions/9663918/how-can-i-tag-and-chunk-french-text-using-nltk-and-python
+# http://www.fabienpoulard.info/post/2008/03/05/Tokenisation-en-mots-avec-NLTK
+# https://github.com/cmchurch/nltk_french/blob/master/french-nltk.py
 
+french_tokenizer = nltk.data.load('tokenizers/punkt/french.pickle')
 
 annonce = "<p>Société : PROXISERVE<br />Lieu : Saint-Herblain (44)<br />Contrat : CDD&nbsp; 6 mois, évolutif en CDI<br />A pourvoir : Avant juillet 2014<br />Statut : ETAM<br />Formation : Niveau Bac + 2/3<br />Domaine :&nbsp; &nbsp; Bureau d&#8217;étude <br />Rémunération : 23000&#8364; à 26000&#8364;<br /><br />Vous agissez en collaboration avec le chargé d&#8217;exploitation réseau gaz et intervenez pour le compte de la société, spécialiste de l&#8217;exploitation et de la maintenance des réseaux de distribution de gaz propane.<br /><br />Vous assumez les tâches suivantes : <br /><br />- Reporting technique client (Réalisation de cartographies, Réalisation des DOE, Traitement et saisie des surveillances)<br /><br />- Support technique travaux (Réalisation de plan projet, Préparation des travaux : DT / DICT...)<br /><br />- Reporting contractuel / réglementaire (Traitement et suivi des rapports d&#8217;urgence gaz, Vérification réglementaire de l'outillage spécifique...)<br /><br />Profil recherché : <br /><br />Vous êtes à l&#8217;aise avec l&#8217;outil informatique, vous maîtrisez à minima Autocad (connaissance des outils SIG est un plus). <br /><br />Vous vous adaptez aisément à l&#8217;environnement qui vous entoure et êtes prêt(e) à faire quelques déplacements pour des missions opérationnelles.<br /><br />De nature curieuse et persévérante, vous êtes également force de proposition. <br /><br />Vous savez vous adapter à des objectifs précis dans des délais imposés (rigueur, autonomie, et efficacité).<br /><br />Dynamique et impliqué(e), vous souhaitez vous investir dans une entreprise qui offre de véritables opportunités aux candidats motivés et investis dans leurs missions.<br /><br />Merci d&#8217;adresser votre candidature à : <br /><br />PROXISERVE - Direction régionale Ouest <br />A l&#8217;attention de Coralie BELLANGER<br />2 rue Duguay Trouin - 44813 SAINT-HERBLAIN<br />Ou par email à : cbellanger AT proxiserve.fr</p>"
 annonce_clean1 = ""
@@ -62,8 +68,9 @@ def parse_words(contenu):
     # basic clean of the content
     annonce_clean1 = remove_tags(contenu)
     annonce_clean1 = ''.join([i for i in annonce_clean1 if not i.isdigit()])
-    # tokenizing and cleaning html tags
-    # contenu = nltk.word_tokenize(nltk.clean_html(contenu))
+    # tokenizing
+    sents = [french_tokenizer.tokenize(s) for s in annonce_clean1]
+    # print('\n\n', sents)
     contenu_final = nltk.word_tokenize(annonce_clean1)
     # filtering
     for mot in contenu_final:

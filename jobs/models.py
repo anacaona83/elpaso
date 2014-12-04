@@ -129,7 +129,7 @@ class Semantic_Global(models.Model):
     """
     table to store words used in jobs offers to perform semantic analysis
     """
-    mot = models.CharField(default=200, db_index=True)
+    mot = models.CharField(max_length=200, db_index=True)
     occurrences = models.IntegerField(default=0)    # frequency
     first_time = models.DateTimeField()
     last_time = models.DateTimeField()
