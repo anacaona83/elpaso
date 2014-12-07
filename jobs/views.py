@@ -14,29 +14,12 @@ def stats_home(request):
     nb_months = Month.objects.count()
     nb_weeks = Week.objects.count()
 
-    # if request.method == 'POST': # If the form has been submitted...
-    #     form = ContactForm(request.POST) # A form bound to the POST data
-    #     if form.is_valid():
-    #         sender = form.cleaned_data['sender']
-    #         subject = 'Contact - ' + form.cleaned_data['subject']
-    #         message = form.cleaned_data['message']
-
-    #         recipients = ['admin@datamadre.com']
-
-            
-    #         send_mail(subject, message, sender, recipients)
-    #         return HttpResponseRedirect('/thanks/') # Redirect after POST
-    # else:
-    #     form = ContactForm() # An unbound form
-
-
     return render_to_response('jobs/home.html', {
         'nb_contrats': nb_contrats,
         'nb_years': nb_years,
         'nb_months': nb_months,
         'nb_weeks': nb_weeks,
         'first_date': first_date,
-        #'form': form,
     })
 
 

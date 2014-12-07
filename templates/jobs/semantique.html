@@ -1,46 +1,67 @@
 {% extends "jobs/base.html" %}
 {% load staticfiles %}
 {% block content %}
-<p class="semantique">Mots les plus représentés dans les textes des annonces</p>
-<div id='wordcloud_global'>
-  <svg class="wordcloud_global"> </svg>
+<p class="semantique">Les 500 mots les plus représentés dans les textes des annonces</p>
+<div id="cloud" style="text-align:center;">
 </div>
 <script type="text/javascript">
-  <script>
-    var fill = d3.scale.category20();
+  /* D3  */
 
-    d3.layout.cloud().size([300, 300])
-    .words([
-      "Hello", "world", "normally", "you", "want", "more", "words",
-      "than", "this"].map(function(d) {
-        return {text: d, size: 10 + Math.random() * 90};
+  d3.json("../static/json/mots_geomatique.json", function(data) {
+  var width = 1000;
+  var height = 800;
+
+  var typeFace = 'Impact';
+  var minFontSize = 5;
+  var colors = d3.scale.category20b();
+
+  var svg = d3.select('#cloud').append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', 'translate('+width/2+', '+height/2+')');
+
+
+  function calculateCloud(wordCount) {
+    d3.layout.cloud()
+      .size([width, height])
+      .words((data).map(function(d) {
+        return {text: d.word, size: d.size, firstime: d.firstime, lastime: d.lastime};
       }))
-    .padding(5)
-    .rotate(function() { return ~~(Math.random() * 2) * 90; })
-    .font("Impact")
-    .fontSize(function(d) { return d.size; })
-    .on("end", draw)
-    .start();
+      /*.rotate(function() { return ~~(Math.random()*2) * 90;}) // 0 or 90deg*/
+      .rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
+      .padding(1)
+      .font(typeFace)
+      .fontSize(function(d) { return d.size; })
+      .on('end', drawCloud)
+      .start();
+  }
 
-    function draw(words) {
-      d3.select("body").append("svg")
-      .attr("width", 300)
-      .attr("height", 300)
-      .append("g")
-      .attr("transform", "translate(150,150)")
-      .selectAll("text")
-      .data(words)
-      .enter().append("text")
-      .style("font-size", function(d) { return d.size + "px"; })
-      .style("font-family", "Impact")
-      .style("fill", function(d, i) { return fill(i); })
-      .attr("text-anchor", "middle")
-      .attr("transform", function(d) {
-        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+  function drawCloud(words) {
+    var vis = svg.selectAll('text').data(words);
+
+    vis.enter().append('text')
+      .style('font-size', function(d) { return d.size + 'px'; })
+      .style('font-family', function(d) { return d.font; })
+      .style('fill', function(d, i) { return colors(i); })
+      .attr('text-anchor', 'middle')
+      .attr('transform', function(d) {
+        return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
       })
-      .text(function(d) { return d.text; });
-    }
-  </script>
+      .text(function(d) { return d.text; })
+      .on("click", function(d) { 
+        alert(d.text + " = " + d.size + " occurrences.\nApparu la 1ère fois : " + d.firstime + "\nApparu la dernière fois : " + d.lastime);
+        });
+  }
+    
 
+  calculateCloud();
+
+  })
 </script>
+
+<!-- <script src="../wordcloud.js">
+    
+</script> -->
+
 {% endblock content %}

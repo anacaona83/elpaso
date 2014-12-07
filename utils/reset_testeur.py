@@ -72,13 +72,6 @@ c.execute("DELETE FROM logiciels;")
 c.execute("DELETE FROM semantique;")
 conn.commit()
 
-print("\nFin nettoyage tables en entrées : {0}".format(datetime.now()))
-
-# fill input tables from georezo with analyseur
-analyseur.Analizer(liste_input, path.abspath(r'../elpaso.sqlite'))
-
-print("\nFin analyseur : {0}".format(datetime.now()))
-
 # empty jobs_* tables
 Contrat.objects.all().delete()
 Year.objects.all().delete()
@@ -88,17 +81,39 @@ Places_Global.objects.all().delete()
 Technos_Types.objects.all().delete()
 Semantic_Global.objects.all().delete()
 
-print("\nFin nettoyage tables sortie : {0}".format(datetime.now()))
+print("\nFin nettoyage tables en entrée : {0}".format(datetime.now()))
 
-# loop on jobs list and get all dates per period
-models.Fillin(liste_input)
-
-print("\nFin répartition annonces par périodes : {0}".format(datetime.now()))
+# fill input tables from georezo with analyseur (except semantic)
+# for performance matters, check the number of offers to process
+print(len(liste_input))
+if len(liste_input) < 50:
+    analyseur.Analizer(liste_input, path.abspath(r'../elpaso.sqlite'))
+    print("\nFin analyseur : {0}".format(datetime.now()))
+    # loop on jobs list and get all dates per period
+    models.Fillin(liste_input)
+    conn.commit()
+    print("\nFin répartition annonces par périodes : {0}".format(datetime.now()))
+else:
+    print("Trop d'entrées : split de la liste")
+    metalist_input = [liste_input[i:i + 50] for i in range(0, len(liste_input), 50)]
+    for sublist in metalist_input:
+        print(len(sublist))
+        print("annonces {0} à {1}".format(sublist[0], sublist[-1]))
+        analyseur.Analizer(sublist, path.abspath(r'../elpaso.sqlite'))
+        conn.commit()
+        print("\nFin analyseur des annonces {0} à {1} : {2}".format(sublist[0],
+                                                                    sublist[-1],
+                                                                    datetime.now()))
+        # loop on jobs list and get all dates per period
+        models.Fillin(sublist)
+        print("\nFin répartition annonces par périodes : {0}".format(datetime.now()))
 
 # update indexes
 c.execute("PRAGMA auto_vacuum;")
 
 print("\nFin auto_vaccum : {0}".format(datetime.now()))
+
+
 
 # closing process
 logger.append('<<<<<<<<< Testing El Paso finished without any issue ! >>>>>>>>>>>\n')

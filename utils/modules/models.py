@@ -20,12 +20,13 @@
 ###################################
 
 # Standard library
+from datetime import date as dt, datetime
 from os import path, environ, listdir
 import sys
 import sqlite3
 import json
+import pytz
 import time
-from datetime import date as dt, datetime
 
 # Custom modules
 from . import LogGuy
@@ -45,6 +46,9 @@ from jobs.models import Week
 # logger object
 logger = LogGuy.Logyk()
 
+# timezone
+paris_tz = pytz.timezone("Europe/Paris")
+
 ###############################################################################
 ############ Classes ##############
 ###################################
@@ -59,7 +63,6 @@ class Fillin():
         '''
         # connection to DB
         db = path.abspath(r'../elpaso.sqlite')
-        print("\tDBBBB :" + db)
         self.conn = sqlite3.connect(db)
         self.c = self.conn.cursor()
 
@@ -95,8 +98,8 @@ class Fillin():
 
         # get periods from the DB
         result_month = Month.objects.filter(month=mois,
-                                            year= annee)
-        result_year = Year.objects.filter(year= annee)
+                                            year=annee)
+        result_year = Year.objects.filter(year=annee)
         result_week = Week.objects.filter(week=semaine,
                                           year=annee)
 
@@ -144,12 +147,12 @@ class Fillin():
                               + str(offre))
             date = db_cursor.fetchone()
             try:
-              date_object = datetime.strptime(date[0],
-                                            "%a, %d %b %Y %H:%M:%S +0200")
+                date_object = datetime.strptime(date[0],
+                                                "%a, %d %b %Y %H:%M:%S +0200")
             except ValueError:
-              date_object = datetime.strptime(date[0],
-                                            "%a, %d %b %Y %H:%M:%S +0100")
-
+                date_object = datetime.strptime(date[0],
+                                                "%a, %d %b %Y %H:%M:%S +0100")
+            date_object = paris_tz.localize(date_object)
             # découpage de la date
             year = date_object.year
             month_number = date_object.month
@@ -343,8 +346,8 @@ class Fillin():
             except ValueError:
               date_object = datetime.strptime(date[0], "%a, %d %b %Y \
                                             %H:%M:%S +0100")
-
-
+            # localize timezone
+            date_object = paris_tz.localize(date_object)
             # Je récupère les infos sur les lieux
             db_cursor.execute("SELECT lieu_lib, lieu_type FROM lieux WHERE id = " + str(offre))
             # Je récupère ces infos dans la variable 'lieux'
@@ -364,7 +367,6 @@ class Fillin():
                     type_contrat = 'stage'
 
                 elif contrat[0][5] == 1:
-                    print(str(offre))
                     type_contrat = 'apprentissage'
 
                 elif contrat[0][6] == 1:

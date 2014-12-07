@@ -11,7 +11,7 @@
 #
 # Python:       3.4.x
 # Created:      01/05/2014
-# Updated:      03/11/2014
+# Updated:      07/12/2014
 #
 # Licence:      GPL 3
 #------------------------------------------------------------------------------
@@ -21,29 +21,35 @@
 ###################################
 
 # Standard library
-from os import path
+from datetime import datetime
+import json
+from os import path, environ
 import re
 import sqlite3
 import sys
-# import threading # multi threads handling
+import threading # multi threads handling
 from xml.etree import ElementTree as ET
 
 # third party libraries
 import nltk
 from nltk.corpus import stopwords
+import pytz
 
 # custom
 from . import data
 from . import LogGuy
 
-# # Django specifics
-# sys.path.append('/home/pvernier/code/python/elpaso')
-# environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
+# Django specifics
+sys.path.append('/home/pvernier/code/python/elpaso')
+environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
 # from jobs.models import Contrat
 # from jobs.models import Year
 # from jobs.models import Month
 # from jobs.models import Week
 # from jobs.models import Technos_Types
+from jobs.models import Semantic_Global
+
+from django.utils import timezone
 
 ###############################################################################
 ############ Globals ##############
@@ -51,6 +57,7 @@ from . import LogGuy
 
 # logger object
 logger = LogGuy.Logyk()
+paris_tz = pytz.timezone("Europe/Paris")
 
 ###############################################################################
 ############ Classes ##############
@@ -61,11 +68,19 @@ class Analizer():
     """
     analyze of last offers published on GeoRezo and stored in the main table.
     """
-    def __init__(self, liste_identifiants_offre, db_path=r"../../elpaso.sqlite"):
+    def __init__(self, liste_identifiants_offre, db_path=r"../../elpaso.sqlite",
+                 opt_types=1, opt_lieux=1, opt_technos=1, opt_metiers=1,
+                 opt_mots=1):
         """
         manage the connection cursor and task related
 
         liste_identifiants_offre = IDs list of offers to process
+        db_path = path to database
+        opt_types = option to parse contracts types
+        opt_lieux = option to parse contracts places
+        opt_technos = option to parse contracts technologies
+        opt_metiers = option to parse contracts jobs label
+        opt_mots = option to parse contracts words
         """
         # a little log message to know where we are
         logger.append("Launching analyze")
@@ -76,24 +91,44 @@ class Analizer():
         self.c = self.conn.cursor()
 
         # extraction of types of contracts
-        logger.append("\tParsing contrats")
-        self.parse_contrats(liste_identifiants_offre, self.c)
+        if opt_types:
+            logger.append("\tParsing contrats")
+            self.parse_contrats(liste_identifiants_offre, self.c)
+        else:
+            pass
 
         # extraction of places
-        logger.append("\tParsing lieux")
-        self.parse_lieux(liste_identifiants_offre, self.c)
+        if opt_lieux:
+            logger.append("\tParsing lieux")
+            self.parse_lieux(liste_identifiants_offre, self.c)
+        else:
+            pass
 
         # extraction of software
-        logger.append("\tParsing logiciels")
-        self.parse_technos(liste_identifiants_offre, self.c)
+        if opt_technos:
+            logger.append("\tParsing logiciels")
+            self.parse_technos(liste_identifiants_offre, self.c)
+        else:
+            pass
 
         # extraction of types of job
-        logger.append("\tParsing métiers")
-        self.parse_metiers(liste_identifiants_offre, self.c)
+        if opt_metiers:
+            logger.append("\tParsing métiers")
+            self.parse_metiers(liste_identifiants_offre, self.c)
+        else:
+            pass
 
         # extraction of words semantic
-        logger.append("\tParsing termes")
-        self.parse_words(liste_identifiants_offre, self.c)
+        if opt_mots:
+            logger.append("\tParsing termes")
+            self.parse_words(liste_identifiants_offre, self.c)
+        else:
+            pass
+
+        # tr_words = threading.Thread(target=self.parse_words,
+        #                             args=(liste_identifiants_offre, self.c))
+        # tr_words.daemon = True
+        # tr_words.run()
 
         ###############
         ## Disabling multithreading because of official documentation warning
@@ -215,7 +250,7 @@ class Analizer():
                 titre = titre[0][titre[0].index("]") + 1:len(titre[0])]
             except ValueError:
                 # if title is not correctly formatted, just get it the raw
-                logger.append("\n\t==== ERRREUR : formatage titre de l'offre.")
+                logger.append("\n\t==== ERRREUR : formatage titre de l'offre : {0}".format(str(offre)))
                 titre = titre[0]
             # trying to get the French departement code with a regex
             dpt_code = re.findall("(2[AB]|[0-9]+)", titre)
@@ -474,13 +509,15 @@ class Analizer():
         stop_fr = set(stopwords.words('french'))   # add specific French
 
         # custom list
-        li_stop_custom = ('(', ')', '...', '.',':',';','/','nbsp','&','#',',','-',':',\
-                          'http', 'img', 'br', 'amp', '<', '>', '%', 'border', '*', 'border=',
-                          'les', 'leurs', '&', '#', '-', '+', ':', '.', ';', 'à', 'où', 'des',
-                          ',', 'nbsp', 'De', 'Des', 'et', 'en', '(', ')', 'pour', 'plus',
-                          'sein', 'sous', 'Les', 'auprès', 'etc', 'the', 'for', 'ème',
-                          'via', 'Vos', 'dès', 'plein', 'tel', 'etc.', 'etc..', 'Ces',
-                          'tél', 'cela', 'ceci', 'cet')
+        li_stop_custom = ('(', ')', '...', '.', ':', ';', '/', 'nbsp', '&', '#',
+                          ',', '-', ':', 'http', 'img', 'br', 'amp', '<', '>',
+                          '%', 'border', '*', 'border=', 'les', 'leurs', '&',
+                          '#', '-', '+', ':', '.', ';', 'à', 'où', 'des', ',',
+                          'nbsp', 'De', 'Des', 'et', 'en', '(', ')', 'pour',
+                          'plus', 'sein', 'sous', 'Les', 'auprès', 'etc',
+                          'the', 'for', 'ème', 'via', 'Vos', 'dès', 'plein',
+                          'tel', 'etc.', 'etc..', 'Ces', 'tél', 'cela', 'ceci',
+                          'cet')
 
         # looping on the offers list
         for offre in li_id:
@@ -498,6 +535,13 @@ class Analizer():
                                FROM georezo \
                                WHERE id = {0}".format(str(offre)))
             date_published = db_cursor.fetchone()
+            try:
+                date_published = datetime.strptime(date_published[0],
+                                                   "%a, %d %b %Y %H:%M:%S +0200")
+            except ValueError:
+                date_published = datetime.strptime(date_published[0],
+                                                   "%a, %d %b %Y %H:%M:%S +0100")
+            date_published = paris_tz.localize(date_published)
             # basic clean of the content
             contenu = self.remove_tags(contenu[0])
             # removing all numbers / digits
@@ -524,7 +568,7 @@ class Analizer():
                     continue
                 elif mot.startswith(u"\u2022"):
                     mot = mot[1:]
-                    continue 
+                    continue
                 elif mot.startswith("//"):
                     mot = mot[1:]
                     break
@@ -554,29 +598,45 @@ class Analizer():
                 if row:
                     # S'il est déjà présent on met à jour les occurences
                     db_cursor.execute("UPDATE jobs_semantic_global \
-                                       SET frequency = ?,\
+                                       SET occurrences = ?,\
                                            last_offer = ?,\
                                            last_time = ?\
                                        WHERE word= ?",
-                                                    (row[1] + dict_words_frek.get(mot),
+                                                    (str(row[2] + dict_words_frek.get(mot)),
                                                     str(offre),
-                                                    date_published,
-                                                    mot,
-                                        ))
-                    # print('mot existant : {0} x {1}'.format(mot, dict_words_frek.get(mot)))
+                                                    str(date_published),
+                                                    mot))
+                    # commit changes
+                    self.manage_connection(1)
+
                 else:
                     # Sinon, on l'ajoute à la BD
-                    db_cursor.execute("INSERT INTO jobs_semantic_global \
-                                       VALUES (?, ?, ?, ?, ?, ?)", (mot,
-                                                                    dict_words_frek.get(mot),
-                                                                    str(offre),
-                                                                    date_published,
-                                                                    str(offre),
-                                                                    date_published))
-                    # print('nouveau mot : {0}'.format(mot))
+                    # add_new_word = Semantic_Global(word=mot,
+                    #                                occurrences=dict_words_frek.get(mot),
+                    #                                first_offer=str(offre),
+                    #                                first_time=str(date_published),
+                    #                                last_offer=str(offre),
+                    #                                last_time=str(date_published))
+                    # # sauvegarde / commit
+                    # add_new_word.save()
 
+                    # S'il est déjà présent on met à jour les occurences
+                    db_cursor.execute("INSERT INTO jobs_semantic_global \
+                                       VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                       (None,
+                                        mot,
+                                        dict_words_frek.get(mot),
+                                        str(offre),
+                                        date_published,
+                                        str(offre),
+                                        date_published))
+                    # commit changes
+                    self.manage_connection(1)
             # commit changes
             self.manage_connection(1)
+
+            # log
+            logger.append("{0} => Mots parsed".format(str(offre)))
 
         # end of function
         return
