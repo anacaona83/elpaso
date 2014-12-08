@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
-from .models import Contrat, Year, Month, Week
+from .models import Contrat, Year, Month, Week, Semantic_Global
 from .forms import ContactForm
 import json
 
@@ -13,6 +13,7 @@ def stats_home(request):
     nb_years = Year.objects.count()
     nb_months = Month.objects.count()
     nb_weeks = Week.objects.count()
+    nb_words = Semantic_Global.objects.count()
 
     return render_to_response('jobs/home.html', {
         'nb_contrats': nb_contrats,
@@ -20,13 +21,13 @@ def stats_home(request):
         'nb_months': nb_months,
         'nb_weeks': nb_weeks,
         'first_date': first_date,
+        'nb_words' : nb_words,
     })
 
 
 def contrat_json(request):
 
     toto = Contrat.objects.values('date_pub')
-    print(toto)
 
     periode = request.GET['mode_aggreg']
     # print(periode)
