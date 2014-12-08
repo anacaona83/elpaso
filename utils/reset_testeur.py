@@ -50,7 +50,7 @@ logger = LogGuy.Logyk()
 # opening the log file
 logger.config()
 
-print("\nFin imports : {0}".format(datetime.now()))
+logger.append("Fin imports : {0}".format(datetime.now()))
 
 # DB connection settings
 db = path.abspath(r"../elpaso.sqlite")
@@ -61,7 +61,7 @@ c = conn.cursor()
 c.execute("SELECT id FROM georezo")
 liste_input = [i[0] for i in c.fetchall()]
 
-print("\nFin connexion BD et récupération Ids : {0}".format(datetime.now()))
+logger.append("Fin connexion BD et récupération Ids : {0}".format(datetime.now()))
 
 # empty tables which are out of Django ORM
 c.execute("DELETE FROM contrats;")
@@ -81,37 +81,36 @@ Places_Global.objects.all().delete()
 Technos_Types.objects.all().delete()
 Semantic_Global.objects.all().delete()
 
-print("\nFin nettoyage tables en entrée : {0}".format(datetime.now()))
+logger.append("Fin nettoyage tables en entrée : {0}".format(datetime.now()))
 
 # fill input tables from georezo with analyseur (except semantic)
 # for performance matters, check the number of offers to process
-print(len(liste_input))
+logger.append(len(liste_input))
 if len(liste_input) < 50:
     analyseur.Analizer(liste_input, path.abspath(r'../elpaso.sqlite'))
-    print("\nFin analyseur : {0}".format(datetime.now()))
+    logger.append("Fin analyseur : {0}".format(datetime.now()))
     # loop on jobs list and get all dates per period
     models.Fillin(liste_input)
     conn.commit()
-    print("\nFin répartition annonces par périodes : {0}".format(datetime.now()))
+    logger.append("Fin répartition annonces par périodes : {0}".format(datetime.now()))
 else:
-    print("Trop d'entrées : split de la liste")
+    logger.append("Trop d'entrées : split de la liste")
     metalist_input = [liste_input[i:i + 50] for i in range(0, len(liste_input), 50)]
     for sublist in metalist_input:
-        print(len(sublist))
-        print("annonces {0} à {1}".format(sublist[0], sublist[-1]))
+        logger.append("annonces {0} à {1}".format(sublist[0], sublist[-1]))
         analyseur.Analizer(sublist, path.abspath(r'../elpaso.sqlite'))
         conn.commit()
-        print("\nFin analyseur des annonces {0} à {1} : {2}".format(sublist[0],
+        logger.append("Fin analyseur des annonces {0} à {1} : {2}".format(sublist[0],
                                                                     sublist[-1],
                                                                     datetime.now()))
         # loop on jobs list and get all dates per period
         models.Fillin(sublist)
-        print("\nFin répartition annonces par périodes : {0}".format(datetime.now()))
+        logger.append("Fin répartition annonces par périodes : {0}".format(datetime.now()))
 
 # update indexes
 c.execute("PRAGMA auto_vacuum;")
 
-print("\nFin auto_vaccum : {0}".format(datetime.now()))
+logger.append("Fin auto_vaccum : {0}".format(datetime.now()))
 
 
 

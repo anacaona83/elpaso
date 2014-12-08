@@ -12,3 +12,4 @@ django
 feedparser
 numpy
 nltk
+pytz
