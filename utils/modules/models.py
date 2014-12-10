@@ -22,10 +22,10 @@
 # Standard library
 from datetime import date as dt, datetime
 from os import path, environ, listdir
-import sys
-import sqlite3
 import json
 import pytz
+import sys
+import sqlite3
 import time
 
 # Custom modules
@@ -78,12 +78,18 @@ class Fillin():
         self.create_json('day')
 
         # divide contracts statistics according to periods (year, month, week)
+        logger.append("Dividing contracts according to different periods types")
         self.periodizer(liste_identifiants_offre, self.c)
 
         # serialization for the NVD3 stacked area
+        logger.append("Serialization of contracts types by period")
         self.serializer_types_contrats(Year, 'year_milsec')
         self.serializer_types_contrats(Month, 'month_milsec')
         self.serializer_types_contrats(Week, 'week_milsec')
+
+        # serialization for word cloud
+        logger.append("Serialization of words")
+        self.serializer_semantic(self.c)
 
     def check_date(self, annee, mois, semaine):
         '''
@@ -454,10 +460,35 @@ class Fillin():
         types[8]['values'] = [list(x) for x in periode_these]
         types[9]['values'] = [list(x) for x in periode_vi]
 
+        # serialization
+        with open('/home/pvernier/code/python/elpaso/static/json/types_contrats_'
+                  + model_periode.__name__.lower() + '.json', 'w') as f:
+            f.write(json.dumps(types))
 
-        with open('/home/pvernier/code/python/elpaso/static/json/types_contrats_' + model_periode.__name__.lower() + '.json', 'w') as f:
-                            f.write(json.dumps(types))
+        # end of function
+        return
 
+    def serializer_semantic(self, db_cursor):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+        """
+        # récupérer la liste des types de contrats
+        db_cursor.execute('SELECT occurrences, word, first_time, last_time \
+                           FROM jobs_semantic_global \
+                           ORDER BY occurrences DESC \
+                           LIMIT 250')
+        semantic_frek = db_cursor.fetchall()
+
+        # storing into a dictionary
+        frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
+                      for t in sorted(semantic_frek, reverse=True)]
+
+        # serialization
+        with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as f:
+            f.write(json.dumps(frequences))
+
+        # end of function
+        return
 
     def create_json(self, periode):
         '''Méthode qui créé les différentes agrégations (par jour de la

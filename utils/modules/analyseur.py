@@ -611,27 +611,27 @@ class Analizer():
 
                 else:
                     # Sinon, on l'ajoute à la BD
-                    # add_new_word = Semantic_Global(word=mot,
-                    #                                occurrences=dict_words_frek.get(mot),
-                    #                                first_offer=str(offre),
-                    #                                first_time=str(date_published),
-                    #                                last_offer=str(offre),
-                    #                                last_time=str(date_published))
-                    # # sauvegarde / commit
-                    # add_new_word.save()
+                    add_new_word = Semantic_Global(word=mot,
+                                                   occurrences=dict_words_frek.get(mot),
+                                                   first_offer=str(offre),
+                                                   first_time=str(date_published),
+                                                   last_offer=str(offre),
+                                                   last_time=str(date_published))
+                    # sauvegarde / commit
+                    add_new_word.save()
 
-                    # S'il est déjà présent on met à jour les occurences
-                    db_cursor.execute("INSERT INTO jobs_semantic_global \
-                                       VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                       (None,
-                                        mot,
-                                        dict_words_frek.get(mot),
-                                        str(offre),
-                                        date_published,
-                                        str(offre),
-                                        date_published))
-                    # commit changes
-                    self.manage_connection(1)
+                    # # S'il est déjà présent on met à jour les occurences
+                    # db_cursor.execute("INSERT INTO jobs_semantic_global \
+                    #                    VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    #                    (None,
+                    #                     mot,
+                    #                     dict_words_frek.get(mot),
+                    #                     str(offre),
+                    #                     date_published,
+                    #                     str(offre),
+                    #                     date_published))
+                    # commit changes 
+                    # self.manage_connection(1)
             # commit changes
             self.manage_connection(1)
 
