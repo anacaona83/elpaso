@@ -13,7 +13,7 @@ tup_opso = ("qgis", "quantumgis", "gvsig", "grass", "talend", "geokettle", "udig
 
 # logiciels et langages dédiés à la gestion de bases de données
 tup_sgbd = ("postgresql", "mysql", "oracle", "sql server", "postgis", "sde", "access", \
-    "mongodb", "base de données")
+    "mongodb", "base de données", "sgbd")
 
 # logiciels et langages de programmation
 tup_prog = ("python", "java", "C++", "r stats", "matlab", "spss", "html", "php", "ruby", \
