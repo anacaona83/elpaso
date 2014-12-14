@@ -34,10 +34,12 @@ from . import LogGuy
 # Django specifics
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
+from django.db.models import Sum
 from jobs.models import Contrat
 from jobs.models import Year
 from jobs.models import Month
 from jobs.models import Week
+from jobs.models import Technos_Types
 
 ###############################################################################
 ############ Globals ##############
@@ -90,6 +92,10 @@ class Fillin():
         # serialization for word cloud
         logger.append("Serialization of words")
         self.serializer_semantic(self.c)
+
+        # serialization for technologies pie chart
+        logger.append("Serialization of technologies")
+        self.serializer_technos(Technos_Types)
 
     def check_date(self, annee, mois, semaine):
         '''
@@ -476,7 +482,7 @@ class Fillin():
         db_cursor.execute('SELECT occurrences, word, first_time, last_time \
                            FROM jobs_semantic_global \
                            ORDER BY occurrences DESC \
-                           LIMIT 250')
+                           LIMIT 100')
         semantic_frek = db_cursor.fetchall()
 
         # storing into a dictionary
@@ -484,8 +490,31 @@ class Fillin():
                       for t in sorted(semantic_frek, reverse=True)]
 
         # serialization
-        with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as f:
-            f.write(json.dumps(frequences))
+        with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as output:
+            json.dump(frequences, output)
+
+        # end of function
+        return
+
+    def serializer_technos(self, Technos_Types):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+        """
+        technos_get = Technos_Types.objects.aggregate(Sum('proprietaire'),
+                                                      Sum('libre'),
+                                                      Sum('sgbd'),
+                                                      Sum('programmation'),
+                                                      Sum('web'),
+                                                      Sum('cao_dao'),
+                                                      Sum('teledec'))
+
+        # list comprehension to pre-format
+        technos_totaux = [{'label': item[0:-5],
+                           'value': technos_get.get(item)}
+                          for item in technos_get]
+
+        with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
+            json.dump(technos_totaux, output)
 
         # end of function
         return
