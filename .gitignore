@@ -37,3 +37,4 @@ static/bootstrap
 static/jquery
 static/css/nv.d3.css
 logs
+*Thumbs.db
