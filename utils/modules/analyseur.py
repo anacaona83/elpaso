@@ -327,8 +327,8 @@ class Analizer():
         for offre in li_id:
             # local list of values to insert at the end of loop
             li_values = [str(offre)]
-            # 
-            db_cursor.execute("SELECT content FROM georezo WHERE {0}".format(str(offre)))
+            # get the offer content to parse
+            db_cursor.execute("SELECT content FROM georezo WHERE id = {0}".format(str(offre)))
             contenu = db_cursor.fetchone()
             # clean the content removing HTML tags
             contenu = self.remove_tags(contenu[0])
@@ -667,11 +667,11 @@ if __name__ == '__main__':
     conn = sqlite3.connect(db)
     c = conn.cursor()
     # fetching the ID list
-    c.execute("SELECT id FROM georezo")
+    c.execute("SELECT * FROM georezo")
     liste_input = [i[0] for i in c.fetchall()]
     #liste_input = c.fetchall()
     print(liste_input)
-    Analizer(liste_input, db).parse_technos(liste_input)
+    Analizer(liste_input, db)
 
     # closing
     conn.close()
