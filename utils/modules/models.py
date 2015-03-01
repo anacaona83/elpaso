@@ -20,7 +20,7 @@
 ###################################
 
 # Standard library
-from datetime import date as dt, datetime
+from datetime import date as dt, datetime, timedelta
 from os import path, environ, listdir
 import json
 import pytz
@@ -96,240 +96,6 @@ class Fillin():
         # serialization for technologies pie chart
         logger.append("Serialization of technologies")
         self.serializer_technos(Technos_Types)
-
-    def check_date(self, annee, mois, semaine):
-        '''
-        Vérifie que la date du jour existe dans les 3 tables de périodes
-        (année, mois, semaines) et créent les lignes correspondantes
-        le cas échéant.
-        '''
-        # calc the first day of a week
-        first_day = time.asctime(time.strptime('{0} {1} 1'.format(annee,
-                                     semaine - 1), '%Y %W %w'))
-        first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
-
-        # get periods from the DB
-        result_month = Month.objects.filter(month=mois,
-                                            year=annee)
-        result_year = Year.objects.filter(year=annee)
-        result_week = Week.objects.filter(week=semaine,
-                                          year=annee)
-
-        # check des résultats des requêtes et création le cas échéant
-        if len(result_month) == 0:
-            # calcul du timestamp en millisecond
-            month_timestamp = time.mktime(dt(annee, mois, 1).timetuple()) * 1000
-            # mise à jour de la table en créant la ligne correspondante
-            update_month = Month(month=mois, year=annee, month_milsec=month_timestamp)
-            # sauvegarde / commit
-            update_month.save()
-        else:
-            pass
-
-        if len(result_year) == 0:
-            year_timestamp = time.mktime(dt(annee, 1, 1).timetuple()) * 1000
-            update_year = Year(year=annee, year_milsec=year_timestamp)
-            update_year.save()
-        else:
-            pass
-
-        if len(result_week) == 0:
-            week_timestamp = time.mktime(first_day.timetuple()) * 1000
-            update_week = Week(year=annee, week_milsec=week_timestamp, week=semaine)
-            update_week.save()
-        else:
-            pass
-
-        # end of function
-        return
-
-    def periodizer(self, li_id, db_cursor):
-        '''
-        to comments
-        '''
-        for offre in li_id:
-            db_cursor.execute("SELECT * FROM contrats WHERE id = "
-                              + str(offre))
-            # Je récupère dans la variable 'contrat' toutes les colonnes de
-            # l'objet
-            contrat = db_cursor.fetchall()
-
-            # Je récupère la date de l'annonce
-            db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
-                              + str(offre))
-            date = db_cursor.fetchone()
-            try:
-                date_object = datetime.strptime(date[0],
-                                                "%a, %d %b %Y %H:%M:%S +0200")
-            except ValueError:
-                date_object = datetime.strptime(date[0],
-                                                "%a, %d %b %Y %H:%M:%S +0100")
-            date_object = paris_tz.localize(date_object)
-            # découpage de la date
-            year = date_object.year
-            month_number = date_object.month
-            day_number = date_object.day
-            week = dt(year, month_number, day_number).isocalendar()[1]
-            first_day = time.asctime(time.strptime('{0} {1} 1'.format(year,
-                                     week - 1), '%Y %W %w'))
-            first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
-
-            # check if date exists in DB
-            self.check_date(year, month_number, week)
-
-            # récupération des offres par périodes  : années, mois, semaines
-            db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
-                              str(year))
-            val_year = db_cursor.fetchall()
-
-            db_cursor.execute('SELECT * FROM jobs_month WHERE year = ' +
-                              str(year) + ' AND month = ' + str(month_number))
-            val_month = db_cursor.fetchall()
-
-
-            db_cursor.execute('SELECT * FROM jobs_week WHERE year = ' +
-                              str(year) + ' AND week = ' + str(week))
-            val_week = db_cursor.fetchall()
-
-            if len(contrat) > 0:
-                if contrat[0][1] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET cdi = ' +
-                                      str(val_year[0][2] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET cdi = ' +
-                                      str(val_month[0][3] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET cdi = ' +
-                                      str(val_week[0][4] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][2] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET cdd = ' +
-                                      str(val_year[0][3] + 1) + ' WHERE year \
-                                       = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET cdd = ' +
-                                      str(val_month[0][4] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET cdd = ' +
-                                      str(val_week[0][5] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][3] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET fpt = ' +
-                                      str(val_year[0][4] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET fpt = ' +
-                                      str(val_month[0][5] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET fpt = ' +
-                                      str(val_week[0][6] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][4] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET stage = ' +
-                                      str(val_year[0][5] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET stage = ' +
-                                      str(val_month[0][6] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET stage = ' +
-                                      str(val_week[0][7] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][5] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET apprentissage = ' +
-                                      str(val_year[0][6] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET apprentissage = \
-                                      ' + str(val_month[0][7] + 1) + ' WHERE \
-                                      year  = {0} AND month = {1}'.format(str(
-                                      year), str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET apprentissage = ' +
-                                      str(val_week[0][8] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][6] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET vi = ' +
-                                      str(val_year[0][7] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET vi = ' +
-                                      str(val_month[0][8] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET vi = ' +
-                                      str(val_week[0][9] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][7] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET these = ' +
-                                      str(val_year[0][8] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET these = ' +
-                                      str(val_month[0][9] + 1) + ' WHERE year \
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET these = ' +
-                                      str(val_week[0][10] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][8] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET post_doc = ' +
-                                      str(val_year[0][9] + 1) + ' WHERE year \
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET post_doc = ' +
-                                      str(val_month[0][10] + 1) + ' WHERE year\
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET post_doc = ' +
-                                      str(val_week[0][11] + 1) + ' WHERE year \
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][9] == 1:
-                    db_cursor.execute('UPDATE jobs_year SET mission = ' +
-                                      str(val_year[0][10] + 1) + ' WHERE year\
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET mission = ' +
-                                      str(val_month[0][11] + 1) + ' WHERE year\
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET mission = ' +
-                                      str(val_week[0][12] + 1) + ' WHERE year\
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                elif contrat[0][10]:
-                    db_cursor.execute('UPDATE jobs_year SET autre = ' +
-                                      str(val_year[0][11] + 1) + ' WHERE year\
-                                      = ' + str(year))
-                    db_cursor.execute('UPDATE jobs_month SET autre = ' +
-                                      str(val_month[0][12] + 1) + ' WHERE year\
-                                      = {0} AND month = {1}'.format(str(year),
-                                      str(month_number)))
-                    db_cursor.execute('UPDATE jobs_week SET autre = ' +
-                                      str(val_week[0][13] + 1) + ' WHERE year\
-                                      = {0} AND week = {1}'.format(str(year),
-                                      str(week)))
-
-                self.conn.commit()
-
-                # Pour remplir la colonne first_day
-                if val_week[0][3] is None:
-                    db_cursor.execute('UPDATE jobs_week SET first_day = "{0}" WHERE year = {1} AND week = {2}'.format(str(first_day), str(year), str(week)))
-                    self.conn.commit()
-                else:
-                    pass
 
     def contrats(self, li_id, db_cursor):
         """
@@ -427,97 +193,6 @@ class Fillin():
                                       '', ''))
 
                 self.conn.commit()
-
-    def serializer_types_contrats(self, model_periode, field_milsec):
-        """
-        Exporte les données dans un fichier .JSON formaté pour NVD3
-
-        model_periode = Modèle de la BD Django à exporter
-        field_milsec = nom du champ du temps en millisecondes
-        """
-        # récupérer la liste des types de contrats
-        types_contrats = Year._meta.get_all_field_names()
-        types_contrats.remove('id')
-        types_contrats.remove('year')
-        types_contrats.remove('year_milsec')
-        types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
-
-        # listes des valeurs de chaque type de contrat selon la période demandée
-        periode_cdi = model_periode.objects.values_list(field_milsec, 'cdi')
-        periode_cdd = model_periode.objects.values_list(field_milsec, 'cdd')
-        periode_fpt = model_periode.objects.values_list(field_milsec, 'fpt')
-        periode_stage = model_periode.objects.values_list(field_milsec, 'stage')
-        periode_appre = model_periode.objects.values_list(field_milsec, 'apprentissage')
-        periode_vi = model_periode.objects.values_list(field_milsec, 'vi')
-        periode_these = model_periode.objects.values_list(field_milsec, 'these')
-        periode_psdoc = model_periode.objects.values_list(field_milsec, 'post_doc')
-        periode_missi = model_periode.objects.values_list(field_milsec, 'mission')
-        periode_other = model_periode.objects.values_list(field_milsec, 'autre')
-
-        # remplissage de la structure de données
-        types[0]['values'] = [list(x) for x in periode_appre]
-        types[1]['values'] = [list(x) for x in periode_other]
-        types[2]['values'] = [list(x) for x in periode_cdd]
-        types[3]['values'] = [list(x) for x in periode_cdi]
-        types[4]['values'] = [list(x) for x in periode_fpt]
-        types[5]['values'] = [list(x) for x in periode_missi]
-        types[6]['values'] = [list(x) for x in periode_psdoc]
-        types[7]['values'] = [list(x) for x in periode_stage]
-        types[8]['values'] = [list(x) for x in periode_these]
-        types[9]['values'] = [list(x) for x in periode_vi]
-
-        # serialization
-        with open('/home/pvernier/code/python/elpaso/static/json/types_contrats_'
-                  + model_periode.__name__.lower() + '.json', 'w') as f:
-            f.write(json.dumps(types))
-
-        # end of function
-        return
-
-    def serializer_semantic(self, db_cursor):
-        """
-        Exporte les données dans un fichier .JSON formaté pour NVD3
-        """
-        # récupérer la liste des types de contrats
-        db_cursor.execute('SELECT occurrences, word, first_time, last_time \
-                           FROM jobs_semantic_global \
-                           ORDER BY occurrences DESC \
-                           LIMIT 100')
-        semantic_frek = db_cursor.fetchall()
-
-        # storing into a dictionary
-        frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
-                      for t in sorted(semantic_frek, reverse=True)]
-
-        # serialization
-        with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as output:
-            json.dump(frequences, output)
-
-        # end of function
-        return
-
-    def serializer_technos(self, Technos_Types):
-        """
-        Exporte les données dans un fichier .JSON formaté pour NVD3
-        """
-        technos_get = Technos_Types.objects.aggregate(Sum('proprietaire'),
-                                                      Sum('libre'),
-                                                      Sum('sgbd'),
-                                                      Sum('programmation'),
-                                                      Sum('web'),
-                                                      Sum('cao_dao'),
-                                                      Sum('teledec'))
-
-        # list comprehension to pre-format
-        technos_totaux = [{'label': item[0:-5],
-                           'value': technos_get.get(item)}
-                          for item in technos_get]
-
-        with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
-            json.dump(technos_totaux, output)
-
-        # end of function
-        return
 
     def create_json(self, periode):
         '''Méthode qui créé les différentes agrégations (par jour de la
@@ -772,6 +447,362 @@ class Fillin():
 
         # Les mois
         files_month = listdir('/home/pvernier/code/python/elpaso/static/csv/month')
+
+    def periodizer(self, li_id, db_cursor):
+        '''
+        to comments
+        '''
+        for offre in li_id:
+            db_cursor.execute("SELECT * FROM contrats WHERE id = "
+                              + str(offre))
+            # Je récupère dans la variable 'contrat' toutes les colonnes de
+            # l'objet
+            contrat = db_cursor.fetchall()
+
+            # Je récupère la date de l'annonce
+            db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
+                              + str(offre))
+            date = db_cursor.fetchone()
+            try:
+                date_object = datetime.strptime(date[0],
+                                                "%a, %d %b %Y %H:%M:%S +0200")
+            except ValueError:
+                date_object = datetime.strptime(date[0],
+                                                "%a, %d %b %Y %H:%M:%S +0100")
+            date_object = paris_tz.localize(date_object)
+            # découpage de la date
+            year = date_object.year
+            month_number = date_object.month
+            day_number = date_object.day
+            week = dt(year, month_number, day_number).isocalendar()[1]
+            year_iso = dt(year, month_number, day_number).isocalendar()[0]
+
+            # handle last week of a year:
+            # dans les cas où la dernière semaine est à cheval sur 2 années
+            # on affecte toute la semaine 
+            # voir http://fr.wikipedia.org/wiki/Semaine_53
+            # if month_number == 12 and week == 1:
+            #     year_iso = 
+            # elif month_number == 1 and week == 53:
+            #     year -= 1
+            # else:
+            #     pass
+
+            fd = self.week_start_date(year_iso, week)
+            first_day = time.asctime(time.strptime('{0} {1} {2}'.format(fd.year,
+                                                                        fd.month,
+                                                                        fd.day), '%Y %m %d'))
+            first_day = datetime.strptime(first_day, "%a %b %d %H:%M:%S %Y")
+
+            # check if date exists in DB
+            self.check_date(year, year_iso, month_number, week, first_day)
+
+            # récupération des offres par périodes  : années, mois, semaines
+            db_cursor.execute('SELECT * FROM jobs_year WHERE year = ' +
+                              str(year))
+            val_year = db_cursor.fetchall()
+
+            db_cursor.execute('SELECT * FROM jobs_month WHERE year = ' +
+                              str(year) + ' AND month = ' + str(month_number))
+            val_month = db_cursor.fetchall()
+
+
+            db_cursor.execute('SELECT * FROM jobs_week WHERE year = ' +
+                              str(year_iso) + ' AND week = ' + str(week))
+            val_week = db_cursor.fetchall()
+
+            if len(contrat) > 0:
+                if contrat[0][1] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET cdi = ' +
+                                      str(val_year[0][2] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET cdi = ' +
+                                      str(val_month[0][3] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET cdi = ' +
+                                      str(val_week[0][4] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][2] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET cdd = ' +
+                                      str(val_year[0][3] + 1) + ' WHERE year \
+                                       = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET cdd = ' +
+                                      str(val_month[0][4] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET cdd = ' +
+                                      str(val_week[0][5] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][3] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET fpt = ' +
+                                      str(val_year[0][4] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET fpt = ' +
+                                      str(val_month[0][5] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET fpt = ' +
+                                      str(val_week[0][6] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][4] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET stage = ' +
+                                      str(val_year[0][5] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET stage = ' +
+                                      str(val_month[0][6] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET stage = ' +
+                                      str(val_week[0][7] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][5] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET apprentissage = ' +
+                                      str(val_year[0][6] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET apprentissage = \
+                                      ' + str(val_month[0][7] + 1) + ' WHERE \
+                                      year  = {0} AND month = {1}'.format(str(
+                                      year), str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET apprentissage = ' +
+                                      str(val_week[0][8] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][6] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET vi = ' +
+                                      str(val_year[0][7] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET vi = ' +
+                                      str(val_month[0][8] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET vi = ' +
+                                      str(val_week[0][9] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][7] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET these = ' +
+                                      str(val_year[0][8] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET these = ' +
+                                      str(val_month[0][9] + 1) + ' WHERE year \
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET these = ' +
+                                      str(val_week[0][10] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][8] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET post_doc = ' +
+                                      str(val_year[0][9] + 1) + ' WHERE year \
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET post_doc = ' +
+                                      str(val_month[0][10] + 1) + ' WHERE year\
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET post_doc = ' +
+                                      str(val_week[0][11] + 1) + ' WHERE year \
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][9] == 1:
+                    db_cursor.execute('UPDATE jobs_year SET mission = ' +
+                                      str(val_year[0][10] + 1) + ' WHERE year\
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET mission = ' +
+                                      str(val_month[0][11] + 1) + ' WHERE year\
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET mission = ' +
+                                      str(val_week[0][12] + 1) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                elif contrat[0][10]:
+                    db_cursor.execute('UPDATE jobs_year SET autre = ' +
+                                      str(val_year[0][11] + 1) + ' WHERE year\
+                                      = ' + str(year))
+                    db_cursor.execute('UPDATE jobs_month SET autre = ' +
+                                      str(val_month[0][12] + 1) + ' WHERE year\
+                                      = {0} AND month = {1}'.format(str(year),
+                                      str(month_number)))
+                    db_cursor.execute('UPDATE jobs_week SET autre = ' +
+                                      str(val_week[0][13] + 1) + ' WHERE year\
+                                      = {0} AND week = {1}'.format(str(year_iso),
+                                      str(week)))
+
+                self.conn.commit()
+
+                # Pour remplir la colonne first_day
+                if val_week[0][3] is None:
+                    db_cursor.execute('UPDATE jobs_week SET first_day = "{0}" WHERE year = {1} AND week = {2}'.format(str(first_day),
+                                                                                                                      str(year_iso),
+                                                                                                                      str(week)))
+                    self.conn.commit()
+                else:
+                    pass
+            else:
+                pass
+
+    def check_date(self, annee, annee_iso, mois, semaine, premier_jour):
+        '''
+        Vérifie que la date du jour existe dans les 3 tables de périodes
+        (année, mois, semaines) et créent les lignes correspondantes
+        le cas échéant.
+        '''
+        # get periods from the DB
+        result_month = Month.objects.filter(month=mois,
+                                            year=annee)
+        result_year = Year.objects.filter(year=annee)
+        result_week = Week.objects.filter(week=semaine,
+                                          year=annee_iso)
+
+        # check des résultats des requêtes et création le cas échéant
+        if len(result_month) == 0:
+            # calcul du timestamp en millisecond
+            month_timestamp = time.mktime(dt(annee, mois, 1).timetuple()) * 1000
+            # mise à jour de la table en créant la ligne correspondante
+            update_month = Month(month=mois, year=annee, month_milsec=month_timestamp)
+            # sauvegarde / commit
+            update_month.save()
+        else:
+            pass
+
+        if len(result_year) == 0:
+            year_timestamp = time.mktime(dt(annee, 1, 1).timetuple()) * 1000
+            update_year = Year(year=annee, year_milsec=year_timestamp)
+            update_year.save()
+        else:
+            pass
+
+        if len(result_week) == 0:
+            week_timestamp = time.mktime(premier_jour.timetuple()) * 1000
+            update_week = Week(year=annee_iso, week_milsec=week_timestamp, week=semaine)
+            update_week.save()
+        else:
+            pass
+
+        # end of function
+        return
+
+    def serializer_types_contrats(self, model_periode, field_milsec):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+
+        model_periode = Modèle de la BD Django à exporter
+        field_milsec = nom du champ du temps en millisecondes
+        """
+        # récupérer la liste des types de contrats
+        types_contrats = Year._meta.get_all_field_names()
+        types_contrats.remove('id')
+        types_contrats.remove('year')
+        types_contrats.remove('year_milsec')
+        types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
+
+        # listes des valeurs de chaque type de contrat selon la période demandée
+        periode_cdi = model_periode.objects.values_list(field_milsec, 'cdi')
+        periode_cdd = model_periode.objects.values_list(field_milsec, 'cdd')
+        periode_fpt = model_periode.objects.values_list(field_milsec, 'fpt')
+        periode_stage = model_periode.objects.values_list(field_milsec, 'stage')
+        periode_appre = model_periode.objects.values_list(field_milsec, 'apprentissage')
+        periode_vi = model_periode.objects.values_list(field_milsec, 'vi')
+        periode_these = model_periode.objects.values_list(field_milsec, 'these')
+        periode_psdoc = model_periode.objects.values_list(field_milsec, 'post_doc')
+        periode_missi = model_periode.objects.values_list(field_milsec, 'mission')
+        periode_other = model_periode.objects.values_list(field_milsec, 'autre')
+
+        # remplissage de la structure de données
+        types[0]['values'] = [list(x) for x in periode_appre]
+        types[1]['values'] = [list(x) for x in periode_other]
+        types[2]['values'] = [list(x) for x in periode_cdd]
+        types[3]['values'] = [list(x) for x in periode_cdi]
+        types[4]['values'] = [list(x) for x in periode_fpt]
+        types[5]['values'] = [list(x) for x in periode_missi]
+        types[6]['values'] = [list(x) for x in periode_psdoc]
+        types[7]['values'] = [list(x) for x in periode_stage]
+        types[8]['values'] = [list(x) for x in periode_these]
+        types[9]['values'] = [list(x) for x in periode_vi]
+
+        # serialization
+        with open('/home/pvernier/code/python/elpaso/static/json/types_contrats_'
+                  + model_periode.__name__.lower() + '.json', 'w') as f:
+            f.write(json.dumps(types))
+
+        # end of function
+        return
+
+    def serializer_semantic(self, db_cursor):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+        """
+        # récupérer la liste des types de contrats
+        db_cursor.execute('SELECT occurrences, word, first_time, last_time \
+                           FROM jobs_semantic_global \
+                           ORDER BY occurrences DESC \
+                           LIMIT 100')
+        semantic_frek = db_cursor.fetchall()
+
+        # storing into a dictionary
+        frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
+                      for t in sorted(semantic_frek, reverse=True)]
+
+        # serialization
+        with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as output:
+            json.dump(frequences, output)
+
+        # end of function
+        return
+
+    def serializer_technos(self, Technos_Types):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+        """
+        technos_get = Technos_Types.objects.aggregate(Sum('proprietaire'),
+                                                      Sum('libre'),
+                                                      Sum('sgbd'),
+                                                      Sum('programmation'),
+                                                      Sum('web'),
+                                                      Sum('cao_dao'),
+                                                      Sum('teledec'))
+
+        # list comprehension to pre-format
+        technos_totaux = [{'label': item[0:-5],
+                           'value': technos_get.get(item)}
+                          for item in technos_get]
+
+        with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
+            json.dump(technos_totaux, output)
+
+        # end of function
+        return
+
+    def week_start_date(self, year, week):
+        """
+        giving a year and a week number, it returns the first day of the week
+        see: http://stackoverflow.com/a/1287862
+        """
+        d = dt(year, 1, 1)   
+        delta_days = d.isoweekday() - 1
+        delta_weeks = week
+        if year == d.isocalendar()[0]:
+            delta_weeks -= 1
+        else:
+            pass
+        delta = timedelta(days=-delta_days, weeks=delta_weeks)
+        # end of function
+        return d + delta
+
 
 
 if __name__ == '__main__':
