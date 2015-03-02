@@ -105,7 +105,6 @@
                       .x(function(d) { return d[0] })   //We can modify the data accessor functions...
                       .y(function(d) { return d[1] })   //...in case your data is formatted differently.
                       .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
-                      .transitionDuration(500)
                       .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
                       .clipEdge(true);
 
@@ -121,6 +120,7 @@
 
         d3.select('#chart svg')
           .datum(data)
+          .transition().duration(500)
           .call(chart);
 
       //Update the chart when window resizes.
