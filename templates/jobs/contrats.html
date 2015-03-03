@@ -81,14 +81,15 @@
     <br/>
 
     <div class="btn-group">
-      <button type="button" id="week" class="btn btn-default">Semaine</button>
-      <button type="button" id="month" class="btn btn-default">Mois</button>
-      <!-- <button type="button" id="year" class="btn btn-default">Année</button> -->
+    	<button type="button" id="year" class="btn btn-default">Année</button>
+      	<button type="button" id="month" class="btn btn-default">Mois</button>
+      	<button type="button" id="week" class="btn btn-default">Semaine</button>
+      
     </div>
     <br/>
     <br/>
-        <div id='chart'>
-            Répartition des types de contrats par mois
+        <div id='chart_contrats'>
+            Répartition des types de contrats par {periode}
             <svg class="chart_periode"> </svg>
         </div>
     <script type="text/javascript">
@@ -100,7 +101,7 @@
             
         d3.json('../static/json/types_contrats_' + periode + '.json', function(data) {
         nv.addGraph(function() {
-        var chart = nv.models.stackedAreaChart()
+        var chart_contrats = nv.models.stackedAreaChart()
                       .margin({right: 100})
                       .x(function(d) { return d[0] })   //We can modify the data accessor functions...
                       .y(function(d) { return d[1] })   //...in case your data is formatted differently.
@@ -109,23 +110,23 @@
                       .clipEdge(true);
 
         //Format x-axis labels with custom function.
-        chart.xAxis
-            .ticks(d3.time.month, 1)
+        chart_contrats.xAxis
+            .ticks(d3.time.periode, 1)
             .tickFormat(function(d) { 
               return d3.time.format('%m/%y')(new Date(d));
         });
 
-        chart.yAxis
-            .tickFormat(d3.format(',.0f'));
+        chart_contrats.yAxis
+            .tickFormat(d3.format('d'))
 
-        d3.select('#chart svg')
+        d3.select('#chart_contrats svg')
           .datum(data)
           .transition().duration(500)
-          .call(chart);
+          .call(chart_contrats);
 
       //Update the chart when window resizes.
-      nv.utils.windowResize(function() { chart.update() });
-      return chart;
+      nv.utils.windowResize(function() { chart_contrats.update() });
+      return chart_contrats;
 
                 });      
             });

@@ -1,1 +1,1 @@
-[{"label": "sgbd", "value": 409}, {"label": "teledec", "value": 406}, {"label": "proprietaire", "value": 676}, {"label": "programmation", "value": 263}, {"label": "web", "value": 384}, {"label": "libre", "value": 268}, {"label": "cao_dao", "value": 181}]
+[{"value": 677, "label": "proprietaire"}, {"value": 409, "label": "sgbd"}, {"value": 182, "label": "cao_dao"}, {"value": 268, "label": "libre"}, {"value": 263, "label": "programmation"}, {"value": 406, "label": "teledec"}, {"value": 384, "label": "web"}]
