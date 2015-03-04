@@ -60,17 +60,18 @@ c = conn.cursor()
 # fetching the ID list
 c.execute("SELECT id FROM georezo")
 liste_input = [i[0] for i in c.fetchall()]
+conn.commit()
 
 logger.append("Fin connexion BD et récupération Ids : {0}".format(datetime.now()))
 
 # empty tables which are out of Django ORM
-# c.execute("DELETE FROM contrats;")
+c.execute("DELETE FROM contrats;")
 # c.execute("DELETE FROM lieux;")
 # c.execute("DELETE FROM autres;")
 # c.execute("DELETE FROM metiers;")
 # c.execute("DELETE FROM logiciels;")
 # c.execute("DELETE FROM semantique;")
-# conn.commit()
+conn.commit()
 
 # # empty jobs_* tables
 Contrat.objects.all().delete()
@@ -98,7 +99,13 @@ else:
     metalist_input = [liste_input[i:i + 50] for i in range(0, len(liste_input), 50)]
     for sublist in metalist_input:
         logger.append("annonces {0} à {1}".format(sublist[0], sublist[-1]))
-        # analyseur.Analizer(sublist, path.abspath(r'../elpaso.sqlite'))
+        analyseur.Analizer(sublist,
+		                   path.abspath(r'../elpaso.sqlite'),
+		                   opt_types=1,
+		                   opt_lieux=0,
+		                   opt_technos=0,
+		                   opt_metiers=0,
+		                   opt_mots=0)
         conn.commit()
         logger.append("Fin analyseur des annonces {0} à {1} : {2}".format(sublist[0],
                                                                     sublist[-1],
@@ -117,6 +124,8 @@ else:
 
 # update indexes
 c.execute("PRAGMA auto_vacuum;")
+conn.commit()
+conn.close()
 
 logger.append("Fin auto_vaccum : {0}".format(datetime.now()))
 
