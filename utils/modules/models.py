@@ -751,11 +751,18 @@ class Fillin():
                            FROM jobs_semantic_global \
                            ORDER BY occurrences DESC \
                            LIMIT 100')
-        semantic_frek = db_cursor.fetchall()
+        semantic_frek = db_cursor.fetchall()      
+
+        # # storing into a dictionary
+        # frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
+        #               for t in sorted(semantic_frek, reverse=True)]
+
+        # calculate a ratio to prevent d3 oversize
+        ratio = max([t[0] for t in sorted(semantic_frek, reverse=True)])/50
 
         # storing into a dictionary
-        frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
-                      for t in sorted(semantic_frek, reverse=True)]
+        frequences = [{'word': t[1], 'dim': t[0]/ratio, 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
+                    for t in sorted(semantic_frek, reverse=True)]
 
         # serialization
         with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as output:

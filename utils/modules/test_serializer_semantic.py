@@ -30,8 +30,8 @@ import json
 # Django specifics
 sys.path.append('/home/pvernier/code/python/elpaso')
 environ['DJANGO_SETTINGS_MODULE'] = 'elpaso.settings'
-from jobs.models import Technos_Types, Semantic_Global
-from django.db.models import Sum
+# from jobs.models import Technos_Types, Semantic_Global
+# from django.db.models import Sum
 
 #### SQLITE LIB
 db_path = u"../../elpaso.sqlite"
@@ -47,8 +47,11 @@ c.execute('SELECT occurrences, word, first_time, last_time \
            ORDER BY occurrences DESC\
            LIMIT 100')
 semantic_frek = c.fetchall()
+ratio = max([t[0] for t in sorted(semantic_frek, reverse=True)])/50
+print(ratio)
+print(t[0]/ratio)
 
-frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
+frequences = [{'word': t[1], 'dim': t[0]/ratio, 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
               for t in sorted(semantic_frek, reverse=True)]
 
 with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 'w') as output:
@@ -70,18 +73,18 @@ with open('/home/pvernier/code/python/elpaso/static/json/mots_geomatique.json', 
 #     json.dump(frequences, output, indent=4)
 
 
-technos_get = Technos_Types.objects.aggregate(Sum('proprietaire'),
-                                               Sum('libre'),
-                                               Sum('sgbd'),
-                                               Sum('programmation'),
-                                               Sum('web'),
-                                               Sum('cao_dao'),
-                                               Sum('teledec'))
+# technos_get = Technos_Types.objects.aggregate(Sum('proprietaire'),
+#                                                Sum('libre'),
+#                                                Sum('sgbd'),
+#                                                Sum('programmation'),
+#                                                Sum('web'),
+#                                                Sum('cao_dao'),
+#                                                Sum('teledec'))
 
-technos_totaux = [{'label': item[0:-5],
-                   'value': technos_get.get(item)}
-                   for item in technos_get]
+# technos_totaux = [{'label': item[0:-5],
+#                    'value': technos_get.get(item)}
+#                    for item in technos_get]
 
-with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
-    json.dump(technos_totaux, output)
+# with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
+#     json.dump(technos_totaux, output)
 

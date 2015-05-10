@@ -28,6 +28,7 @@
         .size([width, height])
         .words((data).map(function(d) {
             return {text: d.word,
+                    dims: d.dims,
                     occurs: d.occurs,
                     firstime: d.firstime,
                     lastime: d.lastime};
@@ -36,7 +37,7 @@
         .rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
         .padding(1)
         .font(typeFace)
-        .fontSize(function(d) { return d.occurs; })
+        .fontSize(function(d) { return d.dims; })
         .on('end', drawCloud)
         .start();
   }
