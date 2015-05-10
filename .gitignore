@@ -38,3 +38,9 @@ static/jquery
 static/css/nv.d3.css
 logs
 *Thumbs.db
+historik/*.mdb
+historik/*.shp
+historik/*.prj
+historik/*.shx
+historik/*.dbf
+historik/*.xls
