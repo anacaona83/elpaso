@@ -4,6 +4,7 @@
     <p class="weekday">Nombre d'annonces par jour de la semaine :</p>
     <div id= "weekday" style="text-align:center;">
         <script type="text/javascript">
+
             //Width and height
             var w = 600;
             var h = 100;
@@ -80,26 +81,87 @@
 
     <br/>
 
-    <div class="btn-group">
+    <!-- <div class="btn-group">
     	<button type="button" id="year" class="btn btn-default">Année</button>
       	<button type="button" id="month" class="btn btn-default">Mois</button>
       	<button type="button" id="week" class="btn btn-default">Semaine</button>
-      
-    </div>
+    </div> -->
+    
     <br/>
-    <br/>
-        <div id='chart_contrats'>
-            Répartition des types de contrats par {periode}
-            <svg class="chart_periode"> </svg>
+        <div class='chart'>
+            <h2>Répartition des types de contrats par année</h2>
+            <svg id="chart_year"> </svg>
+        </div>
+            <br/>
+        <div class='chart'>
+            <h2>Répartition des types de contrats par mois</h2>
+            <svg id="chart_month"> </svg>
+        </div>
+            <br/>
+        <div class='chart'>
+            <h2>Répartition des types de contrats par semaine</h2>
+            <svg id="chart_week"> </svg>
         </div>
     <script type="text/javascript">
       //Width and height
-      $(".btn-default").click(function() {
+      /*$(".btn-default").click(function() {
         // Remove div if they exist before creating them again
-        $( "div.contrats").remove();
-        periode = $(this).attr('id');
+        $( "div.contrats").remove();*/
+        /*periode = $(this).attr('id');*/
+
+        function getWeekNumber(d) {
+		    // Copy date so don't modify original
+		    d = new Date(+d);
+		    d.setHours(0,0,0);
+		    // Set to nearest Thursday: current date + 4 - current day number
+		    // Make Sunday's day number 7
+		    d.setDate(d.getDate() + 4 - (d.getDay()||7));
+		    // Get first day of year
+		    var yearStart = new Date(d.getFullYear(),0,1);
+		    // Calculate full weeks to nearest Thursday
+		    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+		    return 'S' + weekNo + '-' + d.getFullYear();
+		}
             
-        d3.json('../static/json/types_contrats_' + periode + '.json', function(data) {
+        d3.json('../static/json/types_contrats_year.json', function(data) {
+        nv.addGraph(function() {
+        var chart_contrats = nv.models.stackedAreaChart()
+                      .margin({right: 100})
+                      .x(function(d) { return d[0] })   //We can modify the data accessor functions...
+                      .y(function(d) { return d[1] })   //...in case your data is formatted differently.
+                      .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+                      .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+                      .clipEdge(true);
+
+
+        //Format x-axis labels with custom function.
+        chart_contrats.xAxis
+            /*.ticks(d3.time.periode, 1)*/
+            .tickFormat(function(d) { 
+              return d3.time.format('%Y')(new Date(d));
+        });
+
+        chart_contrats.yAxis
+            .tickFormat(d3.format('d'))
+
+        d3.select('div.chart svg#chart_year')
+          .datum(data)
+          .transition().duration(500)
+          .call(chart_contrats);
+
+      //Update the chart when window resizes.
+      nv.utils.windowResize(function() { chart_contrats.update() });
+      return chart_contrats;
+
+                });      
+            });
+
+
+
+
+
+
+	d3.json('../static/json/types_contrats_month.json', function(data) {
         nv.addGraph(function() {
         var chart_contrats = nv.models.stackedAreaChart()
                       .margin({right: 100})
@@ -111,15 +173,15 @@
 
         //Format x-axis labels with custom function.
         chart_contrats.xAxis
-            .ticks(d3.time.periode, 1)
+            /*.ticks(d3.time.periode, 1)*/
             .tickFormat(function(d) { 
-              return d3.time.format('%m/%y')(new Date(d));
+              return d3.time.format('%m/%Y')(new Date(d));
         });
 
         chart_contrats.yAxis
             .tickFormat(d3.format('d'))
 
-        d3.select('#chart_contrats svg')
+        d3.select('div.chart svg#chart_month')
           .datum(data)
           .transition().duration(500)
           .call(chart_contrats);
@@ -130,11 +192,44 @@
 
                 });      
             });
-        });
+
+
+
+
+	d3.json('../static/json/types_contrats_week.json', function(data) {
+        nv.addGraph(function() {
+        var chart_contrats = nv.models.stackedAreaChart()
+                      .margin({right: 100})
+                      .x(function(d) { return d[0] })   //We can modify the data accessor functions...
+                      .y(function(d) { return d[1] })   //...in case your data is formatted differently.
+                      .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+                      .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+                      .clipEdge(true);
+
+        //Format x-axis labels with custom function.
+        chart_contrats.xAxis
+            /*.ticks(d3.time.periode, 1)*/
+            .tickFormat(getWeekNumber)
+
+        chart_contrats.yAxis
+            .tickFormat(d3.format('d'))
+
+        d3.select('div.chart svg#chart_week')
+          .datum(data)
+          .transition().duration(500)
+          .call(chart_contrats);
+
+      //Update the chart when window resizes.
+      nv.utils.windowResize(function() { chart_contrats.update() });
+      return chart_contrats;
+
+                });      
+            });
+        /*});*/
     </script>
-    <script>
+    <!-- <script>
         $(function(){
             $(".btn-default").click();
         });
-    </script>
+    </script> -->
 {% endblock content %}
