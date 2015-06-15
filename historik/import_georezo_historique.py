@@ -30,7 +30,7 @@ import time
 import re
 
 # 3rd party
-import xlrd
+from openpyxl import load_workbook
 import pytz
 
 
@@ -38,22 +38,52 @@ import pytz
 ########## Main program ###########
 ###################################
 
+li_issues = []
+
+# DB connection settings
+db = path.abspath(r".../elpaso.sqlite")
+conn = sqlite3.connect(db)
+c = conn.cursor()
+
 # timezone
 paris_tz = pytz.timezone("Europe/Paris")
 
 # log
 log = open("import_logger.txt", "w")
 
-xls_path = "BDD_JOB_v2.xls"
+xls_path = "BDD_JOB_v3.xlsx"
 
 # opening
-wbook_source = xlrd.open_workbook(xls_path, logfile=log)
-sheet = wbook_source.sheet_by_index(0)
+wb = load_workbook(filename=xls_path,
+                   read_only=True
+                   )
+ws = wb.worksheets[0]  # ws = première feuille
 
-# DB connection settings
-db = path.abspath(r"../elpaso.sqlite")
-conn = sqlite3.connect(db)
-c = conn.cursor()
+row_count = ws.get_highest_row() - 1
+column_count = ws.get_highest_column() + 1
+
+print(row_count)
+print(column_count)
+
+# Structure attendue ##################################
+# col_idx   col_name        description
+# 0         ID_def
+# 1         ID
+# 2         PID
+# 3         ENTETE_OFFRE
+# 4         DATE
+# 5         ANNEE
+# 6         TYPE_OFFRE
+# 7         VISITES
+# 8         DEPART_1
+# 9         DEPART_2
+# 10        REGION
+# 11        TYPE_REGION
+# 12        NBR
+# 13        MESSAGE
+
+# wbook_source = xlrd.open_workbook(xls_path, logfile=log)
+# sheet = wbook_source.sheet_by_index(0)
 
 # for col in range(sheet.ncols):
 #     print(sheet.cell(0, col).value)
@@ -65,21 +95,47 @@ c = conn.cursor()
 
 ################################################################
 
-for row in range(1, sheet.nrows):
+
+# clean table
+c.execute("DELETE FROM 'histo_georezo'")
+conn.commit()
+
+# parsing line by line
+for row in ws.iter_rows(row_offset=1):
     # parcours ligne par ligne
-    idu = int(sheet.cell(row, 0).value)
-    id_forum = int(sheet.cell(row, 1).value)
-    id_rss = int(sheet.cell(row, 2).value)
-    title = sheet.cell(row, 3).value
-    contrat = sheet.cell(row, 6).value
-    visits = int(sheet.cell(row, 7).value)
-    dpt1 = sheet.cell(row, 8).value
-    dpt2 = sheet.cell(row, 9).value
-    region = sheet.cell(row, 10).value
-    region_typ = sheet.cell(row, 11).value
+    idu = int(row[0].value)
+    try:
+        id_forum = int(row[1].value)
+    except:
+        print('oups')
+        li_issues.append(("TypeProblem", idu))
+        continue
+    id_rss = int(row[2].value)
+    title = row[3].value
+    contrat = row[6].value
+    visits = row[7].value
+    dpt1 = row[8].value
+    dpt2 = row[9].value
+    region = row[10].value
+    region_typ = row[11].value
 
     # récupérer et nettoyer le contenu de l'offre
-    summary = sheet.cell(row, 13).value
+    summary = row[13].value
+
+    # # parcours ligne par ligne
+    # idu = int(sheet.cell(row, 0).value)
+    # id_forum = int(sheet.cell(row, 1).value)
+    # id_rss = int(sheet.cell(row, 2).value)
+    # title = sheet.cell(row, 3).value
+    # contrat = sheet.cell(row, 6).value
+    # visits = int(sheet.cell(row, 7).value)
+    # dpt1 = sheet.cell(row, 8).value
+    # dpt2 = sheet.cell(row, 9).value
+    # region = sheet.cell(row, 10).value
+    # region_typ = sheet.cell(row, 11).value
+
+    # # récupérer et nettoyer le contenu de l'offre
+    # summary = sheet.cell(row, 13).value
 
     # enlever les astérisques
     rx = re.compile('\*+')
@@ -134,6 +190,10 @@ for row in range(1, sheet.nrows):
     rx = re.compile('\à«+')
     summary = rx.sub(u'ë', summary).strip()
 
+    # remplacer les ê
+    rx = re.compile('àª')
+    summary = rx.sub(u'ê', summary).strip()
+
     # remplacer les î
     rx = re.compile('\à®+')
     summary = rx.sub(u'î', summary).strip()
@@ -177,31 +237,48 @@ for row in range(1, sheet.nrows):
     # except UnicodeEncodeError:
     #     print(summary.encode('UTF-8'))
 
-    # récupérer la date
-    cell_type = sheet.cell_type(row, 4)
-    cell_value = sheet.cell_value(row, 4)
-    if cell_type == xlrd.XL_CELL_DATE:
-        dt_tuple = xlrd.xldate_as_tuple(cell_value, wbook_source.datemode)
-        date_pub = datetime(
-                            dt_tuple[0], dt_tuple[1], dt_tuple[2], 
-                            dt_tuple[3], dt_tuple[4], dt_tuple[5]
-                            )
-        # ajouter fuseau horaire
-        date_pub = paris_tz.localize(date_pub)
-        published = time.strptime('{0} {1} {2} 04:44:44'.format(date_pub.year,
-                                                                date_pub.month,
-                                                                date_pub.day),
-                                                                '%Y %m %d %H:%M:%S')
-        if "2" in str(date_pub.utcoffset()):
-            print('youhou')
-            published = time.strftime("%a, %d %b %Y %H:%M:%S +0200", published)
-        elif "1" in str(date_pub.utcoffset()):
-            print('youpi')
-            published = time.strftime("%a, %d %b %Y %H:%M:%S +0100", published)
-        else:
-            pass
+    # récupérer la date de publication
+    date_pub = row[4].value
+    # ajouter fuseau horaire
+    date_pub = paris_tz.localize(date_pub)
+    published = time.strptime('{0} {1} {2}'.format(date_pub.year,
+                                                            date_pub.month,
+                                                            date_pub.day),
+                                                            '%Y %m %d')
+    if "2" in str(date_pub.utcoffset()):
+        print('youhou')
+        published = time.strftime("%a, %d %b %Y %H:%M:%S +0200", published)
+    elif "1" in str(date_pub.utcoffset()):
+        print('youpi')
+        published = time.strftime("%a, %d %b %Y %H:%M:%S +0100", published)
     else:
         pass
+
+    # # récupérer la date
+    # cell_type = sheet.cell_type(row, 4)
+    # cell_value = sheet.cell_value(row, 4)
+    # if cell_type == xlrd.XL_CELL_DATE:
+    #     dt_tuple = xlrd.xldate_as_tuple(cell_value, wbook_source.datemode)
+    #     date_pub = datetime(
+    #                         dt_tuple[0], dt_tuple[1], dt_tuple[2], 
+    #                         dt_tuple[3], dt_tuple[4], dt_tuple[5]
+    #                         )
+    #     # ajouter fuseau horaire
+    #     date_pub = paris_tz.localize(date_pub)
+    #     published = time.strptime('{0} {1} {2} 04:44:44'.format(date_pub.year,
+    #                                                             date_pub.month,
+    #                                                             date_pub.day),
+    #                                                             '%Y %m %d %H:%M:%S')
+    #     if "2" in str(date_pub.utcoffset()):
+    #         print('youhou')
+    #         published = time.strftime("%a, %d %b %Y %H:%M:%S +0200", published)
+    #     elif "1" in str(date_pub.utcoffset()):
+    #         print('youpi')
+    #         published = time.strftime("%a, %d %b %Y %H:%M:%S +0100", published)
+    #     else:
+    #         pass
+    # else:
+    #     pass
 
     # # test si elle existe déjà dans El paso
     # if id_rss > 10265:
@@ -212,23 +289,28 @@ for row in range(1, sheet.nrows):
     #     pass
 
     # insertion BDD
-    c.execute("INSERT INTO historique VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (str(idu),
-    																	  str(id_forum),
-    																	  str(id_rss),
-    																	  title,
-                                                                          published,
-                                                                          contrat,
-                                                                          str(visits),
-                                                                          dpt1,
-                                                                          dpt2,
-                                                                          region,
-                                                                          region_typ,
-                                                       					  summary))
-    conn.commit()
+    try:
+        c.execute("INSERT INTO histo_georezo VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (str(idu),
+        																	     str(id_forum),
+        																	     str(id_rss),
+        																	     title,
+                                                                                 published,
+                                                                                 contrat,
+                                                                                 str(visits),
+                                                                                 dpt1,
+                                                                                 dpt2,
+                                                                                 region,
+                                                                                 region_typ,
+                                                           					     summary))
+        conn.commit()
+    except Exception as e:
+        print('oups2: ', e)
+        li_issues.append(("NotUnique", idu, id_rss))
 
 
 conn.close()
 
+print(li_issues)
 
 ################################################################
 
