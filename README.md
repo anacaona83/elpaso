@@ -137,8 +137,9 @@ CREATE TABLE "lieux" ("id" INTEGER PRIMARY KEY  NOT NULL ,"lieu_lib" VARCHAR NOT
 CREATE TABLE "logiciels" ("id" INTEGER PRIMARY KEY  NOT NULL , "proprietaire" BOOL, "libre" BOOL, "sgbd" BOOL, "programmation" BOOL, "web" BOOL, "cao_dao" BOOL);
 
 CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOOL DEFAULT (null) ,"cartographe" BOOL,"charge_etude" BOOL,"charge_mission" BOOL,"chef" BOOL,"geometre" BOOL,"ingenieur" BOOL,"responsable" BOOL,"sigiste" BOOL,"technicien" BOOL,"topographe" BOOL);
-```
 
+CREATE  TABLE  IF NOT EXISTS "main"."histo_georezo" ("idu" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "id_forum" INTEGER UNIQUE , "id_rss" INTEGER UNIQUE , "title" VARCHAR, "published" DATETIME, "contrat" VARCHAR, "visites" INTEGER, "dpt1" VARCHAR, "dpt2" VARCHAR, "region" VARCHAR, "region_typ" VARCHAR, "summary" TEXT, "date_import" DATETIME DEFAULT CURRENT_TIMESTAMP)
+```
 
 ## Installer Python 3.4
 
