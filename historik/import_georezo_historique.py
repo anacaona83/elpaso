@@ -41,7 +41,7 @@ import pytz
 li_issues = []
 
 # DB connection settings
-db = path.abspath(r".../elpaso.sqlite")
+db = path.abspath(r"../elpaso.sqlite")
 conn = sqlite3.connect(db)
 c = conn.cursor()
 
