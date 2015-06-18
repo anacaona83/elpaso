@@ -12,8 +12,7 @@ urlpatterns = patterns('',
     url(r'^contrats_json/$', 'jobs.views.contrat_json'),
     url(r'^contrats_camemberts/$', TemplateView.as_view(template_name="jobs/contrats_camemberts.html")),
     url(r'^stacks/$', TemplateView.as_view(template_name="jobs/contrats_stacks_nvd3.html")),
-    url(r'^dashboard/$', TemplateView.as_view(template_name="jobs/dashboard/index.html")),
-    
+    url(r'^timeline/$', TemplateView.as_view(template_name="jobs/timeline.html")),
     url(r'^contrats_bis/$', TemplateView.as_view(template_name="jobs/contrats_exploit_json2.html")),
 
     url(r'^admin/', include(admin.site.urls)),

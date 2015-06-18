@@ -46,15 +46,10 @@
 
 <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
     <div class="sidebar-module sidebar-module-inset">
-        <p>Nombre total d'offres : {{ nb_contrats }} depuis le {{ first_date }}</p>
-        <p>Nombre d'années : {{ nb_years }}</p>
-        <p>Nombre de mois : {{ nb_months }}</p>
-        <p>Nombre de semaines : {{ nb_weeks }}</p>
-        <p>Nombre de mots : {{ nb_words }}</p>
+        <p><i class="fa fa-briefcase"></i> {{ nb_contrats }} offres répertoriées du {{ first_date }} au {{ last_offer_pub_date }}</p>
+        <p><i class="fa fa-calendar"></i> {{ nb_years }} ans, {{ nb_months }} mois et {{ nb_weeks }} semaines.</p>
+        <p><i class="fa fa-font"></i> {{ nb_words }} mots différents</i></p>
     </div>
-
-
 </div>
-
 </div>
 {% endblock content %}

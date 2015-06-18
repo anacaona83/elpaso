@@ -8,6 +8,7 @@ import json
 
 @csrf_exempt
 def stats_home(request):
+    last_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
     nb_contrats = Contrat.objects.count()
     first_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
     nb_years = Year.objects.count()
@@ -16,12 +17,13 @@ def stats_home(request):
     nb_words = Semantic_Global.objects.count()
 
     return render_to_response('jobs/home.html', {
+        'last_offer_pub_date': last_date,
         'nb_contrats': nb_contrats,
         'nb_years': nb_years,
         'nb_months': nb_months,
         'nb_weeks': nb_weeks,
         'first_date': first_date,
-        'nb_words' : nb_words,
+        'nb_words': nb_words,
     })
 
 
