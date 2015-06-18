@@ -35,7 +35,7 @@ db_path = u"..\..\elpaso.sqlite"
 # connection to the DB
 db = path.abspath(db_path)
 conn = sqlite3.connect(db)
-c = conn.cursor()
+db_cursor = conn.cursor()
 
 
 title = ""
@@ -51,4 +51,18 @@ link = "http://georezo.net/forum/viewtopic.php?pid={0}".format(id)
 # row = c.fetchone()
 
 
+db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, jobs_contrat.type\
+                   FROM georezo\
+                   LEFT JOIN jobs_contrat\
+                   ON georezo.id = jobs_contrat.id ORDER BY georezo.id DESC LIMIT 50')
+last50 = db_cursor.fetchall()
 
+# list comprehension to pre-format
+dico_last50 = [{'id': item[0],
+                'title': item[1],
+                'summary': item[2][:300],
+                'read_more': "http://georezo.net/forum/viewtopic.php?pid={0}".format(item[0]),
+                'kind': item[3]}
+               for item in last50]
+
+print(dico_last50)
