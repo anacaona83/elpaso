@@ -97,6 +97,10 @@ class Fillin():
         logger.append("Serialization of technologies")
         self.serializer_technos(Technos_Types)
 
+        # serialization for timeline
+        logger.append("Serialization of last 50")
+        self.serializer_last_offers(self.c)
+
     def contrats(self, li_id, db_cursor):
         """
         Méthode qui remplit la table du modele à partir de la table
@@ -751,7 +755,7 @@ class Fillin():
                            FROM jobs_semantic_global \
                            ORDER BY occurrences DESC \
                            LIMIT 100')
-        semantic_frek = db_cursor.fetchall()      
+        semantic_frek = db_cursor.fetchall()
 
         # # storing into a dictionary
         # frequences = [{'word': t[1], 'occurs': t[0], 'firstime': t[2], 'lastime': t[3]}
@@ -790,6 +794,31 @@ class Fillin():
 
         with open('/home/pvernier/code/python/elpaso/static/json/technos_global.json', 'w') as output:
             json.dump(technos_totaux, output)
+
+        # end of function
+        return
+
+    def serializer_last_offers(self, db_cursor):
+        """
+        Exporte les données dans un fichier .JSON formaté pour NVD3
+        """
+        # get last 50 offers with kind of contract
+        db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, jobs_contrat.type\
+                           FROM georezo\
+                           LEFT JOIN jobs_contrat\
+                           ON georezo.id = jobs_contrat.id ORDER BY georezo.id DESC LIMIT 50')
+        last50 = db_cursor.fetchall()
+
+        # list comprehension to pre-format
+        dico_last50 = [{'id': item[0],
+                        'title': item[1],
+                        'summary': item[2][:300],
+                        'read_more': "http://georezo.net/forum/viewtopic.php?pid={0}".format(item[0]),
+                        'kind': item[3]}
+                       for item in last50]
+
+        with open('/home/pvernier/code/python/elpaso/static/json/last50.json', 'w') as output:
+            json.dump(dico_last50, output)
 
         # end of function
         return
