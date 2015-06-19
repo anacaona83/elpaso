@@ -803,20 +803,23 @@ class Fillin():
         Exporte les données dans un fichier .JSON formaté pour NVD3
         """
         # get last 50 offers with kind of contract
-        db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, jobs_contrat.type\
-                           FROM georezo\
-                           LEFT JOIN jobs_contrat\
-                           ON georezo.id = jobs_contrat.id ORDER BY georezo.id DESC LIMIT 50')
+        db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, georezo.date_pub, jobs_contrat.type\
+                   FROM georezo\
+                   LEFT JOIN jobs_contrat\
+                   ON georezo.id = jobs_contrat.id\
+                   ORDER BY georezo.id DESC LIMIT 50')
         last50 = db_cursor.fetchall()
 
         # list comprehension to pre-format
-        dico_last50 = [{'id': item[0],
-                        'title': item[1],
+        dico_last50 = [{'rss_id': item[0],
+                        'titre': item[1],
                         'summary': item[2][:300],
+                        'date_pub': datetime.strftime(datetime.strptime(item[3][:-6], "%a, %d %b %Y %H:%M:%S"), "%d %B %Y à %H:%M:%S"),
                         'read_more': "http://georezo.net/forum/viewtopic.php?pid={0}".format(item[0]),
-                        'kind': item[3]}
+                        'kind': item[4]}
                        for item in last50]
 
+        # writing int the output file
         with open('/home/pvernier/code/python/elpaso/static/json/last50.json', 'w') as output:
             json.dump(dico_last50, output)
 

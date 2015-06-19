@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^map/$', TemplateView.as_view(template_name="jobs/map.html")),
     url(r'^technos/$', TemplateView.as_view(template_name="jobs/technologies.html")),
     url(r'^semantique/$', TemplateView.as_view(template_name="jobs/semantique.html")),
-    url(r'^timeline/$', TemplateView.as_view(template_name="jobs/timeline/index.html")),
+    url(r'^timeline/$', TemplateView.as_view(template_name="jobs/timeline.html")),
 
     url(r'^admin/', include(admin.site.urls)),
 )
