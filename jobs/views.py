@@ -8,21 +8,22 @@ import json
 
 @csrf_exempt
 def stats_home(request):
-    last_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
     nb_contrats = Contrat.objects.count()
     first_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
+    # last_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
+    last_date = Contrat.objects.order_by('-date_pub').values('date_pub')[:1][0]['date_pub'].date
     nb_years = Year.objects.count()
     nb_months = Month.objects.count()
     nb_weeks = Week.objects.count()
     nb_words = Semantic_Global.objects.count()
 
     return render_to_response('jobs/home.html', {
-        'last_offer_pub_date': last_date,
         'nb_contrats': nb_contrats,
         'nb_years': nb_years,
         'nb_months': nb_months,
         'nb_weeks': nb_weeks,
         'first_date': first_date,
+        'last_date': last_date,
         'nb_words': nb_words,
     })
 
@@ -38,7 +39,6 @@ def contrat_json(request):
     jours_contrats = Contrat.objects.values('date_pub').datetimes('date_pub', periode)
     # print(jours_contrats)
 
-
     types = {}
     # DISTINCT ne marche pas sur SQLITE
     types_contrat = Contrat.objects.values('type')
@@ -51,10 +51,10 @@ def contrat_json(request):
     for jour in jours_contrats:
 
         if periode == 'month':
-            annonces = Contrat.objects.filter(date_pub__year = jour.year,
-                                              date_pub__month = jour.month).values_list()
+            annonces = Contrat.objects.filter(date_pub__year=jour.year,
+                                              date_pub__month=jour.month).values_list()
         elif periode == 'year':
-            annonces = Contrat.objects.filter(date_pub__year = jour.year).values_list()
+            annonces = Contrat.objects.filter(date_pub__year=jour.year).values_list()
         elif periode == 'week':
             annonces = Contrat.objects.filter(date_pub__year = jour.year,
                                               date_pub__month = jour.month,
