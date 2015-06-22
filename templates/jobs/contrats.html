@@ -88,6 +88,8 @@
     </div> -->
     
     <br/>
+    <svg id="legend_chart" class="nvd3"></svg>
+
         <div class='chart'>
             <h2>Répartition des types de contrats par année</h2>
             <svg id="chart_year"> </svg>
@@ -103,6 +105,41 @@
             <svg id="chart_week"> </svg>
         </div>
     <script type="text/javascript">
+
+      var width = 500,
+        height = 20;
+
+    var legend = nv.models.legend();
+
+    d3.select('#legend_chart')
+        .attr('width', width)
+        .attr('height', height)
+        .datum(sinAndCos());
+
+    var update = function() {
+        d3.select('#legend_chart').call(legend);
+    }
+
+    update();
+    legend.dispatch.on('stateChange', function(d) { 
+        console.log(d);
+        update();
+    });
+
+
+    function sinAndCos() {
+        return [
+            {key: "Sine Wave"},
+            {key: "A Very Long Series Label"},
+            {key: "A Very Long Series Label"},
+            {key: "A Very Long Series Label"},
+            {key: "Cosine Wave"},
+            {key: "Another test label"}
+        ];
+    }
+
+
+
       //Width and height
       /*$(".btn-default").click(function() {
         // Remove div if they exist before creating them again
@@ -169,8 +206,25 @@
                       .y(function(d) { return d[1] })   //...in case your data is formatted differently.
                       .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
                       .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+                      .controlLabels({"stacked":"Stack It","stream":"Stream dat","expanded":"Xpand"})
+                      .color(["#a6cee3", "#fb9a99", "#1f78b4", "#04B404",
+                              "#F7FE2E", "#ff7f00", "#8A2908", "#e31a1c",
+                              "#cab2d6", "#6a3d9a"])
+                      //.showLegend(false)
                       .clipEdge(true);
 
+        chart_contrats.interactiveLayer.tooltip.contentGenerator(function (key) {
+     //console.log(key);
+
+     tt = ''
+     for (var i =  key.series.length - 1; i >= 0; i--) {
+         tt = tt + '<div class="nvtooltip" style="width:10px; height: 10px; background:'+ key.series[i].color + ';"></div>' +key.series[i].key + " = " + key.series[i].value + '<br>'
+     };
+     /*console.log(tt);*/
+     return "<div><strong>" + key.value + "</strong><br>" + tt + "</div>"
+     ;
+});
+        
         //Format x-axis labels with custom function.
         chart_contrats.xAxis
             /*.ticks(d3.time.periode, 1)*/
@@ -179,7 +233,10 @@
         });
 
         chart_contrats.yAxis
-            .tickFormat(d3.format('d'))
+            .tickFormat(d3.format('d'));
+
+        /*var legend = nv.models.legend();
+        console.log(legend);*/
 
         d3.select('div.chart svg#chart_month')
           .datum(data)
