@@ -20,26 +20,31 @@ from __future__ import (unicode_literals, print_function)
 ###################################
 
 # Standard library
-from os import path, environ
-import sqlite3
-import sys
-
 from datetime import datetime
-import time
-
+from os import path, environ
 import re
+import sqlite3
+import time
 
 # 3rd party
 from openpyxl import load_workbook
 import pytz
 
-
 ###############################################################################
 ########## Main program ###########
 ###################################
 
-li_issues = []
 
+class GeorezoToElPaso(object):
+    """
+    docstring for GeorezoToElPaso
+    """
+    def __init__(self, arg):
+        super(GeorezoToElPaso, self).__init__()
+        self.arg = arg
+
+
+li_issues = []
 # DB connection settings
 db = path.abspath(r"../elpaso.sqlite")
 conn = sqlite3.connect(db)
@@ -96,9 +101,7 @@ print(column_count)
 ################################################################
 
 
-# clean table
-c.execute("DELETE FROM 'histo_georezo'")
-conn.commit()
+
 
 # parsing line by line
 for row in ws.iter_rows(row_offset=1):
@@ -172,7 +175,6 @@ for row in ws.iter_rows(row_offset=1):
     summary = rx.sub(' ', summary).strip()
     rx = re.compile('â€¦')
     summary = rx.sub('', summary).strip()
-    
 
     # enlever les balises html url et img
     rx = re.compile('\[[a-z]{3}\]|\[/[a-z]{3}\]')
@@ -217,7 +219,7 @@ for row in ws.iter_rows(row_offset=1):
     # remplacer les ù
     rx = re.compile('\à¹')
     summary = rx.sub(u'ù', summary).strip()
-    
+
     # remplacer les €
     rx = re.compile('\â‚¬+')
     summary = rx.sub(u' euros', summary).strip()
@@ -242,9 +244,9 @@ for row in ws.iter_rows(row_offset=1):
     # ajouter fuseau horaire
     date_pub = paris_tz.localize(date_pub)
     published = time.strptime('{0} {1} {2}'.format(date_pub.year,
-                                                            date_pub.month,
-                                                            date_pub.day),
-                                                            '%Y %m %d')
+                                                   date_pub.month,
+                                                   date_pub.day),
+                                                   '%Y %m %d')
     if "2" in str(date_pub.utcoffset()):
         print('youhou')
         published = time.strftime("%a, %d %b %Y %H:%M:%S +0200", published)
@@ -371,3 +373,13 @@ print(li_issues)
 # print(date_pub.tzinfo)
 # print(date_pub.timetz())
 print(published)
+
+
+###############################################################################
+###### Stand alone program ########
+###################################
+
+if __name__ == '__main__':
+    """
+    To launch this script from the terminal
+    """

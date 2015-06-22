@@ -139,6 +139,18 @@ CREATE TABLE "logiciels" ("id" INTEGER PRIMARY KEY  NOT NULL , "proprietaire" BO
 CREATE TABLE "metiers" ("id" INTEGER PRIMARY KEY  NOT NULL ,"administrateur" BOOL DEFAULT (null) ,"cartographe" BOOL,"charge_etude" BOOL,"charge_mission" BOOL,"chef" BOOL,"geometre" BOOL,"ingenieur" BOOL,"responsable" BOOL,"sigiste" BOOL,"technicien" BOOL,"topographe" BOOL);
 
 CREATE  TABLE  IF NOT EXISTS "main"."histo_georezo" ("idu" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "id_forum" INTEGER UNIQUE , "id_rss" INTEGER UNIQUE , "title" VARCHAR, "published" DATETIME, "contrat" VARCHAR, "visites" INTEGER, "dpt1" VARCHAR, "dpt2" VARCHAR, "region" VARCHAR, "region_typ" VARCHAR, "summary" TEXT)
+
+CREATE VIEW "compare_contrats" AS SELECT jobs_contrat.id, jobs_contrat.type, histo_georezo.contrat
+           FROM jobs_contrat
+           INNER JOIN histo_georezo
+           ON jobs_contrat.id = histo_georezo.idu
+           ORDER BY jobs_contrat.id ASC
+
+CREATE VIEW "latest50" AS SELECT georezo.id, georezo.title, georezo.content, georezo.date_pub, jobs_contrat.type
+           FROM georezo
+           LEFT JOIN jobs_contrat
+           ON georezo.id = jobs_contrat.id
+           ORDER BY georezo.id DESC LIMIT 50
 ```
 
 ## Installer Python 3.4
