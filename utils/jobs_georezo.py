@@ -96,10 +96,11 @@ for entry in feed.entries:
         try:
             with conn:
                 #  storing the offer into the DB
-                c.execute("INSERT INTO georezo VALUES (?,?,?,?)", (str(job_id),
-                                                                   entry.title,
-                                                                   entry.summary,
-                                                                   entry.published))
+                c.execute("INSERT INTO georezo VALUES (?,?,?,?,?)", (str(job_id),
+                                                                     entry.title,
+                                                                     entry.summary,
+                                                                     entry.published,
+                                                                     1))
                 # incrementing counter
                 compteur += 1
                 # adding the offer's ID to the list of new offers to process

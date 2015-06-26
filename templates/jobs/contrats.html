@@ -1,7 +1,7 @@
 {% extends "jobs/base.html" %}
 {% load staticfiles %}
 {% block content %}
-    <p class="weekday">Nombre d'annonces par jour de la semaine :</p>
+    <h2>Nombre d'annonces par jour de la semaine</h2>
     <div id= "weekday" style="text-align:center;">
         <script type="text/javascript">
 
@@ -81,15 +81,6 @@
 
     <br/>
 
-    <!-- <div class="btn-group">
-    	<button type="button" id="year" class="btn btn-default">Année</button>
-      	<button type="button" id="month" class="btn btn-default">Mois</button>
-      	<button type="button" id="week" class="btn btn-default">Semaine</button>
-    </div> -->
-    
-    <br/>
-    <svg id="legend_chart" class="nvd3"></svg>
-
         <div class='chart'>
             <h2>Répartition des types de contrats par année</h2>
             <svg id="chart_year"> </svg>
@@ -106,45 +97,9 @@
         </div>
     <script type="text/javascript">
 
-      var width = 500,
-        height = 20;
-
-    var legend = nv.models.legend();
-
-    d3.select('#legend_chart')
-        .attr('width', width)
-        .attr('height', height)
-        .datum(sinAndCos());
-
-    var update = function() {
-        d3.select('#legend_chart').call(legend);
-    }
-
-    update();
-    legend.dispatch.on('stateChange', function(d) { 
-        console.log(d);
-        update();
-    });
-
-
-    function sinAndCos() {
-        return [
-            {key: "Sine Wave"},
-            {key: "A Very Long Series Label"},
-            {key: "A Very Long Series Label"},
-            {key: "A Very Long Series Label"},
-            {key: "Cosine Wave"},
-            {key: "Another test label"}
-        ];
-    }
-
-
-
-      //Width and height
-      /*$(".btn-default").click(function() {
-        // Remove div if they exist before creating them again
-        $( "div.contrats").remove();*/
-        /*periode = $(this).attr('id');*/
+        function isFloat(n){
+          return   n===Number(n)  && n%1!==0
+        }
 
         function getWeekNumber(d) {
 		    // Copy date so don't modify original
@@ -179,7 +134,17 @@
         });
 
         chart_contrats.yAxis
-            .tickFormat(d3.format('d'))
+            .tickFormat(d3.format('d'));
+
+
+        chart_contrats.dispatch.on('stateChange', function(d,i){
+            //console.log(d);
+            setTimeout(function() {
+                //chart_contrats.dispatch.changeState(d,i);
+                chart_contrats.update();
+            }, 100);
+        });
+
 
         d3.select('div.chart svg#chart_year')
           .datum(data)
@@ -188,6 +153,7 @@
 
       //Update the chart when window resizes.
       nv.utils.windowResize(function() { chart_contrats.update() });
+
       return chart_contrats;
 
                 });      
@@ -200,7 +166,7 @@
 
 	d3.json('../static/json/types_contrats_month.json', function(data) {
         nv.addGraph(function() {
-        var chart_contrats = nv.models.stackedAreaChart()
+        chart_contrats = nv.models.stackedAreaChart()
                       .margin({right: 100})
                       .x(function(d) { return d[0] })   //We can modify the data accessor functions...
                       .y(function(d) { return d[1] })   //...in case your data is formatted differently.
@@ -210,18 +176,35 @@
                       .color(["#a6cee3", "#fb9a99", "#1f78b4", "#04B404",
                               "#F7FE2E", "#ff7f00", "#8A2908", "#e31a1c",
                               "#cab2d6", "#6a3d9a"])
-                      //.showLegend(false)
                       .clipEdge(true);
 
         chart_contrats.interactiveLayer.tooltip.contentGenerator(function (key) {
-     //console.log(key);
 
-     tt = ''
-     for (var i =  key.series.length - 1; i >= 0; i--) {
-         tt = tt + '<div class="nvtooltip" style="width:10px; height: 10px; background:'+ key.series[i].color + ';"></div>' +key.series[i].key + " = " + key.series[i].value + '<br>'
+     tt = '<h4>' + key.value + '</h4><table>'
+     var mode = 'normal';
+     for (var i = key.series.length - 1; i >= 0; i--) {
+       if (isFloat(key.series[i].value) === true) {
+          mode = 'pourcentage'
+       }
      };
-     /*console.log(tt);*/
-     return "<div><strong>" + key.value + "</strong><br>" + tt + "</div>"
+     if (mode === 'pourcentage') {
+      for (var i =  key.series.length - 1; i >= 0; i--) {
+         tt = tt + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + Math.round(key.series[i].value *1000) /10 + '%</td></tr>'
+     };
+     }
+    else{
+      var somme = 0;
+      for (var i =  key.series.length - 1; i >= 0; i--) {
+        somme = somme + parseInt(key.series[i].value);
+         tt = tt + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + key.series[i].value + '</td></tr>'
+     };
+     tt = tt + '<tr><td class="legend-color-guide"></td><td class="key"><b>Total</b></td><td class="value">' + somme + '</td></tr>';
+    };
+     
+     tt = tt + '</table>'
+     //console.log(mode);
+     return tt;
+     //return "<div><strong>" + key.value + "</strong><br>" + tt + "</div>"
      ;
 });
         
@@ -235,19 +218,29 @@
         chart_contrats.yAxis
             .tickFormat(d3.format('d'));
 
-        /*var legend = nv.models.legend();
-        console.log(legend);*/
+
+        chart_contrats.dispatch.on('stateChange', function(d,i){
+            //console.log(d);
+            setTimeout(function() {
+                //chart_contrats.dispatch.changeState(d,i);
+                chart_contrats.update();
+            }, 100);
+        });
+  
 
         d3.select('div.chart svg#chart_month')
           .datum(data)
           .transition().duration(500)
           .call(chart_contrats);
 
-      //Update the chart when window resizes.
+
+        //Update the chart when window resizes.
       nv.utils.windowResize(function() { chart_contrats.update() });
+
       return chart_contrats;
 
-                });      
+
+                });    
             });
 
 
@@ -269,7 +262,15 @@
             .tickFormat(getWeekNumber)
 
         chart_contrats.yAxis
-            .tickFormat(d3.format('d'))
+            .tickFormat(d3.format('d'));
+
+        chart_contrats.dispatch.on('stateChange', function(d,i){
+            //console.log(d);
+            setTimeout(function() {
+                //chart_contrats.dispatch.changeState(d,i);
+                chart_contrats.update();
+            }, 100);
+        });
 
         d3.select('div.chart svg#chart_week')
           .datum(data)
@@ -278,15 +279,12 @@
 
       //Update the chart when window resizes.
       nv.utils.windowResize(function() { chart_contrats.update() });
+
+
       return chart_contrats;
 
                 });      
             });
-        /*});*/
+    
     </script>
-    <!-- <script>
-        $(function(){
-            $(".btn-default").click();
-        });
-    </script> -->
 {% endblock content %}

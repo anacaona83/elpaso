@@ -29,24 +29,39 @@
       if (data[i].kind == 'cdi') {
         kind += 'fa-star'
         badge += 'success'
-      } else if (data[i].kind == 'cdd' || 'fpt') {
+      } else if (data[i].kind == 'cdd') {
         kind += 'fa-star-o'
+        badge += 'info'
+      } else if (data[i].kind == 'vi') {
+        kind += 'fa-paper-plane-o'
+        badge += 'info'
+      } else if (data[i].kind == 'fpt') {
+        kind += 'fa-institution'
         badge += 'info'
       } else if (data[i].kind == 'these') {
         kind += 'fa-graduation-cap'
         badge += 'primary'
-      } else if (data[i].kind == 'stage' || 'apprentissage') {
+      } else if (data[i].kind == 'post_doc') {
+        kind += 'fa-graduation-cap'
+        badge += 'primary'
+      } else if (data[i].kind == 'stage') {
         kind += 'fa-child'
+        badge += 'default'
+      } else if (data[i].kind == 'apprentissage') {
+        kind += 'fa-star-half-o'
         badge += 'default'
       } else if (data[i].kind == 'mission') {
         kind += 'fa-history'
         badge += 'warning'
+      } else {
+        kind += 'fa-question'
+        badge += 'default'
       }
-
+      
       /*alternate item side*/
       if (x%2 == 0){
         sens = "class='timeline-inverted'"
-      } 
+      } else {};
 
       /*generate timeline item*/
       output+="<li " + sens + "><div class='timeline-badge " + badge + "'><i class='fa " + kind + "'></i></div><div class='timeline-panel'><div class='timeline-heading'><h4 class='timeline-title'>" + data[i].titre + "</h4></h4><p><small class='text-muted'><i class='fa fa-clock-o'></i> " + data[i].date_pub +"</small></p></div><div class='timeline-body'><p>"+ data[i].summary + "...<br /><br /><a target='_blank' href='"+ data[i].read_more +"'><button type='button' class='btn btn-default'>Voir l'annonce en entier</button></a></p></div></div></li>";
