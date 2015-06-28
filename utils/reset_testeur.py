@@ -58,7 +58,8 @@ conn = sqlite3.connect(db)
 c = conn.cursor()
 
 # fetching the ID list
-c.execute("SELECT id FROM georezo")
+c.execute("SELECT id FROM georezo ORDER BY id ASC")
+# c.execute("SELECT id FROM georezo WHERE id > 223677 AND id < 229744 ORDER BY id ASC")
 liste_input = [i[0] for i in c.fetchall()]
 conn.commit()
 

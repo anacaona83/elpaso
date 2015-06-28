@@ -112,28 +112,15 @@ class Fillin():
         # et remplir les 2 champs du model django qui correspondent
 
         for offre in li_id:
-            db_cursor.execute("SELECT * FROM contrats WHERE id = "
-                              + str(offre))
-            # Je récupère dans la variable 'contrat' toutes les colonnes de
-            # l'objet
+            # Récupère dans la variable 'contrat' ttes les colonnes de l'objet
+            db_cursor.execute("SELECT * FROM contrats WHERE id = " + str(offre))
             contrat = db_cursor.fetchall()
 
-            # Je récupère la date de l'annonce
-            db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
-                              + str(offre))
+            # Récupère la date de l'annonce
+            db_cursor.execute("SELECT date_pub FROM georezo WHERE id = " + str(offre))
             date = db_cursor.fetchone()
-            try:
-              date_object = datetime.strptime(date[0], "%a, %d %b %Y \
-                                            %H:%M:%S +0200")
-            except ValueError:
-              date_object = datetime.strptime(date[0], "%a, %d %b %Y \
-                                            %H:%M:%S +0100")
-            # localize timezone
-            date_object = paris_tz.localize(date_object)
-            # Je récupère les infos sur les lieux
-            db_cursor.execute("SELECT lieu_lib, lieu_type FROM lieux WHERE id = " + str(offre))
-            # Je récupère ces infos dans la variable 'lieux'
-            lieux = db_cursor.fetchall()
+            date_object = datetime.strptime(date[0], "%a, %d %b %Y %H:%M:%S %z")
+
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
@@ -467,13 +454,14 @@ class Fillin():
             db_cursor.execute("SELECT date_pub FROM georezo WHERE id = "
                               + str(offre))
             date = db_cursor.fetchone()
-            try:
-                date_object = datetime.strptime(date[0],
-                                                "%a, %d %b %Y %H:%M:%S +0200")
-            except ValueError:
-                date_object = datetime.strptime(date[0],
-                                                "%a, %d %b %Y %H:%M:%S +0100")
-            date_object = paris_tz.localize(date_object)
+            date_object = datetime.strptime(date[0], "%a, %d %b %Y %H:%M:%S %z")
+            # try:
+            #     date_object = datetime.strptime(date[0],
+            #                                     "%a, %d %b %Y %H:%M:%S +0200")
+            # except ValueError:
+            #     date_object = datetime.strptime(date[0],
+            #                                     "%a, %d %b %Y %H:%M:%S +0100")
+            # date_object = paris_tz.localize(date_object)
             # découpage de la date
             year = date_object.year
             month_number = date_object.month
@@ -483,10 +471,10 @@ class Fillin():
 
             # handle last week of a year:
             # dans les cas où la dernière semaine est à cheval sur 2 années
-            # on affecte toute la semaine 
+            # on affecte toute la semaine
             # voir http://fr.wikipedia.org/wiki/Semaine_53
             # if month_number == 12 and week == 1:
-            #     year_iso = 
+            #     year_iso =s
             # elif month_number == 1 and week == 53:
             #     year -= 1
             # else:
@@ -715,16 +703,16 @@ class Fillin():
         types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
 
         # listes des valeurs de chaque type de contrat selon la période demandée
-        periode_cdi = model_periode.objects.values_list(field_milsec, 'cdi')
-        periode_cdd = model_periode.objects.values_list(field_milsec, 'cdd')
-        periode_fpt = model_periode.objects.values_list(field_milsec, 'fpt')
-        periode_stage = model_periode.objects.values_list(field_milsec, 'stage')
-        periode_appre = model_periode.objects.values_list(field_milsec, 'apprentissage')
-        periode_vi = model_periode.objects.values_list(field_milsec, 'vi')
-        periode_these = model_periode.objects.values_list(field_milsec, 'these')
-        periode_psdoc = model_periode.objects.values_list(field_milsec, 'post_doc')
-        periode_missi = model_periode.objects.values_list(field_milsec, 'mission')
-        periode_other = model_periode.objects.values_list(field_milsec, 'autre')
+        periode_cdi = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'cdi')
+        periode_cdd = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'cdd')
+        periode_fpt = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'fpt')
+        periode_stage = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'stage')
+        periode_appre = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'apprentissage')
+        periode_vi = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'vi')
+        periode_these = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'these')
+        periode_psdoc = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'post_doc')
+        periode_missi = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'mission')
+        periode_other = model_periode.objects.order_by(field_milsec).values_list(field_milsec, 'autre')
 
         # remplissage de la structure de données
         types[0]['values'] = [list(x) for x in periode_appre]
@@ -807,7 +795,7 @@ class Fillin():
                    FROM georezo\
                    LEFT JOIN jobs_contrat\
                    ON georezo.id = jobs_contrat.id\
-                   ORDER BY georezo.id DESC LIMIT 50')
+                   ORDER BY date(georezo.date_pub) DESC LIMIT 50')
         last50 = db_cursor.fetchall()
 
         # list comprehension to pre-format

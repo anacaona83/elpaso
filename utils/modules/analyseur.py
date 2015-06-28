@@ -206,6 +206,7 @@ class Analizer():
                     (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,1,0,0,0,0,""))
             elif "vi" in contrat.lower() \
                 or "volontariat" in contrat.lower()\
+                or "vcat" in contrat.lower()\
                 or "vsc" in contrat.lower():
                 db_cursor.execute("INSERT INTO contrats VALUES \
                     (?,?,?,?,?,?,?,?,?,?,?)", (str(offre),0,0,0,0,0,1,0,0,0,""))
