@@ -1,290 +1,399 @@
 {% extends "jobs/base.html" %}
 {% load staticfiles %}
 {% block content %}
-    <h2>Nombre d'annonces par jour de la semaine</h2>
-    <div id= "weekday" style="text-align:center;">
-        <script type="text/javascript">
-
-            //Width and height
-            var w = 600;
-            var h = 100;
-
-            d3.json("../static/json/contrats_days_of_week.json", function(json) {
-              dataset = json.numbers;
-              legend = json.days;
-              var xScale = d3.scale.ordinal()
-              .domain(d3.range(dataset.length))
-              .rangeRoundBands([0, w], 0.05);
-
-              var yScale = d3.scale.linear()
-              .domain([0, d3.max(dataset)])
-              .range([0, h]);
-
-          //Create SVG element
-          var svg = d3.select("div#weekday")
-          .append("svg")
-          .attr("class", "chart_weekday")
-          .attr("width", w)
-          .attr("height", h);
-
-          //Create bars
-          svg.selectAll("rect")
-          .data(dataset)
-          .enter()
-          .append("rect")
-          .attr("x", function(d, i) {
-            return xScale(i);
-          })
-          .attr("y", function(d) {
-            return h - yScale(d);
-          })
-
-          .attr("title", function(d, i) {
-            return legend[i];
-          })
-          .attr("class", "weekday")
-          .attr("data-toggle", "tooltip")
-          .attr("width", xScale.rangeBand())
-          .attr("height", function(d) {
-            return yScale(d);
-          });
-
-          //Create labels
-          svg.selectAll("text")
-          .data(dataset)
-          .enter()
-          .append("text")
-          .text(function(d) {
-            return d;
-          })
-          .attr("text-anchor", "middle")
-          .attr("x", function(d, i) {
-            return xScale(i) + xScale.rangeBand() / 2;
-          })
-          .attr("y", function(d) {
-            return h - yScale(d) + 14;
-          })
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "11px")
-          .attr("fill", "white");
-
-          $(document).ready(function () {
-            $("svg rect").tooltip({
-              'container': 'body',
-              'placement': 'top'
-            });
-          });
-
-        });
-        </script>
+<h1>Nombre d'annonces par types de contrat</h1>
+<div class="row">
+  <div class="col-lg-4 col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-star fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_cdi }}</div>
+            <div>CDI</div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <br/>
-
-        <div class='chart'>
-            <h2>Répartition des types de contrats par année</h2>
-            <svg id="chart_year"> </svg>
+  </div>
+  <div class="col-lg-4 col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-star-o fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_cdd }}</div>
+            <div>CDD</div>
+          </div>
         </div>
-            <br/>
-        <div class='chart'>
-            <h2>Répartition des types de contrats par mois</h2>
-            <svg id="chart_month"> </svg>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-institution fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_fp }}</div>
+            <div>dans la fonction publique</div>
+          </div>
         </div>
-            <br/>
-        <div class='chart'>
-            <h2>Répartition des types de contrats par semaine</h2>
-            <svg id="chart_week"> </svg>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-graduation-cap fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_postdoc_these }}</div>
+            <div>dont {{ nb_these }} thèses et {{ nb_postdoc }} post-doctorats</div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-history fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_interim }}</div>
+            <div>missions d'intérim</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-child fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_stage }}</div>
+            <div>stages</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-star-half-o fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_apprentis }}</div>
+            <div>apprentissages</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-paper-plane-o fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_volontariat }}</div>
+            <div>volontariats (VI, VCAT...)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-3">
+            <i class="fa fa-question fa-3x"></i>
+          </div>
+          <div class="col-xs-9 text-right">
+            <div class="large">{{ nb_autres }}</div>
+            <div>autres</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2>Nombre d'annonces par jour de la semaine</h2>
+<p>comment tirer parti des graphiques</p>
+<div id= "weekday" style="text-align:center;">
     <script type="text/javascript">
 
-        function isFloat(n){
-          return   n===Number(n)  && n%1!==0
-        }
+        //Width and height
+        var w = 600;
+        var h = 100;
+        var chart_year, chart_month, chart_year;
 
-        function getWeekNumber(d) {
-		    // Copy date so don't modify original
-		    d = new Date(+d);
-		    d.setHours(0,0,0);
-		    // Set to nearest Thursday: current date + 4 - current day number
-		    // Make Sunday's day number 7
-		    d.setDate(d.getDate() + 4 - (d.getDay()||7));
-		    // Get first day of year
-		    var yearStart = new Date(d.getFullYear(),0,1);
-		    // Calculate full weeks to nearest Thursday
-		    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
-		    return 'S' + weekNo + '-' + d.getFullYear();
-		}
-            
-        d3.json('../static/json/types_contrats_year.json', function(data) {
-        nv.addGraph(function() {
-        var chart_contrats = nv.models.stackedAreaChart()
-                      .margin({right: 100})
-                      .x(function(d) { return d[0] })   //We can modify the data accessor functions...
-                      .y(function(d) { return d[1] })   //...in case your data is formatted differently.
-                      .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
-                      .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
-                      .clipEdge(true);
+        d3.json("../static/json/contrats_days_of_week.json", function(json) {
+          dataset = json.numbers;
+          legend = json.days;
+          var xScale = d3.scale.ordinal()
+          .domain(d3.range(dataset.length))
+          .rangeRoundBands([0, w], 0.05);
 
+          var yScale = d3.scale.linear()
+          .domain([0, d3.max(dataset)])
+          .range([0, h]);
 
-        //Format x-axis labels with custom function.
-        chart_contrats.xAxis
-            /*.ticks(d3.time.periode, 1)*/
-            .tickFormat(function(d) { 
-              return d3.time.format('%Y')(new Date(d));
+      //Create SVG element
+      var svg = d3.select("div#weekday")
+      .append("svg")
+      .attr("class", "chart_weekday")
+      .attr("width", w)
+      .attr("height", h);
+
+      //Create bars
+      svg.selectAll("rect")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .attr("x", function(d, i) {
+        return xScale(i);
+      })
+      .attr("y", function(d) {
+        return h - yScale(d);
+      })
+
+      .attr("title", function(d, i) {
+        return legend[i];
+      })
+      .attr("class", "weekday")
+      .attr("data-toggle", "tooltip")
+      .attr("width", xScale.rangeBand())
+      .attr("height", function(d) {
+        return yScale(d);
+      });
+
+      //Create labels
+      svg.selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .text(function(d) {
+        return d;
+      })
+      .attr("text-anchor", "middle")
+      .attr("x", function(d, i) {
+        return xScale(i) + xScale.rangeBand() / 2;
+      })
+      .attr("y", function(d) {
+        return h - yScale(d) + 14;
+      })
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px")
+      .attr("fill", "white");
+
+      $(document).ready(function () {
+        $("svg rect").tooltip({
+          'container': 'body',
+          'placement': 'top'
         });
+      });
 
-        chart_contrats.yAxis
-            .tickFormat(d3.format('d'));
+    });
+    </script>
+</div>
 
+<br/>
 
-        chart_contrats.dispatch.on('stateChange', function(d,i){
-            //console.log(d);
-            setTimeout(function() {
-                //chart_contrats.dispatch.changeState(d,i);
-                chart_contrats.update();
-            }, 100);
-        });
+<div class='chart'>
+    <h2>Répartition des types de contrats par année</h2>
+    <svg id="chart_year"> </svg>
+</div>
+<br/>
+<div class='chart'>
+    <h2>Répartition des types de contrats par mois</h2>
+    <svg id="chart_month"> </svg>
+</div>
+<br/>
+<div class='chart'>
+  <h2>Répartition des types de contrats par semaine</h2>
+  <svg id="chart_week"> </svg>
+</div>
+<script type="text/javascript">
 
+    function isFloat(n){
+        return   n===Number(n)  && n%1!==0
+    }
 
-        d3.select('div.chart svg#chart_year')
-          .datum(data)
-          .transition().duration(500)
-          .call(chart_contrats);
+    function getWeekNumber(d) {
+      // Copy date so don't modify original
+      d = new Date(+d);
+      d.setHours(0,0,0);
+      // Set to nearest Thursday: current date + 4 - current day number
+      // Make Sunday's day number 7
+      d.setDate(d.getDate() + 4 - (d.getDay()||7));
+      // Get first day of year
+      var yearStart = new Date(d.getFullYear(),0,1);
+      // Calculate full weeks to nearest Thursday
+      var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+      return 'S' + weekNo + '-' + d.getFullYear();
+    }
 
-      //Update the chart when window resizes.
-      nv.utils.windowResize(function() { chart_contrats.update() });
-
-      return chart_contrats;
-
-                });      
-            });
-
-
-
-
-
-
-	d3.json('../static/json/types_contrats_month.json', function(data) {
-        nv.addGraph(function() {
+    function displayChart(periode) {
+      d3.json('../static/json/types_contrats_' + periode + '.json', function(data) {
+      nv.addGraph(function() {
         chart_contrats = nv.models.stackedAreaChart()
-                      .margin({right: 100})
-                      .x(function(d) { return d[0] })   //We can modify the data accessor functions...
-                      .y(function(d) { return d[1] })   //...in case your data is formatted differently.
-                      .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
-                      .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
-                      .controlLabels({"stacked":"Stack It","stream":"Stream dat","expanded":"Xpand"})
-                      .color(["#a6cee3", "#fb9a99", "#1f78b4", "#04B404",
-                              "#F7FE2E", "#ff7f00", "#8A2908", "#e31a1c",
-                              "#cab2d6", "#6a3d9a"])
-                      .clipEdge(true);
+        .margin({right: 100})
+                  .x(function(d) { return d[0] })   //We can modify the data accessor functions...
+                  .y(function(d) { return d[1] })   //...in case your data is formatted differently.
+                  .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+                  .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+                  .controlLabels({"stacked":"Stack","stream":"Stream","expanded":"%"})
+                  .color(["#a6cee3", "#fb9a99", "#1f78b4", "#04B404",
+                    "#F7FE2E", "#ff7f00", "#8A2908", "#e31a1c",
+                    "#cab2d6", "#6a3d9a"])
+                  .clipEdge(true);
 
-        chart_contrats.interactiveLayer.tooltip.contentGenerator(function (key) {
+                  chart_contrats.interactiveLayer.tooltip.contentGenerator(function (key) {
 
-     tt = '<h4>' + key.value + '</h4><table>'
-     var mode = 'normal';
-     for (var i = key.series.length - 1; i >= 0; i--) {
-       if (isFloat(key.series[i].value) === true) {
-          mode = 'pourcentage'
-       }
-     };
-     if (mode === 'pourcentage') {
-      for (var i =  key.series.length - 1; i >= 0; i--) {
-         tt = tt + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + Math.round(key.series[i].value *1000) /10 + '%</td></tr>'
-     };
-     }
-    else{
-      var somme = 0;
-      for (var i =  key.series.length - 1; i >= 0; i--) {
-        somme = somme + parseInt(key.series[i].value);
-         tt = tt + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + key.series[i].value + '</td></tr>'
-     };
-     tt = tt + '<tr><td class="legend-color-guide"></td><td class="key"><b>Total</b></td><td class="value">' + somme + '</td></tr>';
-    };
-     
-     tt = tt + '</table>'
-     //console.log(mode);
-     return tt;
-     //return "<div><strong>" + key.value + "</strong><br>" + tt + "</div>"
-     ;
-});
-        
-        //Format x-axis labels with custom function.
-        chart_contrats.xAxis
-            /*.ticks(d3.time.periode, 1)*/
-            .tickFormat(function(d) { 
-              return d3.time.format('%m/%Y')(new Date(d));
-        });
+                   etiquette = '<h4>' + key.value + '</h4><table>'
+                   var mode = 'normal';
+                   for (var i = key.series.length - 1; i >= 0; i--) {
+                     if (isFloat(key.series[i].value) === true) {
+                      mode = 'pourcentage'
+                    }
+                  };
+                  if (mode === 'pourcentage') {
+                    for (var i =  key.series.length - 1; i >= 0; i--) {
+                     etiquette = etiquette + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + Math.round(key.series[i].value *1000) /10 + '%</td></tr>'
+                   };
+                 }
+                 else{
+                  var somme = 0;
+                  for (var i =  key.series.length - 1; i >= 0; i--) {
+                    somme = somme + parseInt(key.series[i].value);
+                    etiquette = etiquette + '<tr><td class="legend-color-guide"><div style="background:'+ key.series[i].color + ';"></div></td><td class="key">' +key.series[i].key + '</td><td class="value">' + key.series[i].value + '</td></tr>'
+                  };
+                  if (key.series.length >1) {
+                    etiquette = etiquette + '<tr><td class="legend-color-guide"></td><td class="key"><b>Total</b></td><td class="value">' + somme + '</td></tr>';
+                  }
+                };
+
+                etiquette = etiquette + '</table>'
+                return etiquette;
+              });
 
         chart_contrats.yAxis
-            .tickFormat(d3.format('d'));
+        .tickFormat(d3.format('d'));
 
 
-        chart_contrats.dispatch.on('stateChange', function(d,i){
-            //console.log(d);
-            setTimeout(function() {
-                //chart_contrats.dispatch.changeState(d,i);
-                chart_contrats.update();
-            }, 100);
-        });
+
+if (periode === 'year') {
+  chart_year = chart_contrats;
+
+  chart_year.xAxis
+  .tickFormat(function(d) { 
+    return d3.time.format('%Y')(new Date(d));                 
+  });
+
+  chart_year.dispatch.on('stateChange', function(d,i){
+        //console.log(d);
+        setTimeout(function() {
+            //chart_contrats.dispatch.changeState(d,i);
+            chart_year.update();
+          }, 100);
+      });
+
+
+  d3.select('div.chart svg#chart_year')
+  .datum(data)
+  .transition().duration(500)
+  .call(chart_year);
+
+    //Update the chart when window resizes.
+    nv.utils.windowResize(function() { chart_year.update() });
+
+    return chart_year;
+
+  }
+  else if (periode === 'month') {
+    chart_month = chart_contrats;
+
+    chart_month.xAxis
+    .tickFormat(function(d) { 
+      return d3.time.format('%m/%Y')(new Date(d));  
+    });
+
+    chart_month.dispatch.on('stateChange', function(d,i){
+        //console.log(d);
+        setTimeout(function() {
+            //chart_contrats.dispatch.changeState(d,i);
+            chart_month.update();
+          }, 100);
+      });
+
+
+    d3.select('div.chart svg#chart_month')
+    .datum(data)
+    .transition().duration(500)
+    .call(chart_month);
+
+    //Update the char
+    //Update the chart when window resizes.
+    nv.utils.windowResize(function() { chart_month.update() });
+    
+    return chart_month
+  }
+  else {
+    chart_week = chart_contrats;
+
+    chart_week.xAxis
+    .tickFormat(getWeekNumber)
+
+    chart_week.dispatch.on('stateChange', function(d,i){
+        //console.log(d);
+        setTimeout(function() {
+            //chart_contrats.dispatch.changeState(d,i);
+            chart_week.update();
+          }, 100);
+      });
+
+
+    d3.select('div.chart svg#chart_week')
+    .datum(data)
+    .transition().duration(500)
+    .call(chart_week);
+
+    //Update the char
+    //Update the chart when window resizes.
+    nv.utils.windowResize(function() { chart_week.update() });
+    
+    return chart_week
+  };
+
   
 
-        d3.select('div.chart svg#chart_month')
-          .datum(data)
-          .transition().duration(500)
-          .call(chart_contrats);
-
-
-        //Update the chart when window resizes.
-      nv.utils.windowResize(function() { chart_contrats.update() });
-
-      return chart_contrats;
-
-
-                });    
-            });
-
-
-
-
-	d3.json('../static/json/types_contrats_week.json', function(data) {
-        nv.addGraph(function() {
-        var chart_contrats = nv.models.stackedAreaChart()
-                      .margin({right: 100})
-                      .x(function(d) { return d[0] })   //We can modify the data accessor functions...
-                      .y(function(d) { return d[1] })   //...in case your data is formatted differently.
-                      .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
-                      .showControls(true)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
-                      .clipEdge(true);
-
-        //Format x-axis labels with custom function.
-        chart_contrats.xAxis
-            /*.ticks(d3.time.periode, 1)*/
-            .tickFormat(getWeekNumber)
-
-        chart_contrats.yAxis
-            .tickFormat(d3.format('d'));
-
-        chart_contrats.dispatch.on('stateChange', function(d,i){
-            //console.log(d);
-            setTimeout(function() {
-                //chart_contrats.dispatch.changeState(d,i);
-                chart_contrats.update();
-            }, 100);
-        });
-
-        d3.select('div.chart svg#chart_week')
-          .datum(data)
-          .transition().duration(500)
-          .call(chart_contrats);
-
-      //Update the chart when window resizes.
-      nv.utils.windowResize(function() { chart_contrats.update() });
-
-
-      return chart_contrats;
-
-                });      
-            });
-    
-    </script>
+  });    
+  });
+  }
+  displayChart('year');
+  displayChart('month');
+  displayChart('week');
+</script>
 {% endblock content %}

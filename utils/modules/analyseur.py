@@ -535,14 +535,8 @@ class Analizer():
             db_cursor.execute("SELECT date_pub \
                                FROM georezo \
                                WHERE id = {0}".format(str(offre)))
-            date_published = db_cursor.fetchone()
-            try:
-                date_published = datetime.strptime(date_published[0],
-                                                   "%a, %d %b %Y %H:%M:%S +0200")
-            except ValueError:
-                date_published = datetime.strptime(date_published[0],
-                                                   "%a, %d %b %Y %H:%M:%S +0100")
-            date_published = paris_tz.localize(date_published)
+            date = db_cursor.fetchone()
+            date_published = datetime.strptime(date[0], "%a, %d %b %Y %H:%M:%S %z")
             # basic clean of the content
             contenu = self.remove_tags(contenu[0])
             # removing all numbers / digits

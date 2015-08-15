@@ -57,11 +57,18 @@ paris_tz = pytz.timezone("Europe/Paris")
 
 
 class Fillin():
-    def __init__(self, liste_identifiants_offre):
+    def __init__(self, liste_identifiants_offre, opt_types=1,
+                 opt_lieux=1, opt_technos=1, opt_metiers=1,
+                 opt_mots=1):
         '''
-        Fill Django table to prepare serialization
+        Fill Django table to serialize
 
         liste_identifiants_offre = IDs of offers to process
+        opt_types = option to parse contracts types
+        opt_lieux = option to parse contracts places
+        opt_technos = option to parse contracts technologies
+        opt_metiers = option to parse contracts jobs label
+        opt_mots = option to parse contracts words
         '''
         # connection to DB
         db = path.abspath(r'../elpaso.sqlite')
@@ -69,33 +76,42 @@ class Fillin():
         self.c = self.conn.cursor()
 
         # fill table of statistics about types of contracts
-        logger.append("\tFill in contrats in the Django DB")
-        self.contrats(liste_identifiants_offre, self.c)
+        if opt_types:
+            logger.append("\tFill in contrats in the Django DB")
+            self.contrats(liste_identifiants_offre, self.c)
 
-        # serialization for histograms by types of contracts
-        logger.append("\tCreate JSON files")
-        self.create_json('year')
-        self.create_json('month')
-        self.create_json('week')
-        self.create_json('day')
+            # serialization for histograms by types of contracts
+            logger.append("\tCreate JSON files")
+            self.create_json('year')
+            self.create_json('month')
+            self.create_json('week')
+            self.create_json('day')
 
-        # divide contracts statistics according to periods (year, month, week)
-        logger.append("Dividing contracts according to different periods types")
-        self.periodizer(liste_identifiants_offre, self.c)
+            # divide contracts statistics according to periods (year, month, week)
+            logger.append("Dividing contracts according to different periods types")
+            self.periodizer(liste_identifiants_offre, self.c)
+        else:
+            pass
+
+        if opt_mots:
+            # serialization for word cloud
+            logger.append("Serialization of words")
+            self.serializer_semantic(self.c)
+        else:
+            pass
+
+        if opt_technos:
+            # serialization for technologies pie chart
+            logger.append("Serialization of technologies")
+            self.serializer_technos(Technos_Types)
+        else:
+            pass
 
         # serialization for the NVD3 stacked area
         logger.append("Serialization of contracts types by period")
         self.serializer_types_contrats(Year, 'year_milsec')
         self.serializer_types_contrats(Month, 'month_milsec')
         self.serializer_types_contrats(Week, 'week_milsec')
-
-        # serialization for word cloud
-        logger.append("Serialization of words")
-        self.serializer_semantic(self.c)
-
-        # serialization for technologies pie chart
-        logger.append("Serialization of technologies")
-        self.serializer_technos(Technos_Types)
 
         # serialization for timeline
         logger.append("Serialization of last 50")
@@ -120,7 +136,6 @@ class Fillin():
             db_cursor.execute("SELECT date_pub FROM georezo WHERE id = " + str(offre))
             date = db_cursor.fetchone()
             date_object = datetime.strptime(date[0], "%a, %d %b %Y %H:%M:%S %z")
-
 
             if len(contrat) > 0:
                 if contrat[0][1] == 1:
@@ -700,6 +715,32 @@ class Fillin():
         types_contrats.remove('id')
         types_contrats.remove('year')
         types_contrats.remove('year_milsec')
+
+        # types de contrats plus sexys
+        for n, typ_contrat in enumerate(types_contrats):
+            if typ_contrat == "apprentissage":
+                types_contrats[n] = "Apprentissage"
+            elif typ_contrat == "cdi":
+                types_contrats[n] = "CDI"
+            elif typ_contrat == "cdd":
+                types_contrats[n] = "CDD"
+            elif typ_contrat == "fpt":
+                types_contrats[n] = "Fonction Publique"
+            elif typ_contrat == "autre":
+                types_contrats[n] = "Autres"
+            elif typ_contrat == "stage":
+                types_contrats[n] = "Stage"
+            elif typ_contrat == "vi":
+                types_contrats[n] = "Volontariat"
+            elif typ_contrat == "mission":
+                types_contrats[n] = "Intérim"
+            elif typ_contrat == "these":
+                types_contrats[n] = "Thèse"
+            elif typ_contrat == "post_doc":
+                types_contrats[n] = "Post-Doctorat"
+            else:
+                pass
+
         types = [{'key': t, 'values': []} for t in sorted(types_contrats)]
 
         # listes des valeurs de chaque type de contrat selon la période demandée
@@ -791,11 +832,12 @@ class Fillin():
         Exporte les données dans un fichier .JSON formaté pour NVD3
         """
         # get last 50 offers with kind of contract
-        db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, georezo.date_pub, jobs_contrat.type\
-                   FROM georezo\
-                   LEFT JOIN jobs_contrat\
-                   ON georezo.id = jobs_contrat.id\
-                   ORDER BY date(georezo.date_pub) DESC LIMIT 50')
+        # db_cursor.execute('SELECT georezo.id, georezo.title, georezo.content, georezo.date_pub, jobs_contrat.type\
+        #            FROM georezo\
+        #            LEFT JOIN jobs_contrat\
+        #            ON georezo.id = jobs_contrat.id\
+        #            ORDER BY date(georezo.date_pub) DESC LIMIT 50')
+        db_cursor.execute('SELECT * FROM latest50')
         last50 = db_cursor.fetchall()
 
         # list comprehension to pre-format

@@ -1,22 +1,22 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
 from .models import Contrat, Year, Month, Week, Semantic_Global
-from .forms import ContactForm
+# from .forms import ContactForm
 import json
 
 @csrf_exempt
 def stats_home(request):
     nb_contrats = Contrat.objects.count()
     first_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
-    # last_date = Contrat.objects.values('date_pub')[:1][0]['date_pub'].date
     last_date = Contrat.objects.order_by('-date_pub').values('date_pub')[:1][0]['date_pub'].date
     nb_years = Year.objects.count()
     nb_months = Month.objects.count()
     nb_weeks = Week.objects.count()
     nb_words = Semantic_Global.objects.count()
 
+    # end of function
     return render_to_response('jobs/home.html', {
         'nb_contrats': nb_contrats,
         'nb_years': nb_years,
@@ -25,6 +25,35 @@ def stats_home(request):
         'first_date': first_date,
         'last_date': last_date,
         'nb_words': nb_words,
+    })
+
+
+@csrf_exempt
+def stats_contrats(request):
+    # stats par types de contrat
+    nb_cdi = Contrat.objects.filter(type='cdi').count()
+    nb_cdd = Contrat.objects.filter(type='cdd').count()
+    nb_stage = Contrat.objects.filter(type='stage').count()
+    nb_fp = Contrat.objects.filter(type='fpt').count()
+    nb_interim = Contrat.objects.filter(type='mission').count()
+    nb_apprentis = Contrat.objects.filter(type='apprentissage').count()
+    nb_these = Contrat.objects.filter(type='these').count()
+    nb_volontariat = Contrat.objects.filter(type='vi').count()
+    nb_postdoc = Contrat.objects.filter(type='post doc').count()
+    nb_autres = Contrat.objects.filter(type='autre').count()
+
+    return render_to_response('jobs/contrats.html', {
+        'nb_cdi': nb_cdi,
+        'nb_cdd': nb_cdd,
+        'nb_stage': nb_stage,
+        'nb_fp': nb_fp,
+        'nb_interim': nb_interim,
+        'nb_apprentis': nb_apprentis,
+        'nb_these': nb_these,
+        'nb_volontariat': nb_volontariat,
+        'nb_postdoc': nb_postdoc,
+        'nb_postdoc_these': nb_postdoc + nb_these,
+        'nb_autres': nb_autres
     })
 
 

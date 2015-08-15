@@ -28,7 +28,11 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['62.210.239.81']
+ALLOWED_HOSTS = [
+    '.elgeopaso.fr',  # Allow domain and subdomains
+    # '.elgeopaso.fr.',  # Also allow FQDN and subdomains
+    '62.210.239.81'
+    ]
 
 
 # Application definition
@@ -40,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'jobs',
 )
 
@@ -92,9 +97,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static_elpaso"),
-    os.path.join(BASE_DIR, "../../js_libs"),
+    # os.path.join(BASE_DIR, "static_elpaso"),
+    # os.path.join(BASE_DIR, "../../js_libs"),
 )
+
 
 # handling timezones
 from django.utils import timezone

@@ -58,7 +58,7 @@ conn = sqlite3.connect(db)
 c = conn.cursor()
 
 # fetching the ID list
-c.execute("SELECT id FROM georezo ORDER BY id ASC")
+c.execute("SELECT id FROM georezo ORDER BY date(date_pub), id")
 # c.execute("SELECT id FROM georezo WHERE id > 223677 AND id < 229744 ORDER BY id ASC")
 liste_input = [i[0] for i in c.fetchall()]
 conn.commit()
@@ -66,7 +66,7 @@ conn.commit()
 logger.append("Fin connexion BD et récupération Ids : {0}".format(datetime.now()))
 
 # empty tables which are out of Django ORM
-c.execute("DELETE FROM contrats;")
+# c.execute("DELETE FROM contrats;")
 # c.execute("DELETE FROM lieux;")
 # c.execute("DELETE FROM autres;")
 # c.execute("DELETE FROM metiers;")
@@ -75,10 +75,10 @@ c.execute("DELETE FROM contrats;")
 conn.commit()
 
 # # empty jobs_* tables
-Contrat.objects.all().delete()
-Year.objects.all().delete()
-Month.objects.all().delete()
-Week.objects.all().delete()
+# Contrat.objects.all().delete()
+# Year.objects.all().delete()
+# Month.objects.all().delete()
+# Week.objects.all().delete()
 # Places_Global.objects.all().delete()
 # Technos_Types.objects.all().delete()
 # Semantic_Global.objects.all().delete()
@@ -101,27 +101,24 @@ else:
     for sublist in metalist_input:
         logger.append("annonces {0} à {1}".format(sublist[0], sublist[-1]))
         analyseur.Analizer(sublist,
-		                   path.abspath(r'../elpaso.sqlite'),
-		                   opt_types=1,
-		                   opt_lieux=0,
-		                   opt_technos=0,
-		                   opt_metiers=0,
-		                   opt_mots=0)
+                           path.abspath(r'../elpaso.sqlite'),
+                           opt_types=0,
+                           opt_lieux=0,
+                           opt_technos=0,
+                           opt_metiers=0,
+                           opt_mots=0)
         conn.commit()
         logger.append("Fin analyseur des annonces {0} à {1} : {2}".format(sublist[0],
                                                                     sublist[-1],
                                                                     datetime.now()))
         # loop on jobs list and get all dates per period
-        models.Fillin(sublist)
+        models.Fillin(sublist,
+                      opt_types=0,
+                      opt_lieux=0,
+                      opt_technos=0,
+                      opt_metiers=0,
+                      opt_mots=0)
         logger.append("Fin répartition annonces par périodes : {0}".format(datetime.now()))
-
-# analyseur.Analizer(liste_input,
-#                    path.abspath(r'../elpaso.sqlite'),
-#                    opt_types=0,
-#                    opt_lieux=0,
-#                    opt_technos=1,
-#                    opt_metiers=0,
-#                    opt_mots=0)
 
 # update indexes
 c.execute("PRAGMA auto_vacuum;")

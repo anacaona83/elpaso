@@ -6,6 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # url(r'^$', TemplateView.as_view(template_name="jobs/home.html")),
     url(r'^$', 'jobs.views.stats_home'),
+    url(r'^contrats/$', 'jobs.views.stats_contrats'),
     url(r'^contrats/$', TemplateView.as_view(template_name="jobs/contrats.html")),
     url(r'^map/$', TemplateView.as_view(template_name="jobs/map.html")),
     url(r'^technos/$', TemplateView.as_view(template_name="jobs/technologies.html")),

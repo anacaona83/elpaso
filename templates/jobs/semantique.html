@@ -1,10 +1,110 @@
 {% extends "jobs/base.html" %}
 {% load staticfiles %}
 {% block content %}
-<p class="semantique">Les mots les plus représentés dans les textes des annonces</p>
+<div id="top100-table">
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Top 100 des mots les plus représentés dans les textes des annonces
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+          <div class="dataTable_wrapper">
+            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Mot</th>
+                  <th>Occurrences</th>
+                  <th>Première apparition</th>
+                  <th>Dernière apparition</th>
+                </tr>
+              </thead>
+              <tbody id="top100-rows">
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
 
-<div id="cloud" style="text-align:center;">
 </div>
+
+<script type="text/javascript">
+  $.getJSON('../static/json/mots_geomatique.json', function(data) {
+    var output="";
+    var x=0
+    for (var i in data) {
+      /*change style according to the kind of contract*/
+/*      var kind="";
+      var badge="";
+      var sens="";
+      if (data[i].kind == 'cdi') {
+        kind += 'fa-star'
+        badge += 'success'
+      } else if (data[i].kind == 'cdd') {
+        kind += 'fa-star-o'
+        badge += 'info'
+      } else if (data[i].kind == 'vi') {
+        kind += 'fa-paper-plane-o'
+        badge += 'info'
+      } else if (data[i].kind == 'fpt') {
+        kind += 'fa-institution'
+        badge += 'info'
+      } else if (data[i].kind == 'these') {
+        kind += 'fa-graduation-cap'
+        badge += 'primary'
+      } else if (data[i].kind == 'post_doc') {
+        kind += 'fa-graduation-cap'
+        badge += 'primary'
+      } else if (data[i].kind == 'stage') {
+        kind += 'fa-child'
+        badge += 'default'
+      } else if (data[i].kind == 'apprentissage') {
+        kind += 'fa-star-half-o'
+        badge += 'default'
+      } else if (data[i].kind == 'mission') {
+        kind += 'fa-history'
+        badge += 'warning'
+      } else {
+        kind += 'fa-question'
+        badge += 'default'
+      }*/
+      
+      /*alternate item side*/
+/*      if (x%2 == 0){
+        sens = "class='timeline-inverted'"
+      } else {};*/
+
+
+      /*generate timeline item*/
+      output+="<tr class='odd gradeX'><td>" + data[i].word + "</td><td>" + data[i].occurs + "</td><td>" + data[i].firstime + "</td><td>" + data[i].lastime + "</td></tr>";
+
+      /*incrementing index*/
+      x += 1
+    }
+
+    /*insertion dans le corps du html*/
+    document.getElementById("top100-rows").innerHTML=output;
+  });
+
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+            responsive: true
+    });
+});
+</script>
+
+
+<div id="cloud"></div>
 
 <script type="text/javascript">
   /* D3  */
@@ -18,50 +118,50 @@
     var colors = d3.scale.category20b();
 
     var svg = d3.select('#cloud').append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .append('g')
-        .attr('transform', 'translate('+width/2+', '+height/2+')');
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', 'translate('+width/2+', '+height/2+')');
 
     function calculateCloud(wordCount) {
       d3.layout.cloud()
-        .size([width, height])
-        .timeInterval(10)
-        .words((data).map(function(d) {
-            return {text: d.word,
-                    dims: d.dims,
-                    occurs: d.occurs,
-                    firstime: d.firstime,
-                    lastime: d.lastime};
-                    }))
+      .size([width, height])
+      .timeInterval(10)
+      .words((data).map(function(d) {
+        return {text: d.word,
+          dims: d.dims,
+          occurs: d.occurs,
+          firstime: d.firstime,
+          lastime: d.lastime};
+        }))
       /*.rotate(function() { return ~~(Math.random()*2) * 90;}) // 0 or 90deg*/
-        .rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
-        .padding(1)
-        .font(typeFace)
-        .fontSize(function(d) { return (d.dims*2); })
-        .on('end', drawCloud)
-        .start();
-  }
+      .rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
+      .padding(1)
+      .font(typeFace)
+      .fontSize(function(d) { return (d.dims*2); })
+      .on('end', drawCloud)
+      .start();
+    }
 
-  function drawCloud(words) {
+    function drawCloud(words) {
       var vis = svg.selectAll('text').data(words);
       // var customFontSize = (20 + (d.occurs / 10));
 
       vis.enter().append('text')
-        .style('font-size', function(d) { return d.dims + 'px'; })
-        .style('font-family', function(d) { return d.font; })
-        .style('fill', function(d, i) { return colors(i); })
-        .attr('text-anchor', 'middle')
-        .attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
-        .text(function(d) { return d.text; })
-        .on("click", function(d) { 
-            alert(d.text + " = " + d.occurs + " occurrences.\nApparu la 1ère fois : " + d.firstime + "\nApparu la dernière fois : " + d.lastime);
-    });
-  }
+      .style('font-size', function(d) { return d.dims + 'px'; })
+      .style('font-family', function(d) { return d.font; })
+      .style('fill', function(d, i) { return colors(i); })
+      .attr('text-anchor', 'middle')
+      .attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
+      .text(function(d) { return d.text; })
+      .on("click", function(d) { 
+        alert(d.text + " = " + d.occurs + " occurrences.\nApparu la 1ère fois : " + d.firstime + "\nApparu la dernière fois : " + d.lastime);
+      });
+    }
 
-  calculateCloud();
+    calculateCloud();
 
-})
+  })
 </script>
 
 <!-- <script src="../wordcloud.js">
